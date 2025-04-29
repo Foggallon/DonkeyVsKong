@@ -3,7 +3,7 @@
 # Author: Dawid Bodzek
 #
 # Description:
-# Project detiles required for generate_bitstream.tcl
+# Project details required for generate_bitstream.tcl
 
 #-----------------------------------------------------#
 #                   Project details                   #
@@ -12,7 +12,7 @@
 set project_name DonkeyVsKong
 
 # Top module name                               
-set top_module top_vga_basys3
+set top_module top_game_basys3
 
 # FPGA device
 set target xc7a35tcpg236-1
@@ -22,14 +22,15 @@ set target xc7a35tcpg236-1
 #-----------------------------------------------------#
 # Specify .xdc files location
 set xdc_files {
-    constraints/top_vga_basys3.xdc
+    constraints/top_game_basys3.xdc
 }
 
 # Specify SystemVerilog design files location
 set sv_files {
     ../rtl/vga_pkg.sv
     ../rtl/vga_timing.sv
-    rtl/top_vga_basys3.sv
+    ../rtl/vga_if.sv
+    rtl/top_game_basys3.sv
 }
 
 # Specify Verilog design files location
