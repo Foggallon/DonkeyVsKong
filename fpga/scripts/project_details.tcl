@@ -23,20 +23,26 @@ set target xc7a35tcpg236-1
 # Specify .xdc files location
 set xdc_files {
     constraints/top_game_basys3.xdc
+    constraints/clk_wiz_0.xdc
 }
 
 # Specify SystemVerilog design files location
 set sv_files {
     ../rtl/vga_pkg.sv
+    ../rtl/ROM/image_rom.sv
+    ../rtl/MainMenu/draw_menu.sv
+    ../rtl/delay.sv
+    ../rtl/top_game.sv
     ../rtl/vga_timing.sv
     ../rtl/vga_if.sv
     rtl/top_game_basys3.sv
 }
 
 # Specify Verilog design files location
-#set verilog_files {
-#
-#}
+set verilog_files {
+    rtl/clk_wiz_0.v
+    rtl/clk_wiz_0_clk_wiz.v
+}
 
 # Specify VHDL design files location
 #set vhdl_files {
