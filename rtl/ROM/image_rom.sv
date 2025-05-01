@@ -29,7 +29,7 @@ module image_rom (
      */
 
     /* Relative path from the simulation or synthesis working directory */
-    initial $readmemh("../../rtl/MainMenu/ROM/DonkeyVsKong.dat", rom);
+    initial $readmemh("../../rtl/MainMenu/ROM/converted_image.dat", rom);
 
     /**
      * Internal logic
