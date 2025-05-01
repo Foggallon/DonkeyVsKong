@@ -12,7 +12,7 @@
  * Top level synthesizable module including the project top and all the FPGA-referred modules.
  */
 
- module top_game_basys3 (
+module top_game_basys3 (
     input  wire clk,
     input  wire btnC,
     output wire Vsync,
@@ -21,79 +21,67 @@
     output wire [3:0] vgaGreen,
     output wire [3:0] vgaBlue,
     output wire JA1,
-    inout wire PS2Data,
-    inout wire PS2Clk
+
+    inout wire PS2Clk,
+    inout wire PS2Data
 );
 
-timeunit 1ns;
-timeprecision 1ps;
+    timeunit 1ns;
+    timeprecision 1ps;
 
-/**
- * Local variables and signals
- */
+    /**
+     * Local variables and signals
+     */
 
-wire locked;
-wire clk40MHz;
-wire clk100MHz;
-wire pclk_mirror;
+    wire clk40MHz;
+    wire clk40MHz_mirror;
+    wire clk100MHz;
 
-(* KEEP = "TRUE" *)
-(* ASYNC_REG = "TRUE" *)
-logic [7:0] safe_start = 0;
-// For details on synthesis attributes used above, see AMD Xilinx UG 901:
-// https://docs.xilinx.com/r/en-US/ug901-vivado-synthesis/Synthesis-Attributes
+    (* KEEP = "TRUE" *)
+    (* ASYNC_REG = "TRUE" *)
 
+    /**
+     * Signals assignments
+     */
 
-/**
- * Signals assignments
- */
+    assign JA1 = clk40MHz_mirror;
 
-assign JA1 = pclk_mirror;
+    /**
+     * FPGA submodules placement
+     */
 
+    clk_wiz_0 u_clk_wiz_0 (
+        .clk,
+        .clk100MHz,
+        .clk40MHz,
+        .locked()
+    );
 
-/**
- * FPGA submodules placement
- */
+    ODDR pclk_oddr (
+        .Q(clk40MHz_mirror),
+        .C(clk40MHz),
+        .CE(1'b1),
+        .D1(1'b1),
+        .D2(1'b0),
+        .R(1'b0),
+        .S(1'b0)
+    );
 
- clk_wiz_1_clk_wiz inst (
-    // Clock out ports  
-    .clk100MHz(clk100MHz),
-    .clk_40MHz(clk40MHz),
-    // Status and control signals               
-    .locked(locked),
-    // Clock in ports
-    .clk(clk)
-);
+    /**
+     *  Project functional top module
+     */
 
-// Mirror pclk on a pin for use by the testbench;
-// not functionally required for this design to work.
-
-ODDR pclk_oddr (
-    .Q(pclk_mirror),
-    .C(clk40MHz),
-    .CE(1'b1),
-    .D1(1'b1),
-    .D2(1'b0),
-    .R(1'b0),
-    .S(1'b0)
-);
-
-
-/**
- *  Project functional top module
- */
-
-top_game u_top_game (
-    .clk40MHz(clk40MHz),
-    .clk100MHz(clk100MHz),
-    .rst(btnC),
-    .r(vgaRed),
-    .g(vgaGreen),
-    .b(vgaBlue),
-    .hs(Hsync),
-    .vs(Vsync),
-    .ps2_clk(PS2Clk),
-    .ps2_data(PS2Data)
-);
+    top_game u_top_game (
+        .clk40MHz,
+        .clk100MHz,
+        .ps2_clk(PS2Clk),
+        .ps2_data(PS2Data),
+        .rst(btnC),
+        .r(vgaRed),
+        .g(vgaGreen),
+        .b(vgaBlue),
+        .hs(Hsync),
+        .vs(Vsync)
+    );
 
 endmodule

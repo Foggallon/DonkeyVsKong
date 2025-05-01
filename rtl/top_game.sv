@@ -10,49 +10,75 @@
  * The project top module.
  */
 
- module top_game(
-    input logic clk40MHz,
-    input logic clk100MHz,
-    input logic rst,
-    inout logic ps2_clk,
-    inout logic ps2_data,
-    output logic hs,
-    output logic vs,
-    output logic [3:0] vgaRed,
-    output logic [3:0] vgaGreen,
-    output logic [3:0] vgaBlue
- );
+module top_game (
+   input  logic clk40MHz,
+   input  logic rst,
+   
+   input  logic clk100MHz,
+   inout  logic ps2_clk,
+   inout  logic ps2_data,
+   
+   output logic vs,
+   output logic hs,
+   output logic [3:0] r,
+   output logic [3:0] g,
+   output logic [3:0] b
+);
 
- timeunit 1ns;
- timeprecision 1ps;
- //Interface definitions
- vga_if draw_menu_if();
+   timeunit 1ns;
+   timeprecision 1ps;
 
- //Signals from VGA timing
- wire [10:0] vcount_tim, hcount_tim;
- wire vsync_tim, hsync_tim;
- wire vblnk_tim, hblnk_tim;
+   /**
+    * Signals assignments
+    */
 
- // Wires and local variables
-    logic [11:0] address;
-    logic [11:0] rgb; 
+   assign vs = draw_menu_if.vsync;  //---EDIT---
+   assign hs = draw_menu_if.hsync;
+   assign {r,g,b} = draw_menu_if.rgb;
 
- image_rom u_image_rom (
-    .clk(clk40MHz),
-    .address(address),
-    .rgb(rgb)
- );
+   /**
+    * Interface definitions
+    */
 
- draw_menu u_draw_menu(
-    .clk(clk40MHz),
-    .rst(rst),
-    .vcount(vcount_tim),
-    .hcount(hcount_tim),
-    .hsync(hsync_tim),
-    .vsync(vsync_tim),
-    .vblnk(vblnk_tim),
-    .hblnk(hblnk_tim),
+   vga_if draw_menu_if();
+   vga_if vga_timing_if();
 
-    .out(draw_menu_if)
- );
- endmodule
+   /**
+    * Local variables and signals
+    */
+
+   logic [11:0] rgb_pixel;
+   logic [19:0] pixel_addr;
+   
+   /**
+    * Submodules instances
+    */
+   
+   vga_timing u_vga_timing (
+      .clk(clk40MHz),
+      .rst,
+      
+      .out(vga_timing_if)
+  );
+
+   draw_menu u_draw_menu(
+      .clk(clk40MHz),
+      .rst,
+
+      .rgb_pixel,
+      .pixel_addr,
+
+      .in(vga_timing_if),
+      .out(draw_menu_if)
+   );
+
+   // ---EDIT---
+   image_rom u_image_rom (
+      .clk(clk40MHz),
+      
+      .address(pixel_addr),
+      .rgb(rgb_pixel)
+
+   );
+
+   endmodule

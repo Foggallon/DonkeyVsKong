@@ -29,10 +29,7 @@ module vga_timing_tb;
     logic clk;
     logic rst;
 
-    wire [10:0] vcount, hcount;
-    wire        vsync,  hsync;
-    wire        vblnk,  hblnk;
-
+    vga_if vga_timing_tb();
 
     /**
      * Clock generation
@@ -63,12 +60,7 @@ module vga_timing_tb;
     vga_timing dut(
         .clk,
         .rst,
-        .vcount,
-        .vsync,
-        .vblnk,
-        .hcount,
-        .hsync,
-        .hblnk
+        .out(vga_timing_tb)
     );
 
     /**
@@ -77,54 +69,54 @@ module vga_timing_tb;
 
     task check_vga_values();
         begin
-           assert ((hcount >= 0) && (hcount <= HOR_TOTAL_TIME -1)) 
-                else $error("hcout out of defined value range, hcount:%d at time:%t ps", hcount, $realtime);
+           assert ((vga_timing_tb.hcount >= 0) && (vga_timing_tb.hcount <= HOR_TOTAL_TIME -1)) 
+                else $error("hcout out of defined value range, hcount:%d at time:%t ps", vga_timing_tb.hcount, $realtime);
 
-            assert ((vcount >= 0) && (vcount <= VER_TOTAL_TIME -1)) 
-                else $error("vcout out of defined value range, vcount:%d at time:%t ps", vcount, $realtime);
+            assert ((vga_timing_tb.vcount >= 0) && (vga_timing_tb.vcount <= VER_TOTAL_TIME -1)) 
+                else $error("vcout out of defined value range, vcount:%d at time:%t ps", vga_timing_tb.vcount, $realtime);
         end
     endtask
 
     task check_sync_signals();
         begin
-            if ((hcount >= HOR_SYNC_START) && (hcount < HOR_SYNC_STOP))
-                assert (hsync) 
+            if ((vga_timing_tb.hcount >= HOR_SYNC_START) && (vga_timing_tb.hcount < HOR_SYNC_STOP))
+                assert (vga_timing_tb.hsync) 
                     else $error("hsync was not asserted at time:%t ps", $realtime);
             else
-                assert (!hsync)
+                assert (!vga_timing_tb.hsync)
                     else $error("hsync was not deasserted at time:%t ps", $realtime);
 
-            if ((vcount == VER_SYNC_START) && (hcount == '0))
-                assert (vsync)
+            if ((vga_timing_tb.vcount == VER_SYNC_START) && (vga_timing_tb.hcount == '0))
+                assert (vga_timing_tb.vsync)
                     else $error("vblnk was not asserted at time:%t ps", $realtime);
             
-            if ((vcount >= VER_SYNC_START) && (vcount < VER_SYNC_STOP)) 
-                assert (vsync) 
+            if ((vga_timing_tb.vcount >= VER_SYNC_START) && (vga_timing_tb.vcount < VER_SYNC_STOP)) 
+                assert (vga_timing_tb.vsync) 
                     else $error("vsync was not asserted at time:%t ps", $realtime);
             else
-                assert (!vsync)
+                assert (!vga_timing_tb.vsync)
                     else $error("vsync was not deasserted at time:%t ps", $realtime);
         end
     endtask
 
     task check_blnk_signals();
         begin
-            if ((hcount >= HOR_BLANK_START) && (hcount <= HOR_TOTAL_TIME-1))
-                assert (hblnk) 
+            if ((vga_timing_tb.hcount >= HOR_BLANK_START) && (vga_timing_tb.hcount <= HOR_TOTAL_TIME-1))
+                assert (vga_timing_tb.hblnk) 
                     else $error("hblnk was not asserted at time:%t ps", $realtime);
             else
-                assert (!hblnk)
+                assert (!vga_timing_tb.hblnk)
                     else $error("hblnk was not deasserted at time:%t ps", $realtime);
 
-            if ((vcount == VER_BLANK_START) && (hcount == '0))
-                assert (vblnk)
+            if ((vga_timing_tb.vcount == VER_BLANK_START) && (vga_timing_tb.hcount == '0))
+                assert (vga_timing_tb.vblnk)
                     else $error("vblnk was not asserted at time:%t ps", $realtime);
 
-            if (vcount >= VER_BLANK_START)
-                assert (vblnk) 
+            if (vga_timing_tb.vcount >= VER_BLANK_START)
+                assert (vga_timing_tb.vblnk) 
                     else $error("vblnk asserted at time:%t ps", $realtime);
             else
-                assert (!vblnk)
+                assert (!vga_timing_tb.vblnk)
                     else $error("vblnk was not deasserted at time:%t ps", $realtime);
         end
     endtask
@@ -134,15 +126,15 @@ module vga_timing_tb;
      */
 
     property hcount_reset;
-        @(posedge clk) (hcount == HOR_TOTAL_TIME -1) |=> (hcount == 0);
+        @(posedge clk) (vga_timing_tb.hcount == HOR_TOTAL_TIME -1) |=> (vga_timing_tb.hcount == 0);
     endproperty
 
     property vcount_reset;
-        @(posedge clk) ((vcount == VER_TOTAL_TIME -1) && (hcount == HOR_TOTAL_TIME -1)) |=> (vcount == 0);
+        @(posedge clk) ((vga_timing_tb.vcount == VER_TOTAL_TIME -1) && (vga_timing_tb.hcount == HOR_TOTAL_TIME -1)) |=> (vga_timing_tb.vcount == 0);
     endproperty
 
-    assert property (hcount_reset) else $error("hcount did not reset to 0. hcount:%d at time:%t ps", hcount, $realtime);
-    assert property (vcount_reset) else $error("vcount did not reset to 0. vcount:%d at time:%t ps", vcount, $realtime);
+    assert property (hcount_reset) else $error("hcount did not reset to 0. hcount:%d at time:%t ps", vga_timing_tb.hcount, $realtime);
+    assert property (vcount_reset) else $error("vcount did not reset to 0. vcount:%d at time:%t ps", vga_timing_tb.vcount, $realtime);
     
     /**
      * Main test
@@ -157,9 +149,9 @@ module vga_timing_tb;
         check_blnk_signals();
         end
 
-        wait (vsync == 1'b0);
-        @(negedge vsync);
-        @(negedge vsync);
+        wait (vga_timing_tb.vsync == 1'b0);
+        @(negedge vga_timing_tb.vsync);
+        @(negedge vga_timing_tb.vsync);
 
         $finish;
     end
