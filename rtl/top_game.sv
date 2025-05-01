@@ -61,7 +61,7 @@ module top_game (
       .out(vga_timing_if)
   );
 
-   draw_menu u_draw_menu(
+   draw_menu u_draw_menu (
       .clk(clk40MHz),
       .rst,
 

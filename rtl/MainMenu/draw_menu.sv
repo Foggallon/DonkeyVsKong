@@ -80,7 +80,7 @@ module draw_menu (
         if (vblnk_buf || hblnk_buf) begin           // Blanking region:
             rgb_nxt = 12'h0_0_0;                    // - make it it black.
         end else begin                              
-            if((vcount_buf >= 0) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS))
+            if((vcount_buf >= 0) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf <= HOR_PIXELS))
                 rgb_nxt = rgb_pixel;
             else
                 rgb_nxt = rgb_buf;
