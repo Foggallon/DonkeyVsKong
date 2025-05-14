@@ -32,9 +32,9 @@ module top_game (
     * Signals assignments
     */
 
-   assign vs = draw_menu_if.vsync;  //---EDIT---
-   assign hs = draw_menu_if.hsync;
-   assign {r,g,b} = draw_menu_if.rgb;
+   assign vs = draw_donkey_if.vsync;
+   assign hs = draw_donkey_if.hsync;
+   assign {r,g,b} = draw_donkey_if.rgb;
 
    /**
     * Interface definitions
@@ -42,13 +42,14 @@ module top_game (
 
    vga_if draw_menu_if();
    vga_if vga_timing_if();
+   vga_if draw_donkey_if();
 
    /**
     * Local variables and signals
     */
 
    logic [11:0] rgb_pixel;
-   logic [19:0] pixel_addr;
+   logic [11:0] pixel_addr;
    
    /**
     * Submodules instances
@@ -65,15 +66,31 @@ module top_game (
       .clk(clk40MHz),
       .rst,
 
-      .rgb_pixel,
-      .pixel_addr,
+      //.rgb_pixel,
+      //.pixel_addr,
 
       .in(vga_timing_if),
       .out(draw_menu_if)
    );
 
-   // ---EDIT---
-   image_rom u_image_rom (
+   draw_donkey u_draw_donkey (
+      .clk(clk40MHz),
+      .rst,
+
+      .pixel_addr,
+      .rgb_pixel,
+
+      .in(draw_menu_if),
+      .out(draw_donkey_if)
+   );
+   
+   image_rom  #(
+    .BITS(12),
+    .PIXELS(4096),
+    .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
+   
+   ) u_image_rom_donkey
+   (
       .clk(clk40MHz),
       
       .address(pixel_addr),

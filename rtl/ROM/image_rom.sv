@@ -12,9 +12,13 @@
  * red, green and blue color values (4-bit each)
  */
 
-module image_rom (
+module image_rom #(parameter
+    PIXELS = 4096,
+    BITS = 8,
+    ROM_FILE = "../../rtl/MainMenu/ROM/DonkeyVsKong.dat"
+    )(
     input  logic clk ,
-    input  logic [19:0] address,  // address = {addry[5:0], addrx[5:0]}
+    input  logic [BITS-1:0] address,  // address = {addry, addrx}
     output logic [11:0] rgb
 );
 
@@ -22,14 +26,14 @@ module image_rom (
      * Local variables and signals
      */
 
-    reg [11:0] rom [0:786432];
+    reg [11:0] rom [0:PIXELS];
 
     /**
      * Memory initialization from a file
      */
 
     /* Relative path from the simulation or synthesis working directory */
-    initial $readmemh("../../rtl/MainMenu/ROM/DonkeyVsKong.dat", rom);
+    initial $readmemh(ROM_FILE, rom);
 
     /**
      * Internal logic
