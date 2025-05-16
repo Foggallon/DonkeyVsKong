@@ -15,8 +15,8 @@ module top_game (
    input  logic rst,
    
    input  logic clk100MHz,
-   inout  logic ps2_clk,
-   inout  logic ps2_data,
+   input  logic ps2_clk,
+   input  logic ps2_data,
    
    output logic vs,
    output logic hs,
@@ -54,7 +54,15 @@ module top_game (
    /**
     * Submodules instances
     */
-   
+
+   ps2_keyboard_to_ascii u_ps2_keyboard_to_ascii (
+      .clk(clk100MHz),
+      .ps2_clk,
+      .ps2_data,
+      .ascii_code(), //--NASZ KOD ASCII--
+      .ascii_new()   //--FLAGA NOWEGO KODU ASCII--
+   );
+
    vga_timing u_vga_timing (
       .clk(clk40MHz),
       .rst,
