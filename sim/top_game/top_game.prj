@@ -18,6 +18,9 @@ sv work ../../rtl/vga_pkg.sv \
         ../../rtl/draw_donkey.sv \
         ../../rtl/ROM/image_rom.sv \
         ../../rtl/MainMenu/draw_menu.sv \
+        ../../rtl/movement.sv \
         ../common/tiff_writer.sv \
         top_game_tb.sv
         
+vhdl work ../../rtl/Keyboard/ps2_keyboard_to_ascii.vhd \
+        ../../rtl/Keyboard/ps2_keyboard.vhd 

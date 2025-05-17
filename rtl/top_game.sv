@@ -50,6 +50,9 @@ module top_game (
 
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
+   wire logic [11:0] xpos, ypos;
+
+   logic [6:0]ascii_code;
    
    /**
     * Submodules instances
@@ -59,7 +62,7 @@ module top_game (
       .clk(clk100MHz),
       .ps2_clk,
       .ps2_data,
-      .ascii_code(), //--NASZ KOD ASCII--
+      .ascii_code(ascii_code), //--NASZ KOD ASCII--
       .ascii_new()   //--FLAGA NOWEGO KODU ASCII--
    );
 
@@ -88,6 +91,9 @@ module top_game (
       .pixel_addr,
       .rgb_pixel,
 
+      .xpos(xpos),
+      .ypos(ypos),
+
       .in(draw_menu_if),
       .out(draw_donkey_if)
    );
@@ -104,6 +110,13 @@ module top_game (
       .address(pixel_addr),
       .rgb(rgb_pixel)
 
+   );
+
+   movement u_movement (
+      .clk(clk40MHz),
+      .rst(rst),
+      .xposNew(xpos),
+      .keyCode(ascii_code)
    );
 
    endmodule

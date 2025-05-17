@@ -1,14 +1,19 @@
 /**
  * MTM UEC2
  * Author: Dawid Bodzek
+ * 
+ * Modified: Jakub Bukowski
  *
  * Description:
- * Draw donkey character.
+ * Draw Donkey character.
  */
 
  module draw_donkey (
     input  logic clk,
     input  logic rst,
+
+    input logic [11:0]xpos,
+    input logic [11:0]ypos,
     
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
@@ -84,7 +89,7 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= 10) && (vcount_buf < 10 + HEIGHT) && (hcount_buf >=  10) && (hcount_buf < 10 + WIDTH))
+            if((vcount_buf >= ypos) && (vcount_buf < ypos + HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + WIDTH))
                 rgb_nxt = rgb_pixel;
             else
                 rgb_nxt = rgb_buf;
