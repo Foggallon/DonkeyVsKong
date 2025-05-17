@@ -10,6 +10,8 @@
 module movement(
     input logic clk,
     input logic rst,
+    input logic released,
+
     input logic [6:0] keyCode,
 
     output logic [11:0] xpos,

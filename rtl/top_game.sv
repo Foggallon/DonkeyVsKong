@@ -51,6 +51,7 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
+   logic released;
 
    logic [6:0]ascii_code;
    
@@ -63,7 +64,8 @@ module top_game (
       .ps2_clk,
       .ps2_data,
       .ascii_code(ascii_code), //--NASZ KOD ASCII--
-      .ascii_new()   //--FLAGA NOWEGO KODU ASCII--
+      .ascii_new(),   //--FLAGA NOWEGO KODU ASCII--
+      .released
    );
 
    vga_timing u_vga_timing (
@@ -115,6 +117,7 @@ module top_game (
    movement u_movement (
       .clk(clk40MHz),
       .rst(rst),
+      .released,
       .xpos(xpos),
       .ypos(ypos),
       .keyCode(ascii_code)

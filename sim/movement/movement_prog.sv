@@ -12,7 +12,8 @@
     input logic [11:0] xpos,
     input logic [11:0] ypos,
   
-    output logic [6:0] keyCode
+    output logic [6:0] keyCode,
+    output logic released
   );
   
     timeunit 1ns;
