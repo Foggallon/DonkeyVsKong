@@ -50,7 +50,7 @@ module top_game (
 
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
-   wire logic [11:0] xpos, ypos;
+   logic [11:0] xpos, ypos;
 
    logic [6:0]ascii_code;
    
@@ -115,7 +115,8 @@ module top_game (
    movement u_movement (
       .clk(clk40MHz),
       .rst(rst),
-      .xposNew(xpos),
+      .xpos(xpos),
+      .ypos(ypos),
       .keyCode(ascii_code)
    );
 

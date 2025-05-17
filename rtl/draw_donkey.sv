@@ -42,6 +42,7 @@
     logic vblnk_buf;
     logic vsync_buf;
 
+
     localparam HEIGHT = 64;
     localparam WIDTH = 48;
 
@@ -79,7 +80,7 @@
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= {6'(in.vcount - 10), 6'(in.hcount - 10)};
+            pixel_addr <= {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
             /* Odbicie lustrzane
             pixel_addr <= {6'(in.vcount - 10), 6'(63 - (in.hcount + 10))}; */
         end
