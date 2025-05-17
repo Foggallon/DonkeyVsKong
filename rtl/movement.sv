@@ -22,7 +22,6 @@ localparam logic [11:0]INITIAL_XPOS = 40;
 localparam logic [11:0]INITIAL_YPOS = 100;
 logic [11:0] xposOld = INITIAL_XPOS;
 int speedLimiter = 0;
-int speedLimiter_nxt;
 
 
 always_ff @(posedge clk) begin
@@ -39,8 +38,8 @@ end
 
 always_comb begin
     if(keyCode == 'h64 || keyCode == 'h44)begin
-        speedLimiter_nxt = speedLimiter + 1;
-        if ((speedLimiter_nxt%10) == 0) begin
+        speedLimiter += 1;
+        if ((speedLimiter%10) == 0) begin
             xpos_nxt = xposOld + 1;
             xposOld = xpos_nxt;
         end
@@ -49,8 +48,8 @@ always_comb begin
         end
     end
     else if(keyCode == 'h41 || keyCode == 'h61) begin
-        speedLimiter_nxt = speedLimiter + 1;
-        if((speedLimiter_nxt%10) == 0) begin
+        speedLimiter += 1;
+        if((speedLimiter%10) == 0) begin
             xpos_nxt = xposOld - 1;
             xposOld = xpos_nxt;
         end
@@ -59,7 +58,7 @@ always_comb begin
         end
     end
     else begin
-        speedLimiter_nxt = 0;
+        speedLimiter = 0;
     end
 end
 
