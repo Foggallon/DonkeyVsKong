@@ -2,6 +2,7 @@
  * Copyright (C) 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Jakub Bukowski
+ * Modified: Dawid Bodzek
  *
  * Description:
  * 
@@ -18,50 +19,93 @@ module movement(
     output logic [11:0] ypos
 );
 
-//local variables
-logic [11:0] xpos_nxt;
-localparam logic [11:0]INITIAL_XPOS = 40;
-localparam logic [11:0]INITIAL_YPOS = 100;
-logic [11:0] xposOld = INITIAL_XPOS;
-int speedLimiter = 0;
+/**
+ * Local variables and signals
+ */
 
+logic [16:0] mov_counter, mov_counter_nxt;
+logic [11:0] xpos_nxt, ypos_nxt;
 
-always_ff @(posedge clk) begin
-    if(rst) begin
-        xpos <= '0;
-        ypos <= '0;
-    end
-    else begin
-        xpos <= xpos_nxt;
-        ypos <= INITIAL_YPOS;
+typedef enum logic [1:0] {
+    ST_IDLE,
+    ST_GO_LEFT,
+    ST_GO_RIGHT
+} STATE_T;
+
+STATE_T state, state_nxt;
+
+/**
+ * Internal logic
+ */
+
+always_ff @(posedge clk) begin : state_register
+    if (rst) begin
+        state <= ST_IDLE;
+    end else begin
+        state <= state_nxt;
     end
 end
 
+always_ff @(posedge clk) begin
+    if (rst) begin
+        xpos <= '0;
+        ypos <= '0;
+        mov_counter <= '0;
+    end else begin
+        xpos <= xpos_nxt;
+        ypos <= ypos_nxt;
+        mov_counter <= mov_counter_nxt;
+    end
+
+end
+
+always_comb begin : next_state_logic
+    case (state)
+        ST_IDLE: begin
+            if ((keyCode == 65 || keyCode == 97) & !released)
+                state_nxt = ST_GO_LEFT;
+            else if ((keyCode == 68 || keyCode == 100) & !released)
+                state_nxt = ST_GO_RIGHT;
+            else
+                state_nxt = ST_IDLE;
+        end
+        ST_GO_LEFT: begin
+            state_nxt = released ? ST_IDLE : ST_GO_LEFT;
+        end
+        ST_GO_RIGHT: begin
+            state_nxt = released ? ST_IDLE : ST_GO_RIGHT;
+        end
+    endcase
+end
 
 always_comb begin
-    if(keyCode == 'h64 || keyCode == 'h44)begin
-        speedLimiter += 1;
-        if ((speedLimiter%10) == 0) begin
-            xpos_nxt = xposOld + 1;
-            xposOld = xpos_nxt;
+    case (state)
+        ST_IDLE: begin
+            xpos_nxt = xpos;
+            ypos_nxt = ypos;
+            mov_counter_nxt = '0;
         end
-        else begin
-            xpos_nxt = xposOld;
+
+        ST_GO_LEFT: begin
+            if (mov_counter == 80_000) begin
+                mov_counter_nxt = '0;
+                xpos_nxt = xpos -1;
+            end else begin
+                mov_counter_nxt = mov_counter +1;
+                xpos_nxt = xpos;
+            end
         end
-    end
-    else if(keyCode == 'h41 || keyCode == 'h61) begin
-        speedLimiter += 1;
-        if((speedLimiter%10) == 0) begin
-            xpos_nxt = xposOld - 1;
-            xposOld = xpos_nxt;
+
+        ST_GO_RIGHT: begin
+            if (mov_counter == 80_000) begin
+                mov_counter_nxt = '0;
+                xpos_nxt = xpos +1;
+            end else begin
+                mov_counter_nxt = mov_counter +1;
+                xpos_nxt = xpos;
+            end
         end
-        else begin
-            xpos_nxt = xposOld;
-        end
-    end
-    else begin
-        speedLimiter = 0;
-    end
+    endcase
 end
 
 endmodule

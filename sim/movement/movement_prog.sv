@@ -37,19 +37,19 @@
       @(negedge rst);
       @(posedge clk);
       keyCode = '0;
+      released = '0;
   
       #10_000_000;
-      keyCode = 'h64;
+      keyCode = 68;
 
-      repeat (2) #500_000_000;
+      repeat (1) #500_000_000;
+      released = '1;
 
-      keyCode = '0;
+      #10_000_000;
+      released = '0;
+      keyCode = 65;      
 
-      repeat (2) #300_000_000;
-
-      keyCode = 'h41;      
-
-      repeat (2) #500_000_000;
+      repeat (1) #500_000_000;
   
       // End the simulation.
       $display("Simulation is over, check the waveforms.");

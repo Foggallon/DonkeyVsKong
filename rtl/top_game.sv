@@ -1,10 +1,10 @@
 /**
- * Modified by:
+ * Copyright (C) 2025  AGH University of Science and Technology
  * 2025  AGH University of Science and Technology
  * MTM UEC2
- * Piotr Kaczmarczyk
- *
- * Modified: Jakub Bukowski
+ * 
+ * Author: Jakub Bukowski
+ * Modified: Dawid Bodzek
  * 
  * Description:
  * The project top module.
