@@ -36,7 +36,7 @@ ENTITY ps2_keyboard_to_ascii IS
       clk        : IN  STD_LOGIC;                     --system clock input
       ps2_clk    : IN  STD_LOGIC;                     --clock signal from PS2 keyboard
       ps2_data   : IN  STD_LOGIC;                     --data signal from PS2 keyboard
-      released   : OUT STD_LOGIC;                     --output signal indicating that the key have been released
+      released   : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);  --output signal indicating that the key have been released
       ascii_new  : OUT STD_LOGIC;                     --output flag indicating new ASCII value
       ascii_code : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)); --ASCII value
 END ps2_keyboard_to_ascii;
@@ -95,15 +95,15 @@ BEGIN
         WHEN new_code =>
           IF(ps2_code = x"F0") THEN    --code indicates that next command is break
             break <= '1';                --set break flag
-            released <= '1';
+            released <= ps2_code & ascii;
             state <= ready;              --return to ready state to await next PS2 code
           ELSIF(ps2_code = x"E0") THEN --code indicates multi-key command
             e0_code <= '1';              --set multi-code command flag
-            released <= '0';
+            released <= x"0000";
             state <= ready;              --return to ready state to await next PS2 code
           ELSE                         --code is the last PS2 code in the make/break code
             ascii(7) <= '1';             --set internal ascii value to unsupported code (for verification)
-            released <= '0';
+            released <= x"0000";
             state <= translate;          --proceed to translate state
           END IF;
 

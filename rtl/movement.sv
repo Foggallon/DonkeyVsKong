@@ -11,9 +11,8 @@
 module movement(
     input logic clk,
     input logic rst,
-    input logic released,
-
-    input logic [6:0] keyCode,
+    input logic [15:0] released,
+    input logic [6:0]  keyCode,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
@@ -26,10 +25,12 @@ module movement(
 logic [16:0] mov_counter, mov_counter_nxt;
 logic [11:0] xpos_nxt, ypos_nxt;
 
-typedef enum logic [1:0] {
+typedef enum logic [3:0] {
     ST_IDLE,
     ST_GO_LEFT,
-    ST_GO_RIGHT
+    ST_GO_RIGHT,
+    ST_JUMP,
+    ST_FALL_DOWN
 } STATE_T;
 
 STATE_T state, state_nxt;
@@ -62,19 +63,43 @@ end
 always_comb begin : next_state_logic
     case (state)
         ST_IDLE: begin
-            if ((keyCode == 65 || keyCode == 97) & !released)
+            if ((keyCode == 'h41 || keyCode == 'h61) & (released != 16'hF041 || released != 16'hF061))
                 state_nxt = ST_GO_LEFT;
-            else if ((keyCode == 68 || keyCode == 100) & !released)
+            else if ((keyCode == 'h44 || keyCode == 'h64) & (released != 16'hF044 || released != 16'hF064))
                 state_nxt = ST_GO_RIGHT;
+            else if (keyCode == 'h20 & released != 16'hF020)
+                state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;
         end
+
         ST_GO_LEFT: begin
-            state_nxt = released ? ST_IDLE : ST_GO_LEFT;
+            if (keyCode == 'h32)
+                state_nxt = ST_JUMP;
+            else if (released == 16'hF041 || released == 16'hF061)
+                state_nxt = ST_IDLE;
+            else
+                state_nxt = ST_GO_LEFT;
         end
+
         ST_GO_RIGHT: begin
-            state_nxt = released ? ST_IDLE : ST_GO_RIGHT;
+            if (keyCode == 'h32)
+                state_nxt = ST_JUMP;
+            else if (released == 16'hF044 || released == 16'hF064)
+                state_nxt = ST_IDLE;
+            else
+                state_nxt = ST_GO_RIGHT;
         end
+
+        ST_JUMP: begin
+
+        end
+
+
+        ST_FALL_DOWN: begin
+
+        end
+
     endcase
 end
 

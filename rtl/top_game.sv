@@ -51,7 +51,7 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
-   logic released;
+   logic [15:0] released;
 
    logic [6:0]ascii_code;
    
