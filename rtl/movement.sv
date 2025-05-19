@@ -22,8 +22,8 @@ module movement(
  * Local variables and signals
  */
 
-logic [16:0] mov_counter, mov_counter_nxt;
-logic [11:0] xpos_nxt, ypos_nxt;
+logic [20:0] mov_counter, mov_counter_nxt;
+logic [11:0] xpos_nxt, ypos_nxt, ypos_jump, ypos_jump_nxt, velocity, velocity_nxt;
 
 typedef enum logic [3:0] {
     ST_IDLE,
@@ -52,10 +52,14 @@ always_ff @(posedge clk) begin
         xpos <= '0;
         ypos <= '0;
         mov_counter <= '0;
+        ypos_jump <= '0;
+        velocity <= '0;
     end else begin
         xpos <= xpos_nxt;
         ypos <= ypos_nxt;
         mov_counter <= mov_counter_nxt;
+        ypos_jump <= ypos_jump_nxt;
+        velocity <= velocity_nxt;
     end
 
 end
@@ -67,7 +71,7 @@ always_comb begin : next_state_logic
                 state_nxt = ST_GO_LEFT;
             else if ((keyCode == 'h44 || keyCode == 'h64) & (released != 16'hF044 || released != 16'hF064))
                 state_nxt = ST_GO_RIGHT;
-            else if (keyCode == 'h20 & released != 16'hF020)
+            else if (keyCode == 'h32 & released != 16'hF020)
                 state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;
@@ -92,13 +96,21 @@ always_comb begin : next_state_logic
         end
 
         ST_JUMP: begin
-
+            if (ypos <= ypos_jump - 58)
+                state_nxt = ST_FALL_DOWN;
+            else
+                state_nxt = ST_JUMP;
         end
-
 
         ST_FALL_DOWN: begin
-
+            if (ypos >= ypos_jump)
+                state_nxt = ST_IDLE;
+            else
+                state_nxt = ST_FALL_DOWN;
         end
+
+        default:
+            state_nxt = ST_IDLE;
 
     endcase
 end
@@ -107,11 +119,16 @@ always_comb begin
     case (state)
         ST_IDLE: begin
             xpos_nxt = xpos;
-            ypos_nxt = ypos;
+            ypos_nxt = 700;
             mov_counter_nxt = '0;
+            ypos_jump_nxt = 700;
+            velocity_nxt = '0;
         end
 
         ST_GO_LEFT: begin
+            ypos_nxt = ypos;
+            velocity_nxt = velocity;
+            ypos_jump_nxt = ypos_jump;
             if (mov_counter == 80_000) begin
                 mov_counter_nxt = '0;
                 xpos_nxt = xpos -1;
@@ -122,6 +139,9 @@ always_comb begin
         end
 
         ST_GO_RIGHT: begin
+            ypos_nxt = ypos;
+            velocity_nxt = velocity;
+            ypos_jump_nxt = ypos_jump;
             if (mov_counter == 80_000) begin
                 mov_counter_nxt = '0;
                 xpos_nxt = xpos +1;
@@ -129,6 +149,49 @@ always_comb begin
                 mov_counter_nxt = mov_counter +1;
                 xpos_nxt = xpos;
             end
+        end
+
+        ST_JUMP: begin
+            xpos_nxt = xpos;
+            ypos_jump_nxt = ypos_jump;
+            if (mov_counter == 1_400_000) begin
+                mov_counter_nxt = '0;
+                velocity_nxt = velocity +1;
+                if (ypos - velocity <= ypos_jump -58) begin
+                    ypos_nxt = (ypos_jump - 58);
+                    velocity_nxt = '0;
+                end else
+                    ypos_nxt = ypos - velocity;
+            end else begin
+                mov_counter_nxt = mov_counter +1;
+                velocity_nxt = velocity;
+                ypos_nxt = ypos;
+            end
+        end
+
+        ST_FALL_DOWN: begin
+            xpos_nxt = xpos;
+            ypos_jump_nxt = ypos_jump;
+            if (mov_counter == 1_400_000) begin
+                mov_counter_nxt = '0;
+                velocity_nxt = velocity +1;
+                if (ypos + velocity >= ypos_jump) 
+                    ypos_nxt = ypos_jump;
+                else
+                    ypos_nxt = ypos + velocity;
+            end else begin
+                mov_counter_nxt = mov_counter +1;
+                velocity_nxt = velocity;
+                ypos_nxt = ypos;
+            end
+        end
+
+        default: begin
+            xpos_nxt = xpos;
+            ypos_nxt = ypos;
+            mov_counter_nxt = mov_counter;
+            ypos_jump_nxt = ypos_jump;
+            velocity_nxt = velocity;
         end
     endcase
 end

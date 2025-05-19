@@ -22,7 +22,8 @@
      * Local variables and signals
      */
 
-    logic clk, rst, released;
+    logic clk, rst;
+    logic [15:0] released;
     wire [11:0] xpos, ypos;
     logic [6:0] keyCode;
     

@@ -12,8 +12,8 @@
     input logic [11:0] xpos,
     input logic [11:0] ypos,
   
-    output logic [6:0] keyCode,
-    output logic released
+    output logic [6:0]  keyCode,
+    output logic [15:0] released
   );
   
     timeunit 1ns;
@@ -39,18 +39,11 @@
       keyCode = '0;
       released = '0;
   
-      #10_000_000;
-      keyCode = 68;
+      #20_000_000;
+      keyCode = 'h32;
 
-      repeat (1) #500_000_000;
-      released = '1;
+      repeat (5) #500_000_000;
 
-      #10_000_000;
-      released = '0;
-      keyCode = 65;      
-
-      repeat (1) #500_000_000;
-  
       // End the simulation.
       $display("Simulation is over, check the waveforms.");
       $finish;

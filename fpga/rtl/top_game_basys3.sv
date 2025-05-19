@@ -33,9 +33,9 @@ module top_game_basys3 (
      * Local variables and signals
      */
 
-    wire clk40MHz;
-    wire clk40MHz_mirror;
-    wire clk100MHz;
+     wire pclk;
+     wire pclk_mirror;
+     wire clk100;
 
     (* KEEP = "TRUE" *)
     (* ASYNC_REG = "TRUE" *)
@@ -44,22 +44,22 @@ module top_game_basys3 (
      * Signals assignments
      */
 
-    assign JA1 = clk40MHz_mirror;
+    assign JA1 = pclk_mirror;
 
     /**
      * FPGA submodules placement
      */
 
     clk_wiz_0 u_clk_wiz_0 (
-        .clk,
-        .clk100MHz,
-        .clk40MHz,
+        .clk(clk),
+        .clk100MHz(clk100),
+        .clk40MHz(pclk),
         .locked()
     );
 
     ODDR pclk_oddr (
-        .Q(clk40MHz_mirror),
-        .C(clk40MHz),
+        .Q(pclk_mirror),
+        .C(pclk),
         .CE(1'b1),
         .D1(1'b1),
         .D2(1'b0),
@@ -72,8 +72,8 @@ module top_game_basys3 (
      */
 
     top_game u_top_game (
-        .clk40MHz,
-        .clk100MHz,
+        .clk40MHz(pclk),
+        .clk100MHz(clk100),
         .ps2_clk(PS2Clk),
         .ps2_data(PS2Data),
         .rst(btnC),

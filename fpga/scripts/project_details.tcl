@@ -36,6 +36,7 @@ set sv_files {
     ../rtl/vga_timing.sv
     ../rtl/vga_if.sv
     ../rtl/movement.sv
+    ../rtl/draw_donkey.sv
     rtl/top_game_basys3.sv
 }
 
@@ -48,7 +49,8 @@ set verilog_files {
 # Specify VHDL design files location
 set vhdl_files {
     ../rtl/Keyboard/ps2_keyboard_to_ascii.vhd 
-    ../rtl/Keyboard/ps2_keyboard.vhd 
+    ../rtl/Keyboard/ps2_keyboard.vhd
+    ../rtl/Keyboard/debounce.vhd
 }
 
 # Specify files for a memory initialization

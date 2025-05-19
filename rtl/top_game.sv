@@ -15,8 +15,8 @@ module top_game (
    input  logic rst,
    
    input  logic clk100MHz,
-   input  logic ps2_clk,
-   input  logic ps2_data,
+   inout  logic ps2_clk,
+   inout  logic ps2_data,
    
    output logic vs,
    output logic hs,
