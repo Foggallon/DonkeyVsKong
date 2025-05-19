@@ -69,19 +69,18 @@ module clk_wiz_65_clk_wiz
 
  (// Clock in ports
   // Clock out ports
-  input         clk65MHz_ce,
   output        clk65MHz,
   // Status and control signals
   output        locked,
-  input         clk100MHz
+  input         clk
  );
   // Input buffering
   //------------------------------------
-wire clk100MHz_clk_wiz_65;
+wire clk_clk_wiz_65;
 wire clk_in2_clk_wiz_65;
   IBUF clkin1_ibufg
-   (.O (clk100MHz_clk_wiz_65),
-    .I (clk100MHz));
+   (.O (clk_clk_wiz_65),
+    .I (clk));
 
 
 
@@ -120,6 +119,9 @@ wire clk_in2_clk_wiz_65;
   wire        clkout6_unused;
   wire        clkfbstopped_unused;
   wire        clkinstopped_unused;
+  (* KEEP = "TRUE" *) 
+  (* ASYNC_REG = "TRUE" *)
+  reg  [7 :0] seq_reg1 = 0;
 
   MMCME2_ADV
   #(.BANDWIDTH            ("OPTIMIZED"),
@@ -153,7 +155,7 @@ wire clk_in2_clk_wiz_65;
     .CLKOUT6             (clkout6_unused),
      // Input clock control
     .CLKFBIN             (clkfbout_buf_clk_wiz_65),
-    .CLKIN1              (clk100MHz_clk_wiz_65),
+    .CLKIN1              (clk_clk_wiz_65),
     .CLKIN2              (1'b0),
      // Tied to always select the primary input clock
     .CLKINSEL            (1'b1),
@@ -192,10 +194,18 @@ wire clk_in2_clk_wiz_65;
 
 
 
+
   BUFGCE clkout1_buf
    (.O   (clk65MHz),
-    .CE  (clk65MHz_ce),
+    .CE  (seq_reg1[7]),
     .I   (clk65MHz_clk_wiz_65));
+
+  BUFH clkout1_buf_en
+   (.O   (clk65MHz_clk_wiz_65_en_clk),
+    .I   (clk65MHz_clk_wiz_65));
+  always @(posedge clk65MHz_clk_wiz_65_en_clk)
+        seq_reg1 <= {seq_reg1[6:0],locked_int};
+
 
 
 

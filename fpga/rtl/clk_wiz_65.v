@@ -70,23 +70,21 @@
 module clk_wiz_65 
  (
   // Clock out ports
-  input         clk65MHz_ce,
   output        clk65MHz,
   // Status and control signals
   output        locked,
  // Clock in ports
-  input         clk100MHz
+  input         clk
  );
 
   clk_wiz_65_clk_wiz inst
   (
   // Clock out ports  
-  .clk65MHz_ce(clk65MHz_ce),
   .clk65MHz(clk65MHz),
   // Status and control signals               
   .locked(locked),
  // Clock in ports
-  .clk100MHz(clk100MHz)
+  .clk(clk)
   );
 
 endmodule

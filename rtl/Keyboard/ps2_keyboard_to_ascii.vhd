@@ -30,12 +30,12 @@ USE ieee.std_logic_1164.all;
 
 ENTITY ps2_keyboard_to_ascii IS
   GENERIC(
-      clk_freq                  : INTEGER := 100_000_000; --system clock frequency in Hz
-      ps2_debounce_counter_size : INTEGER := 9);          --set such that 2^size/clk_freq = 5us (size = 8 for 50MHz)
+      clk_freq                  : INTEGER := 65_000_000; --system clock frequency in Hz
+      ps2_debounce_counter_size : INTEGER := 8);          --set such that 2^size/clk_freq = 5us (size = 8 for 50MHz)
   PORT(
       clk        : IN  STD_LOGIC;                     --system clock input
-      ps2_clk    : INOUT  STD_LOGIC;                     --clock signal from PS2 keyboard
-      ps2_data   : INOUT  STD_LOGIC;                     --data signal from PS2 keyboard
+      ps2_clk    : IN  STD_LOGIC;                     --clock signal from PS2 keyboard
+      ps2_data   : IN  STD_LOGIC;                     --data signal from PS2 keyboard
       released   : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);  --output signal indicating that the key have been released
       ascii_new  : OUT STD_LOGIC;                     --output flag indicating new ASCII value
       ascii_code : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)); --ASCII value
@@ -63,8 +63,8 @@ ARCHITECTURE behavior OF ps2_keyboard_to_ascii IS
       debounce_counter_size : INTEGER); --set such that 2^size/clk_freq = 5us (size = 8 for 50MHz)
     PORT(
       clk          : IN  STD_LOGIC;                     --system clock
-      ps2_clk      : INOUT  STD_LOGIC;                     --clock signal from PS2 keyboard
-      ps2_data     : INOUT  STD_LOGIC;                     --data signal from PS2 keyboard
+      ps2_clk      : IN  STD_LOGIC;                     --clock signal from PS2 keyboard
+      ps2_data     : IN  STD_LOGIC;                     --data signal from PS2 keyboard
       ps2_code_new : OUT STD_LOGIC;                     --flag that new PS/2 code is available on ps2_code bus
       ps2_code     : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)); --code received from PS/2
   END COMPONENT;

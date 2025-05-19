@@ -50,10 +50,13 @@ module top_game_basys3 (
      */
 
     clk_wiz_65 u_clk_wiz_65 (
-        .clk100MHz(clk),
+        .clk,
         .clk65MHz(pclk),
         .locked()
     );
+
+    // Mirror pclk on a pin for use by the testbench;
+    // not functionally required for this design to work.
 
     ODDR pclk_oddr (
         .Q(pclk_mirror),

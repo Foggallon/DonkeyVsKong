@@ -21,15 +21,14 @@ module top_game_tb;
      *  Local parameters
      */
 
-    localparam CLK_PERIOD = 25;     // 40 MHz
-    localparam CLK100_PERIOD = 10;  // 100MHz
+    localparam real CLK_PERIOD = 15.38461538;     // 65 MHz
 
 
     /**
      * Local variables and signals
      */
     
-    logic clk, rst, clk100;
+    logic clk, rst;
     wire vs, hs, ps2data, ps2clk;
     wire [3:0] r, g, b;
 
@@ -43,18 +42,12 @@ module top_game_tb;
         forever #(CLK_PERIOD/2) clk = ~clk;
     end
 
-    initial begin
-        clk100 = 1'b0;
-        forever #(CLK100_PERIOD/2) clk100 = ~clk100;
-    end
-
     /**
      * Submodules instances
      */
 
     top_game dut (
-        .clk40MHz(clk),
-        .clk100MHz(clk100),
+        .clk65MHz(clk),
         .ps2_clk(ps2clk),
         .ps2_data(ps2data),
         .rst(rst),

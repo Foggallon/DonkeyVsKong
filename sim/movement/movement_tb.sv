@@ -16,7 +16,7 @@
      *  Local parameters
      */
 
-    localparam CLK_PERIOD = 25;     // 40 MHz
+    localparam real CLK_PERIOD = 15.38461538;     // 65 MHz
 
     /**
      * Local variables and signals
@@ -24,8 +24,8 @@
 
     logic clk, rst;
     logic [15:0] released;
-    wire [11:0] xpos, ypos;
-    logic [6:0] keyCode;
+    logic [6:0]  keyCode;
+    wire  [11:0] xpos, ypos;
     
 
     /**
