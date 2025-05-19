@@ -11,10 +11,9 @@
  */
 
 module top_game (
-   input  logic clk40MHz,
+   input  logic clk65MHz,
    input  logic rst,
    
-   input  logic clk100MHz,
    inout  logic ps2_clk,
    inout  logic ps2_data,
    
@@ -60,7 +59,7 @@ module top_game (
     */
 
    ps2_keyboard_to_ascii u_ps2_keyboard_to_ascii (
-      .clk(clk100MHz),
+      .clk(clk65MHz),
       .ps2_clk,
       .ps2_data,
       .ascii_code(ascii_code), //--NASZ KOD ASCII--
@@ -69,14 +68,14 @@ module top_game (
    );
 
    vga_timing u_vga_timing (
-      .clk(clk40MHz),
+      .clk(clk65MHz),
       .rst,
       
       .out(vga_timing_if)
   );
 
    draw_menu u_draw_menu (
-      .clk(clk40MHz),
+      .clk(clk65MHz),
       .rst,
 
       //.rgb_pixel,
@@ -87,7 +86,7 @@ module top_game (
    );
 
    draw_donkey u_draw_donkey (
-      .clk(clk40MHz),
+      .clk(clk65MHz),
       .rst,
 
       .pixel_addr,
@@ -107,7 +106,7 @@ module top_game (
    
    ) u_image_rom_donkey
    (
-      .clk(clk40MHz),
+      .clk(clk65MHz),
       
       .address(pixel_addr),
       .rgb(rgb_pixel)
@@ -115,7 +114,7 @@ module top_game (
    );
 
    movement u_movement (
-      .clk(clk40MHz),
+      .clk(clk65MHz),
       .rst(rst),
       .released,
       .xpos(xpos),

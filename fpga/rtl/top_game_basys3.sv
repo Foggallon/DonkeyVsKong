@@ -35,7 +35,6 @@ module top_game_basys3 (
 
      wire pclk;
      wire pclk_mirror;
-     wire clk100;
 
     (* KEEP = "TRUE" *)
     (* ASYNC_REG = "TRUE" *)
@@ -50,10 +49,9 @@ module top_game_basys3 (
      * FPGA submodules placement
      */
 
-    clk_wiz_0 u_clk_wiz_0 (
-        .clk(clk),
-        .clk100MHz(clk100),
-        .clk40MHz(pclk),
+    clk_wiz_65 u_clk_wiz_65 (
+        .clk100MHz(clk),
+        .clk65MHz(pclk),
         .locked()
     );
 
@@ -72,8 +70,7 @@ module top_game_basys3 (
      */
 
     top_game u_top_game (
-        .clk40MHz(pclk),
-        .clk100MHz(clk100),
+        .clk65MHz(pclk),
         .ps2_clk(PS2Clk),
         .ps2_data(PS2Data),
         .rst(btnC),
