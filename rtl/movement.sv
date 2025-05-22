@@ -11,8 +11,8 @@
 module movement(
     input logic clk,
     input logic rst,
-    input logic [15:0] released,
-    input logic [6:0]  keyCode,
+    //input logic [15:0] released,
+    input logic [31:0]  keyCode,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
@@ -67,29 +67,31 @@ end
 always_comb begin : next_state_logic
     case (state)
         ST_IDLE: begin
-            if ((keyCode == 'h41 || keyCode == 'h61) & (released != 16'hF041 || released != 16'hF061))
+            if (keyCode[15:0] == 'h3143)
                 state_nxt = ST_GO_LEFT;
-            else if ((keyCode == 'h44 || keyCode == 'h64) & (released != 16'hF044 || released != 16'hF064))
+            else if (keyCode[15:0] == 'h3233)
                 state_nxt = ST_GO_RIGHT;
-            else if (keyCode == 'h32 & released != 16'hF020)
+            else if (keyCode[15:0] == 'h3239)
                 state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;
         end
 
         ST_GO_LEFT: begin
-            if (keyCode == 'h32)
+            if (keyCode[15:0] == 'h3239)
                 state_nxt = ST_JUMP;
-            else if (released == 16'hF041 || released == 16'hF061)
+            if (keyCode[31:16] == 'h4630)
                 state_nxt = ST_IDLE;
             else
                 state_nxt = ST_GO_LEFT;
         end
 
         ST_GO_RIGHT: begin
-            if (keyCode == 'h32)
+            if (keyCode[15:0] == 'h3239)
                 state_nxt = ST_JUMP;
-            else if (released == 16'hF044 || released == 16'hF064)
+            if (keyCode[15:0] == 'h3143)
+                state_nxt = ST_GO_LEFT;
+            if (keyCode[31:16] == 'h4630)
                 state_nxt = ST_IDLE;
             else
                 state_nxt = ST_GO_RIGHT;

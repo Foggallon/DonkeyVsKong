@@ -44,6 +44,9 @@ set sv_files {
 set verilog_files {
     rtl/clk_wiz_65.v
     rtl/clk_wiz_65_clk_wiz.v
+    ../rtl/Keyboard/PS2Receiver.v
+    ../rtl/Keyboard/bin2ascii.v
+    ../rtl/Keyboard/debouncer.v
 }
 
 # Specify VHDL design files location

@@ -14,8 +14,8 @@ module top_game (
    input  logic clk65MHz,
    input  logic rst,
    
-   inout  logic ps2_clk,
-   inout  logic ps2_data,
+   input  logic ps2_clk,
+   input  logic ps2_data,
    
    output logic vs,
    output logic hs,
@@ -50,22 +50,41 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
-   logic [15:0] released;
+   //logic [15:0] released;
+   logic [15:0] keycode, keycodev;
+   logic flag;
 
-   logic [6:0]ascii_code;
+   logic [31:0] ascii_code;
    
    /**
     * Submodules instances
     */
 
-   ps2_keyboard_to_ascii u_ps2_keyboard_to_ascii (
+   PS2Receiver u_PS2Receiver (
+      .clk(clk65MHz),
+      .kclk(ps2_clk),
+      .kdata(ps2_data),
+      .keycode(keycode),
+      .oflag(flag)
+   );       
+
+   always_ff @(posedge clk65MHz)
+      if (flag)
+         keycodev <= keycode;
+
+   bin2ascii conv (
+      .I(keycodev),
+      .O(ascii_code)
+  );
+
+   /*ps2_keyboard_to_ascii u_ps2_keyboard_to_ascii (
       .clk(clk65MHz),
       .ps2_clk,
       .ps2_data,
       .ascii_code(ascii_code), //--NASZ KOD ASCII--
       .ascii_new(),   //--FLAGA NOWEGO KODU ASCII--
       .released
-   );
+   );*/
 
    vga_timing u_vga_timing (
       .clk(clk65MHz),
@@ -116,7 +135,7 @@ module top_game (
    movement u_movement (
       .clk(clk65MHz),
       .rst(rst),
-      .released,
+      //.released,
       .xpos(xpos),
       .ypos(ypos),
       .keyCode(ascii_code)

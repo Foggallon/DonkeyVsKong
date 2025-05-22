@@ -22,8 +22,8 @@ module top_game_basys3 (
     output wire [3:0] vgaBlue,
     output wire JA1,
 
-    inout wire PS2Clk,
-    inout wire PS2Data
+    input wire PS2Clk,
+    input wire PS2Data
 );
 
     timeunit 1ns;
