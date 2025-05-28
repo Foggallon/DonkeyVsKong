@@ -11,12 +11,13 @@
 module movement(
     input logic clk,
     input logic rst,
-    //input logic [15:0] released,
     input logic [31:0]  keyCode,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
 );
+
+import vga_pkg::*;
 
 /**
  * Local variables and signals
@@ -67,33 +68,27 @@ end
 always_comb begin : next_state_logic
     case (state)
         ST_IDLE: begin
-            if (keyCode[15:0] == 'h3143)
+            if (keyCode[15:0] == 'h3143 & keyCode[31:16] != 'h4630)
                 state_nxt = ST_GO_LEFT;
-            else if (keyCode[15:0] == 'h3233)
+            else if (keyCode[15:0] == 'h3233 & keyCode[31:16] != 'h4630)
                 state_nxt = ST_GO_RIGHT;
-            else if (keyCode[15:0] == 'h3239)
+            else if (keyCode[15:0] == 'h3239 & keyCode[31:16] != 'h4630)
                 state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;
         end
 
         ST_GO_LEFT: begin
-            if (keyCode[15:0] == 'h3239)
-                state_nxt = ST_JUMP;
-            if (keyCode[31:16] == 'h4630)
+            if (mov_counter == 250_000)
                 state_nxt = ST_IDLE;
-            else
+            else 
                 state_nxt = ST_GO_LEFT;
         end
 
         ST_GO_RIGHT: begin
-            if (keyCode[15:0] == 'h3239)
-                state_nxt = ST_JUMP;
-            if (keyCode[15:0] == 'h3143)
-                state_nxt = ST_GO_LEFT;
-            if (keyCode[31:16] == 'h4630)
+            if (mov_counter == 250_000)
                 state_nxt = ST_IDLE;
-            else
+            else 
                 state_nxt = ST_GO_RIGHT;
         end
 
@@ -131,9 +126,12 @@ always_comb begin
             ypos_nxt = ypos;
             velocity_nxt = velocity;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 80_000) begin
+            if (mov_counter == 250_000) begin
                 mov_counter_nxt = '0;
-                xpos_nxt = xpos -1;
+                if (xpos - 1 <= 0)
+                    xpos_nxt = xpos;
+                else
+                    xpos_nxt = xpos -1;
             end else begin
                 mov_counter_nxt = mov_counter +1;
                 xpos_nxt = xpos;
@@ -144,9 +142,12 @@ always_comb begin
             ypos_nxt = ypos;
             velocity_nxt = velocity;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 80_000) begin
+            if (mov_counter == 250_000) begin
                 mov_counter_nxt = '0;
-                xpos_nxt = xpos +1;
+                if (xpos + 48 == HOR_PIXELS)
+                    xpos_nxt = xpos;
+                else
+                    xpos_nxt = xpos +1;
             end else begin
                 mov_counter_nxt = mov_counter +1;
                 xpos_nxt = xpos;

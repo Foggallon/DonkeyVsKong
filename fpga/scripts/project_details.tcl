@@ -50,11 +50,8 @@ set verilog_files {
 }
 
 # Specify VHDL design files location
-set vhdl_files {
-    ../rtl/Keyboard/ps2_keyboard_to_ascii.vhd 
-    ../rtl/Keyboard/ps2_keyboard.vhd
-    ../rtl/Keyboard/debounce.vhd
-}
+#set vhdl_files {
+#}
 
 # Specify files for a memory initialization
 #set mem_files {

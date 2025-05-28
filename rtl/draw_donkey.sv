@@ -12,8 +12,10 @@
     input  logic clk,
     input  logic rst,
 
-    input logic [11:0]xpos,
-    input logic [11:0]ypos,
+    input logic [11:0] xpos,
+    input logic [11:0] ypos,
+
+    input logic [15:0] ascii_code,
     
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
@@ -41,6 +43,8 @@
     logic [10:0] vcount_buf;
     logic vblnk_buf;
     logic vsync_buf;
+
+    logic [11:0] pixel_addr_nxt;
 
 
     localparam HEIGHT = 64;
@@ -80,9 +84,7 @@
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
-            /* Odbicie lustrzane
-            pixel_addr <= {6'(in.vcount - 10), 6'(63 - (in.hcount + 10))}; */
+            pixel_addr <= pixel_addr_nxt;
         end
     end
 
@@ -95,6 +97,13 @@
             else
                 rgb_nxt = rgb_buf;
         end
+    end
+
+    always_comb begin
+        if (ascii_code == 'h3143 )
+            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((WIDTH - 1) - (in.hcount - xpos))};
+        else
+            pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
     end
 
 endmodule

@@ -50,9 +50,7 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
-   //logic [15:0] released;
-   logic [15:0] keycode, keycodev;
-   logic flag;
+   logic [15:0] keycode;
 
    logic [31:0] ascii_code;
    
@@ -65,26 +63,13 @@ module top_game (
       .kclk(ps2_clk),
       .kdata(ps2_data),
       .keycode(keycode),
-      .oflag(flag)
+      .oflag()
    );       
 
-   always_ff @(posedge clk65MHz)
-      if (flag)
-         keycodev <= keycode;
-
    bin2ascii conv (
-      .I(keycodev),
+      .I(keycode),
       .O(ascii_code)
   );
-
-   /*ps2_keyboard_to_ascii u_ps2_keyboard_to_ascii (
-      .clk(clk65MHz),
-      .ps2_clk,
-      .ps2_data,
-      .ascii_code(ascii_code), //--NASZ KOD ASCII--
-      .ascii_new(),   //--FLAGA NOWEGO KODU ASCII--
-      .released
-   );*/
 
    vga_timing u_vga_timing (
       .clk(clk65MHz),
@@ -97,9 +82,6 @@ module top_game (
       .clk(clk65MHz),
       .rst,
 
-      //.rgb_pixel,
-      //.pixel_addr,
-
       .in(vga_timing_if),
       .out(draw_menu_if)
    );
@@ -107,6 +89,8 @@ module top_game (
    draw_donkey u_draw_donkey (
       .clk(clk65MHz),
       .rst,
+
+      .ascii_code(ascii_code[15:0]),
 
       .pixel_addr,
       .rgb_pixel,
@@ -135,7 +119,6 @@ module top_game (
    movement u_movement (
       .clk(clk65MHz),
       .rst(rst),
-      //.released,
       .xpos(xpos),
       .ypos(ypos),
       .keyCode(ascii_code)
