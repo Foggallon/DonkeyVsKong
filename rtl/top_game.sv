@@ -50,13 +50,9 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
-   logic [15:0] keycode, previous;
-
+   logic [15:0] keycode;
    logic [31:0] ascii_code;
-
-
-   logic left, right, jump;
-
+   logic left, right, jump, rotate;
    
    /**
     * Submodules instances
@@ -70,10 +66,23 @@ module top_game (
       .oflag()
    );       
 
-   bin2ascii conv (
+   bin2ascii u_bin2ascii (
       .I(keycode),
       .O(ascii_code)
   );
+
+  keyDecoder u_keyDecoder (
+      .clk(clk65MHz),
+      .rst,
+      
+      .left,
+      .right,
+      .jump,
+
+      .keyCode(ascii_code),
+
+      .rotate
+   );
 
    vga_timing u_vga_timing (
       .clk(clk65MHz),
@@ -94,8 +103,7 @@ module top_game (
       .clk(clk65MHz),
       .rst,
 
-      .previous,
-      .left,
+      .rotate,
 
       .pixel_addr,
       .rgb_pixel,
@@ -112,8 +120,7 @@ module top_game (
     .PIXELS(4096),
     .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
    
-   ) u_image_rom_donkey
-   (
+   ) u_image_rom_donkey (
       .clk(clk65MHz),
       
       .address(pixel_addr),
@@ -130,17 +137,6 @@ module top_game (
       .left,
       .right,
       .jump
-   );
-
-   keyDecoder u_keyDecoder (
-   .clk(clk65MHz),
-   .rst,
-   .keyCode(ascii_code),
-
-   .left,
-   .right,
-   .jump,
-   .previous
    );
 
 endmodule

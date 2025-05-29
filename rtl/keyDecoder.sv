@@ -9,6 +9,7 @@
  * The project top module.
  *
  */
+
 module keyDecoder(
     input logic clk,
     input logic rst,
@@ -18,51 +19,50 @@ module keyDecoder(
     output logic left,
     output logic right,
     output logic jump,
-    output logic [15:0]previous
+    output logic rotate
 );
 
 import keyboard_pkg::*;
 
-logic left_nxt, right_nxt, jump_nxt, previous_nxt;
+logic left_nxt, right_nxt, jump_nxt, rotate_nxt;
 
 always_ff @(posedge clk) begin
     if (rst) begin
        left <= '0;
        right <= '0;
        jump <= '0; 
-       previous <= '0;
+       rotate <= '0;
     end else begin
         left <= left_nxt;
         right <= right_nxt;
         jump <= jump_nxt;
-        previous <= previous_nxt;
+        rotate <= rotate_nxt;
     end
 end
 
 always_comb begin
+
+    left_nxt = '0;
+    right_nxt = '0;
+    jump_nxt = '0;
+
     if (keyCode[15:0] == A & keyCode[31:16] != RELEASED) begin
         left_nxt = '1;
-        previous_nxt = keyCode[31:16];
-        right_nxt = '0;
-        jump_nxt = '0;
+        rotate_nxt = '1;
     end else if (keyCode[15:0] == D & keyCode[31:16] != RELEASED) begin
         right_nxt = '1;
-        previous_nxt = keyCode[31:16];
-        left_nxt = '0;
-        jump_nxt = '0;
+        rotate_nxt = '0;
     end else if (keyCode[15:0] == SPACE & keyCode[31:16] != RELEASED) begin
         jump_nxt = '1;
-        previous_nxt = keyCode[31:16];
-        left_nxt = '0;
-        right_nxt = '0;
-    end else begin
+        rotate_nxt = rotate;
+    end else if (keyCode[15:0] == A & keyCode[31:16] == RELEASED) 
+        rotate_nxt = '1;
+    else begin
         left_nxt = '0;
         right_nxt = '0;
         jump_nxt = '0;
-        previous_nxt = '0;
+        rotate_nxt = rotate;
     end
-
-    //previous_nxt = keyCode[15:0] == A ? '1 : '0;
 
 end
 

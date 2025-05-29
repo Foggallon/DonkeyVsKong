@@ -15,8 +15,7 @@
     input logic [11:0] xpos,
     input logic [11:0] ypos,
 
-    input logic left,
-    input logic [15:0] previous,
+    input logic rotate,
     
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
@@ -100,7 +99,7 @@
     end
 
     always_comb begin
-        if (left || (previous == A))
+        if (rotate)
             pixel_addr_nxt = {6'(in.vcount - ypos), 6'((DONKEY_WIDTH - 1) - (in.hcount - xpos))};
         else
             pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
