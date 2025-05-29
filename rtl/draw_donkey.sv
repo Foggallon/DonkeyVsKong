@@ -15,7 +15,8 @@
     input logic [11:0] xpos,
     input logic [11:0] ypos,
 
-    input logic [15:0] ascii_code,
+    input logic left,
+    input logic [15:0] previous,
     
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
@@ -28,6 +29,8 @@
     timeprecision 1ps;
 
     import vga_pkg::*;
+    import keyboard_pkg::*;
+    import character_pkg::*;
 
     /**
      * Local variables and signals
@@ -46,9 +49,6 @@
 
     logic [11:0] pixel_addr_nxt;
 
-
-    localparam HEIGHT = 64;
-    localparam WIDTH = 48;
 
     /**
      * Signals buffer
@@ -92,7 +92,7 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= ypos) && (vcount_buf < ypos + HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + WIDTH))
+            if((vcount_buf >= ypos) && (vcount_buf < ypos + DONKEY_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + DONKEY_WIDTH))
                 rgb_nxt = rgb_pixel;
             else
                 rgb_nxt = rgb_buf;
@@ -100,8 +100,8 @@
     end
 
     always_comb begin
-        if (ascii_code == 'h3143 )
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((WIDTH - 1) - (in.hcount - xpos))};
+        if (left || (previous == A))
+            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((DONKEY_WIDTH - 1) - (in.hcount - xpos))};
         else
             pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
     end

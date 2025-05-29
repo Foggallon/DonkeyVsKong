@@ -38,6 +38,9 @@ set sv_files {
     ../rtl/movement.sv
     ../rtl/draw_donkey.sv
     rtl/top_game_basys3.sv
+    ../rtl/Keyboard/keyboard_pkg.sv
+    ../rtl/keyDecoder.sv
+    ../rtl/character_pkg.sv
 }
 
 # Specify Verilog design files location

@@ -60,7 +60,7 @@ module draw_menu (
             else if (in.hcount == HOR_PIXELS - 1)   // - right edge:
                 rgb_nxt = 12'h0_0_f;
             else                                    // The rest of active display pixels:
-                rgb_nxt = 12'h0_0_0;                // - fill with gray. 
+                rgb_nxt = in.rgb;                // - fill with gray. 
         end
     end
 

@@ -50,9 +50,13 @@ module top_game (
    logic [11:0] rgb_pixel;
    logic [11:0] pixel_addr;
    logic [11:0] xpos, ypos;
-   logic [15:0] keycode;
+   logic [15:0] keycode, previous;
 
    logic [31:0] ascii_code;
+
+
+   logic left, right, jump;
+
    
    /**
     * Submodules instances
@@ -90,7 +94,8 @@ module top_game (
       .clk(clk65MHz),
       .rst,
 
-      .ascii_code(ascii_code[15:0]),
+      .previous,
+      .left,
 
       .pixel_addr,
       .rgb_pixel,
@@ -121,7 +126,21 @@ module top_game (
       .rst(rst),
       .xpos(xpos),
       .ypos(ypos),
-      .keyCode(ascii_code)
+      
+      .left,
+      .right,
+      .jump
    );
 
-   endmodule
+   keyDecoder u_keyDecoder (
+   .clk(clk65MHz),
+   .rst,
+   .keyCode(ascii_code),
+
+   .left,
+   .right,
+   .jump,
+   .previous
+   );
+
+endmodule

@@ -11,13 +11,18 @@
 module movement(
     input logic clk,
     input logic rst,
-    input logic [31:0]  keyCode,
+
+    input logic left,
+    input logic right,
+    input logic jump,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
 );
 
 import vga_pkg::*;
+import keyboard_pkg::*;
+import character_pkg::*;
 
 /**
  * Local variables and signals
@@ -50,7 +55,7 @@ end
 
 always_ff @(posedge clk) begin
     if (rst) begin
-        xpos <= '0;
+        xpos <= 1;
         ypos <= '0;
         mov_counter <= '0;
         ypos_jump <= '0;
@@ -68,42 +73,30 @@ end
 always_comb begin : next_state_logic
     case (state)
         ST_IDLE: begin
-            if (keyCode[15:0] == 'h3143 & keyCode[31:16] != 'h4630)
+            if (left)
                 state_nxt = ST_GO_LEFT;
-            else if (keyCode[15:0] == 'h3233 & keyCode[31:16] != 'h4630)
+            else if (right)
                 state_nxt = ST_GO_RIGHT;
-            else if (keyCode[15:0] == 'h3239 & keyCode[31:16] != 'h4630)
+            else if (jump)
                 state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;
         end
 
         ST_GO_LEFT: begin
-            if (mov_counter == 250_000)
-                state_nxt = ST_IDLE;
-            else 
-                state_nxt = ST_GO_LEFT;
+            state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_LEFT);
         end
 
         ST_GO_RIGHT: begin
-            if (mov_counter == 250_000)
-                state_nxt = ST_IDLE;
-            else 
-                state_nxt = ST_GO_RIGHT;
+            state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_RIGHT);
         end
 
         ST_JUMP: begin
-            if (ypos <= ypos_jump - 58)
-                state_nxt = ST_FALL_DOWN;
-            else
-                state_nxt = ST_JUMP;
+            state_nxt = (ypos <= (ypos_jump - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
         end
 
         ST_FALL_DOWN: begin
-            if (ypos >= ypos_jump)
-                state_nxt = ST_IDLE;
-            else
-                state_nxt = ST_FALL_DOWN;
+            state_nxt = (ypos >= ypos_jump ? ST_IDLE : ST_FALL_DOWN);
         end
 
         default:
@@ -116,9 +109,9 @@ always_comb begin
     case (state)
         ST_IDLE: begin
             xpos_nxt = xpos;
-            ypos_nxt = 700;
+            ypos_nxt = DONKEY_INITIAL_YPOS;
             mov_counter_nxt = '0;
-            ypos_jump_nxt = 700;
+            ypos_jump_nxt = DONKEY_INITIAL_YPOS;
             velocity_nxt = '0;
         end
 
@@ -126,14 +119,11 @@ always_comb begin
             ypos_nxt = ypos;
             velocity_nxt = velocity;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 250_000) begin
+            if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                 mov_counter_nxt = '0;
-                if (xpos - 1 <= 0)
-                    xpos_nxt = xpos;
-                else
-                    xpos_nxt = xpos -1;
+                xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
             end else begin
-                mov_counter_nxt = mov_counter +1;
+                mov_counter_nxt = mov_counter + 1;
                 xpos_nxt = xpos;
             end
         end
@@ -142,14 +132,11 @@ always_comb begin
             ypos_nxt = ypos;
             velocity_nxt = velocity;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 250_000) begin
+            if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                 mov_counter_nxt = '0;
-                if (xpos + 48 == HOR_PIXELS)
-                    xpos_nxt = xpos;
-                else
-                    xpos_nxt = xpos +1;
+                xpos_nxt = ((xpos + DONKEY_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
             end else begin
-                mov_counter_nxt = mov_counter +1;
+                mov_counter_nxt = mov_counter + 1;
                 xpos_nxt = xpos;
             end
         end
@@ -157,16 +144,16 @@ always_comb begin
         ST_JUMP: begin
             xpos_nxt = xpos;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 1_400_000) begin
+            if (mov_counter == JUMP_TAKI_W_MIARE) begin
                 mov_counter_nxt = '0;
                 velocity_nxt = velocity +1;
-                if (ypos - velocity <= ypos_jump -58) begin
-                    ypos_nxt = (ypos_jump - 58);
+                if (ypos - velocity <= ypos_jump - DONKEY_JUMP_HEIGHT) begin
+                    ypos_nxt = (ypos_jump - DONKEY_JUMP_HEIGHT);
                     velocity_nxt = '0;
                 end else
                     ypos_nxt = ypos - velocity;
             end else begin
-                mov_counter_nxt = mov_counter +1;
+                mov_counter_nxt = mov_counter + 1;
                 velocity_nxt = velocity;
                 ypos_nxt = ypos;
             end
@@ -175,13 +162,10 @@ always_comb begin
         ST_FALL_DOWN: begin
             xpos_nxt = xpos;
             ypos_jump_nxt = ypos_jump;
-            if (mov_counter == 1_400_000) begin
+            if (mov_counter == JUMP_TAKI_W_MIARE) begin
                 mov_counter_nxt = '0;
                 velocity_nxt = velocity +1;
-                if (ypos + velocity >= ypos_jump) 
-                    ypos_nxt = ypos_jump;
-                else
-                    ypos_nxt = ypos + velocity;
+                ypos_nxt = ((ypos + velocity >= ypos_jump) ? ypos_jump : (ypos + velocity));
             end else begin
                 mov_counter_nxt = mov_counter +1;
                 velocity_nxt = velocity;
