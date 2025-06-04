@@ -20,6 +20,7 @@ sv work ../../rtl/vga_pkg.sv \
         ../../rtl/MainMenu/draw_menu.sv \
         ../../rtl/movement.sv \
         ../../rtl/Keyboard/keyboard_pkg.sv \
+        ../../rtl/character_pkg.sv \
         ../common/tiff_writer.sv \
         top_game_tb.sv
         

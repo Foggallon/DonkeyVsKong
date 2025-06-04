@@ -36,4 +36,6 @@ dvt_build.log
 xcelium.d
 xrun.log
 
-results/
+results/frame000.tif
+results/frame001.tif
+results/warning_summary.log
