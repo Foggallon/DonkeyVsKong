@@ -1,12 +1,7 @@
 /**
- * San Jose State University
- * EE178 Lab #4
- * Author: prof. Eric Crabilla
- *
- * Modified by:
  * 2025  AGH University of Science and Technology
  * MTM UEC2
- * Piotr Kaczmarczyk
+ * Dawid Bodzek && Jakub Bukowski
  *
  * Description:
  * Top level synthesizable module including the project top and all the FPGA-referred modules.
@@ -20,7 +15,6 @@ module top_game_basys3 (
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
     output wire [3:0] vgaBlue,
-    output wire JA1,
 
     input wire PS2Clk,
     input wire PS2Data
@@ -33,17 +27,7 @@ module top_game_basys3 (
      * Local variables and signals
      */
 
-     wire pclk;
-     wire pclk_mirror;
-
-    (* KEEP = "TRUE" *)
-    (* ASYNC_REG = "TRUE" *)
-
-    /**
-     * Signals assignments
-     */
-
-    assign JA1 = pclk_mirror;
+    logic clk65MHz;
 
     /**
      * FPGA submodules placement
@@ -51,21 +35,8 @@ module top_game_basys3 (
 
     clk_wiz_65 u_clk_wiz_65 (
         .clk,
-        .clk65MHz(pclk),
+        .clk65MHz,
         .locked()
-    );
-
-    // Mirror pclk on a pin for use by the testbench;
-    // not functionally required for this design to work.
-
-    ODDR pclk_oddr (
-        .Q(pclk_mirror),
-        .C(pclk),
-        .CE(1'b1),
-        .D1(1'b1),
-        .D2(1'b0),
-        .R(1'b0),
-        .S(1'b0)
     );
 
     /**
@@ -73,7 +44,7 @@ module top_game_basys3 (
      */
 
     top_game u_top_game (
-        .clk65MHz(pclk),
+        .clk65MHz,
         .ps2_clk(PS2Clk),
         .ps2_data(PS2Data),
         .rst(btnC),

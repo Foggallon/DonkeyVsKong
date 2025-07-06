@@ -10,6 +10,8 @@
 module draw_menu (
     input logic clk,
     input logic rst,
+    input  logic [11:0] rgb_pixel,
+    output logic [11:0] pixel_addr,
     
     vga_if.in in,
     vga_if.out out
@@ -24,45 +26,64 @@ module draw_menu (
      * Local variables and signals
      */
 
-    logic [11:0] rgb_nxt;
-
-
-    always_ff @(posedge clk) begin
-        if (rst) begin
-            out.vcount <= '0;
-            out.vsync  <= '0;
-            out.vblnk  <= '0;
-            out.hcount <= '0;
-            out.hsync  <= '0;
-            out.hblnk  <= '0;
-            out.rgb    <= '0;
-        end else begin
-            out.vcount <= in.vcount;
-            out.vsync  <= in.vsync;
-            out.vblnk  <= in.vblnk;
-            out.hcount <= in.hcount;
-            out.hsync  <= in.hsync;
-            out.hblnk  <= in.hblnk;
-            out.rgb    <= rgb_nxt;
-        end
-    end
+     logic [11:0] rgb_nxt;
+     logic [11:0] rgb_buf;
+ 
+     logic [10:0] hcount_buf;
+     logic hblnk_buf;
+     logic hsync_buf;
+ 
+     logic [10:0] vcount_buf;
+     logic vblnk_buf;
+     logic vsync_buf;
+ 
+     /**
+      * Signals buffer
+      */
+ 
+     delay #(.WIDTH(38), .CLK_DEL(2)) u_delay (
+         .clk,
+         .rst,
+ 
+         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
+         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
+     );
+ 
+     /**
+      * Internal logic
+      */
+ 
+     always_ff @(posedge clk) begin
+         if (rst) begin
+             out.vcount <= '0;
+             out.vsync  <= '0;
+             out.vblnk  <= '0;
+             out.hcount <= '0;
+             out.hsync  <= '0;
+             out.hblnk  <= '0;
+             out.rgb    <= '0;
+             pixel_addr <= '0;
+         end else begin
+             out.vcount <= vcount_buf;
+             out.vsync  <= vsync_buf;
+             out.vblnk  <= vblnk_buf;
+             out.hcount <= hcount_buf;
+             out.hsync  <= hsync_buf;
+             out.hblnk  <= hblnk_buf;
+             out.rgb    <= rgb_nxt;
+             pixel_addr <= {6'(in.vcount), 6'(in.hcount)};
+         end
+     end
 
     always_comb begin
-        if (in.vblnk || in.hblnk) begin             // Blanking region:
-            rgb_nxt = 12'h0_0_0;                    // - make it it black.
-        end else begin                              // Active region:
-            if (in.vcount == 0)                     // - top edge:
-                rgb_nxt = 12'hf_f_0;                // - - make a yellow line.
-            else if (in.vcount == VER_PIXELS - 1)   // - bottom edge:
-                rgb_nxt = 12'hf_0_0;                // - - make a red line.
-            else if (in.hcount == 0)                // - left edge:
-                rgb_nxt = 12'h0_f_0;                // - - make a green line.
-            else if (in.hcount == HOR_PIXELS - 1)   // - right edge:
-                rgb_nxt = 12'h0_0_f;
-            else                                    // The rest of active display pixels:
-                rgb_nxt = in.rgb;                // - fill with gray. 
+        if (vblnk_buf || hblnk_buf) begin
+            rgb_nxt = 12'h8_8_8;
+        end else begin
+            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS))
+                rgb_nxt = rgb_pixel;
+            else
+                rgb_nxt = rgb_buf;
         end
     end
-
 
 endmodule

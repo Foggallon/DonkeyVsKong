@@ -22,9 +22,7 @@
      * Local variables and signals
      */
 
-    logic clk, rst;
-    logic [15:0] released;
-    logic [6:0]  keyCode;
+    logic clk, rst, jump, left, right;
     wire  [11:0] xpos, ypos;
     
 
@@ -55,8 +53,9 @@
         .clk,
         .rst,
 
-        .released(released),
-        .keyCode,
+        .jump,
+        .left,
+        .right,
 
         .xpos,
         .ypos
@@ -65,12 +64,10 @@
     movement_prog u_movement_prog (
         .clk,
         .rst,
-        .released(released),
-        
-        .xpos,
-        .ypos,
 
-        .keyCode
+        .jump,
+        .left,
+        .right
         
     );
 

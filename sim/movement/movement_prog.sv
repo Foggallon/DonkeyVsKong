@@ -9,11 +9,11 @@
  module movement_prog (
     input logic clk,
     input logic rst,
-    input logic [11:0] xpos,
-    input logic [11:0] ypos,
-  
-    output logic [6:0]  keyCode,
-    output logic [15:0] released
+
+    output logic jump,
+    output logic left,
+    output logic right
+    
   );
   
     timeunit 1ns;
@@ -36,13 +36,17 @@
       @(posedge rst);
       @(negedge rst);
       @(posedge clk);
-      keyCode = '0;
-      released = '0;
+      jump = '0;
+      left = '0;
+      right = '0;
   
       #20_000_000;
-      keyCode = 'h32;
+      jump = '1;
 
-      repeat (5) #500_000_000;
+      repeat (2) #500_000_000;
+      jump = '0;
+      right = '1;
+      repeat (2) #500_000_000;
 
       // End the simulation.
       $display("Simulation is over, check the waveforms.");

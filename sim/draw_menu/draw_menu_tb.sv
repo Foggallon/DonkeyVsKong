@@ -1,0 +1,120 @@
+/**
+ * MTM UEC2
+ * Author: Dawid Bodzek
+ *
+ * Description:
+ * Testbench for draw_menu module.
+ */
+
+module draw_menu_tb;
+
+    timeunit 1ns;
+    timeprecision 1ps;
+
+    /**
+     *  Local parameters
+     */
+
+    localparam real CLK_PERIOD = 15.38461538;     // 65 MHz
+
+    /**
+     * Local variables and signals
+     */
+
+    vga_if vga_timing_if();
+    vga_if dut_if();
+
+    logic clk, rst;
+    logic [3:0] r, g, b;
+    logic [11:0] rgb_pixel;
+    logic [11:0] pixel_addr;
+    assign {r,g,b} = dut_if.rgb;
+
+    /**
+     * Clock generation
+     */
+
+    initial begin
+        clk = 1'b0;
+        forever #(CLK_PERIOD/2) clk = ~clk;
+    end
+
+    /**
+     * Reset generation
+     */
+
+    initial begin
+        rst = 1'b0;
+        #(1.25*CLK_PERIOD) rst = 1'b1;
+        #(2.00*CLK_PERIOD) rst = 1'b0;
+    end
+
+    /**
+     * Submodules instances
+     */
+
+    vga_timing u_vga_timing (
+        .clk,
+        .rst,
+        .out(vga_timing_if)
+
+    );
+
+    image_rom  #(
+    .BITS(12),
+    .PIXELS(4096),
+    .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
+   
+   ) u_image_rom (
+      .clk,
+      
+      .address(pixel_addr),
+      .rgb(rgb_pixel)
+
+   );
+
+    draw_menu dut (
+        .clk,
+        .rst,
+        .rgb_pixel,
+        .pixel_addr,
+
+        .in(vga_timing_if),
+        .out(dut_if)
+    );
+
+    tiff_writer #(
+        .XDIM(16'd1344),
+        .YDIM(16'd806),
+        .FILE_DIR("../../results")
+    ) u_tiff_writer (
+        .clk(clk),
+        .r({r,r}),
+        .g({g,g}),
+        .b({b,b}),
+        .go(dut_if.vsync)
+    );
+
+    /**
+     * Main test
+     */
+
+    initial begin
+        rst = 1'b0;
+        # 30 rst = 1'b1;
+        # 30 rst = 1'b0;
+
+        $display("If simulation ends before the testbench");
+        $display("completes, use the menu option to run all.");
+        $display("Prepare to wait a long time...");
+
+        wait (dut_if.vsync == 1'b0);
+        @(negedge dut_if.vsync) $display("Info: negedge VS at %t",$time);
+        @(negedge dut_if.vsync) $display("Info: negedge VS at %t",$time);
+
+        // End the simulation.
+        $display("Simulation is over, check the waveforms.");
+        $finish;
+    end
+
+endmodule

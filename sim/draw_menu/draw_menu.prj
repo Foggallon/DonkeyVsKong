@@ -10,8 +10,10 @@
 
 
 sv work ../../rtl/vga_pkg.sv \
-        ../../rtl/character_pkg.sv \
-        ../../rtl/Keyboard/keyboard_pkg.sv \
-        ../../rtl/movement.sv \
-        movement_prog.sv \
-        movement_tb.sv
+        ../../rtl/vga_if.sv \
+        ../../rtl/vga_timing.sv \
+        ../../rtl/delay.sv \
+        ../common/tiff_writer.sv \
+        ../../rtl/ROM/image_rom.sv \
+        ../../rtl/MainMenu/draw_menu.sv \
+        draw_menu_tb.sv
