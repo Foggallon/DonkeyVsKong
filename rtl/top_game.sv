@@ -48,11 +48,12 @@ module top_game (
     */
 
    logic [11:0] rgb_pixel;
-   logic [11:0] pixel_addr;
+   logic [11:0] pixel_addr,  rgb_pixel_menu;;
+   logic [13:0] pixel_addr_menu;
    logic [11:0] xpos, ypos;
    logic [15:0] keycode;
    logic [31:0] ascii_code;
-   logic left, right, jump, rotate;
+   logic left, right, jump, rotate, start_game;
    
    /**
     * Submodules instances
@@ -78,6 +79,7 @@ module top_game (
       .left,
       .right,
       .jump,
+      .start_game(start_game),
 
       .keyCode(ascii_code),
 
@@ -91,9 +93,24 @@ module top_game (
       .out(vga_timing_if)
   );
 
+  image_rom  #(
+        .BITS(14),
+        .PIXELS(12292),
+        .ROM_FILE("../../rtl/ROM/proba.dat")
+   ) u_image_rom (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_menu),
+      .rgb(rgb_pixel_menu)
+
+   );
+
    draw_menu u_draw_menu (
       .clk(clk65MHz),
       .rst,
+      .start_game,
+      .pixel_addr(pixel_addr_menu),
+      .rgb_pixel(rgb_pixel_menu),
 
       .in(vga_timing_if),
       .out(draw_menu_if)
@@ -104,6 +121,7 @@ module top_game (
       .rst,
 
       .rotate,
+      .start_game,
 
       .pixel_addr,
       .rgb_pixel,
@@ -134,6 +152,7 @@ module top_game (
       .xpos(xpos),
       .ypos(ypos),
       
+      .start_game,
       .left,
       .right,
       .jump

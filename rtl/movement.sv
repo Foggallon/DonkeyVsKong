@@ -15,6 +15,7 @@ module movement(
     input logic left,
     input logic right,
     input logic jump,
+    input logic start_game,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
@@ -73,11 +74,11 @@ end
 always_comb begin : next_state_logic
     case (state)
         ST_IDLE: begin
-            if (left)
+            if (left & start_game)
                 state_nxt = ST_GO_LEFT;
-            else if (right)
+            else if (right & start_game)
                 state_nxt = ST_GO_RIGHT;
-            else if (jump)
+            else if (jump & start_game)
                 state_nxt = ST_JUMP;
             else
                 state_nxt = ST_IDLE;

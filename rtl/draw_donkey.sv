@@ -16,6 +16,7 @@
     input logic [11:0] ypos,
 
     input logic rotate,
+    input logic start_game,
     
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
@@ -91,7 +92,7 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= ypos) && (vcount_buf < ypos + DONKEY_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + DONKEY_WIDTH))
+            if((vcount_buf >= ypos) && (vcount_buf < ypos + DONKEY_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + DONKEY_WIDTH) && start_game)
                 rgb_nxt = rgb_pixel;
             else
                 rgb_nxt = rgb_buf;
