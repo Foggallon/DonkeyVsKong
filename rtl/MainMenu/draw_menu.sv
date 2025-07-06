@@ -11,7 +11,7 @@ module draw_menu (
     input logic clk,
     input logic rst,
     input  logic [11:0] rgb_pixel,
-    output logic [11:0] pixel_addr,
+    output logic [13:0] pixel_addr,
     
     vga_if.in in,
     vga_if.out out
@@ -71,7 +71,7 @@ module draw_menu (
              out.hsync  <= hsync_buf;
              out.hblnk  <= hblnk_buf;
              out.rgb    <= rgb_nxt;
-             pixel_addr <= {6'(in.vcount), 6'(in.hcount)};
+             pixel_addr <= {7'(in.vcount >> 3), 7'(in.hcount >> 3)};
          end
      end
 

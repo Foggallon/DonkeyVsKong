@@ -27,7 +27,7 @@ module draw_menu_tb;
     logic clk, rst;
     logic [3:0] r, g, b;
     logic [11:0] rgb_pixel;
-    logic [11:0] pixel_addr;
+    logic [13:0] pixel_addr;
     assign {r,g,b} = dut_if.rgb;
 
     /**
@@ -61,10 +61,9 @@ module draw_menu_tb;
     );
 
     image_rom  #(
-    .BITS(12),
-    .PIXELS(4096),
-    .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
-   
+        .BITS(14),
+        .PIXELS(12292),
+        .ROM_FILE("../../rtl/ROM/proba.dat")
    ) u_image_rom (
       .clk,
       
