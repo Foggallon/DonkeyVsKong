@@ -9,7 +9,11 @@
 # https://docs.xilinx.com/r/en-US/ug900-vivado-logic-simulation/Project-File-.prj-Syntax
 
 
-sv work ../../rtl/vga_pkg.sv \
-        ../../rtl/vga_timing.sv \
-        ../../rtl/vga_if.sv \
-        vga_timing_tb.sv
+sv work ../../rtl/Packages/vgaPkg.sv \
+        ../../rtl/VGA/vga_if.sv \
+        ../../rtl/VGA/vgaTiming.sv \
+        ../../rtl/delay.sv \
+        ../common/tiff_writer.sv \
+        ../../rtl/ROM/imageRom.sv \
+        ../../rtl/MainMenu/drawMenu.sv \
+        drawMenu_tb.sv

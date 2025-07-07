@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Robert Szczygiel
  * Modified: Piotr Kaczmarczyk
@@ -12,10 +13,10 @@
  * red, green and blue color values (4-bit each)
  */
 
-module image_rom #(parameter
+module imageRom #(parameter
     PIXELS = 4096,
     BITS = 8,
-    ROM_FILE = "../../rtl/MainMenu/ROM/DonkeyVsKong.dat"
+    ROM_FILE = "../../rtl/MainMenu/DonkeyVsKong.dat"
     )(
     input  logic clk ,
     input  logic [BITS-1:0] address,  // address = {addry, addrx}

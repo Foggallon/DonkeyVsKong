@@ -1,23 +1,15 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 07/27/2016 04:39:01 PM
-// Design Name: 
-// Module Name: bin2ascii
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Dawid Bodzek & Jakub Bukowski
+ *
+ * Description:
+ * Module for converting binary numbers to ASCII code
+ * Source:
+ * https://digilent.com/reference/programmable-logic/basys-3/demos/keyboard
+ */
 
 
 module bin2ascii(

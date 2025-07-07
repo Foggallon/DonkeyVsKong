@@ -48,7 +48,7 @@ module top_game (
     */
 
    logic [11:0] rgb_pixel;
-   logic [11:0] pixel_addr,  rgb_pixel_menu;;
+   logic [11:0] pixel_addr, rgb_pixel_menu;;
    logic [13:0] pixel_addr_menu;
    logic [11:0] xpos, ypos;
    logic [15:0] keycode;
@@ -86,18 +86,18 @@ module top_game (
       .rotate
    );
 
-   vga_timing u_vga_timing (
+   vgaTiming u_vgaTiming (
       .clk(clk65MHz),
       .rst,
       
       .out(vga_timing_if)
   );
 
-  image_rom  #(
+  imageRom  #(
         .BITS(14),
         .PIXELS(12292),
         .ROM_FILE("../../rtl/ROM/proba.dat")
-   ) u_image_rom (
+   ) u_imageRom_menu (
       .clk(clk65MHz),
       
       .address(pixel_addr_menu),
@@ -105,7 +105,7 @@ module top_game (
 
    );
 
-   draw_menu u_draw_menu (
+   drawMenu u_drawMenu (
       .clk(clk65MHz),
       .rst,
       .start_game,
@@ -116,7 +116,7 @@ module top_game (
       .out(draw_menu_if)
    );
 
-   draw_donkey u_draw_donkey (
+   drawCharacter u_drawCharacter_donkey (
       .clk(clk65MHz),
       .rst,
 
@@ -133,12 +133,12 @@ module top_game (
       .out(draw_donkey_if)
    );
    
-   image_rom  #(
+   imageRom  #(
     .BITS(12),
     .PIXELS(4096),
-    .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
+    .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
    
-   ) u_image_rom_donkey (
+   ) u_imageRom_donkey (
       .clk(clk65MHz),
       
       .address(pixel_addr),

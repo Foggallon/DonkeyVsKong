@@ -1,4 +1,6 @@
 /**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
@@ -56,12 +58,13 @@
         .jump,
         .left,
         .right,
+        .start_game('1),
 
         .xpos,
         .ypos
     );
 
-    movement_prog u_movement_prog (
+    movementProg u_movementProg (
         .clk,
         .rst,
 

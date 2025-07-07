@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
@@ -7,7 +8,7 @@
  * Package with keyboard keys constants.
  */
 
-package keyboard_pkg;
+package keyboardPkg;
 
     localparam D = 'h3233;
     localparam A = 'h3143;

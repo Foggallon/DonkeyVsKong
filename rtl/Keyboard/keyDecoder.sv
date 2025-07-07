@@ -6,8 +6,7 @@
  * Author: Jakub Bukowski && Dawid Bodzek
  * 
  * Description:
- * The project top module.
- *
+ * Key decoder for keyboard
  */
 
 module keyDecoder(
@@ -23,7 +22,7 @@ module keyDecoder(
     output logic start_game // temporary
 );
 
-import keyboard_pkg::*;
+import keyboardPkg::*;
 
 logic left_nxt, right_nxt, jump_nxt, rotate_nxt;
 logic start_game_nxt; // temporary
@@ -60,12 +59,13 @@ always_comb begin
     end else if (keyCode[15:0] == SPACE & keyCode[31:16] != RELEASED) begin
         jump_nxt = '1;
         rotate_nxt = rotate;
-    end else if (keyCode[15:0] == A & keyCode[31:16] == RELEASED) 
+    end else if (keyCode[15:0] == A & keyCode[31:16] != RELEASED) 
         rotate_nxt = '1;
     // temp
-    else if (keyCode[15:0] == ENTER & keyCode[31:16] == RELEASED)
+    else if (keyCode[15:0] == ENTER & keyCode[31:16] != RELEASED) begin
         start_game_nxt = '1;
-    else begin
+        rotate_nxt = rotate;
+    end else begin
         left_nxt = '0;
         right_nxt = '0;
         jump_nxt = '0;

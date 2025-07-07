@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
@@ -7,7 +8,7 @@
  * Package with vga related constants.
  */
 
-package vga_pkg;
+package vgaPkg;
 
     // Parameters for VGA Display 1024 x 768 @ 60fps using a 65 MHz clock;
 

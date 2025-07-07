@@ -1,26 +1,20 @@
 /**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
- * 
- * Modified: Jakub Bukowski
  *
  * Description:
- * Draw Donkey character.
+ * Module for main menu.
  */
 
- module draw_donkey (
-    input  logic clk,
-    input  logic rst,
-
-    input logic [11:0] xpos,
-    input logic [11:0] ypos,
-
-    input logic rotate,
+module drawMenu (
+    input logic clk,
+    input logic rst,
     input logic start_game,
-    
     input  logic [11:0] rgb_pixel,
-    output logic [11:0] pixel_addr,
-
+    output logic [13:0] pixel_addr,
+    
     vga_if.in in,
     vga_if.out out
 );
@@ -28,9 +22,7 @@
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vga_pkg::*;
-    import keyboard_pkg::*;
-    import character_pkg::*;
+    import vgaPkg::*;
 
     /**
      * Local variables and signals
@@ -38,34 +30,30 @@
 
     logic [11:0] rgb_nxt;
     logic [11:0] rgb_buf;
-
+ 
     logic [10:0] hcount_buf;
     logic hblnk_buf;
     logic hsync_buf;
-
+ 
     logic [10:0] vcount_buf;
     logic vblnk_buf;
     logic vsync_buf;
-
-    logic [11:0] pixel_addr_nxt;
-
-
+ 
     /**
      * Signals buffer
      */
-
+ 
     delay #(.WIDTH(38), .CLK_DEL(2)) u_delay (
         .clk,
         .rst,
-
         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
-
+ 
     /**
      * Internal logic
      */
-
+ 
     always_ff @(posedge clk) begin
         if (rst) begin
             out.vcount <= '0;
@@ -84,7 +72,7 @@
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= pixel_addr_nxt;
+            pixel_addr <= {7'(in.vcount >> 3), 7'(in.hcount >> 3)};
         end
     end
 
@@ -92,18 +80,13 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= ypos) && (vcount_buf < ypos + DONKEY_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + DONKEY_WIDTH) && start_game)
+            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
                 rgb_nxt = rgb_pixel;
+            else if (start_game)
+                rgb_nxt = 12'hF_F_F;
             else
                 rgb_nxt = rgb_buf;
         end
-    end
-
-    always_comb begin
-        if (rotate)
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((DONKEY_WIDTH - 1) - (in.hcount - xpos))};
-        else
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
     end
 
 endmodule

@@ -1,23 +1,15 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: Digilent Inc.
-// Engineer: Thomas Kappenman
-// 
-// Create Date: 03/03/2015 09:33:36 PM
-// Design Name: 
-// Module Name: PS2Receiver
-// Project Name: Nexys4DDR Keyboard Demo
-// Target Devices: Nexys4DDR
-// Tool Versions: 
-// Description: PS2 Receiver module used to shift in keycodes from a keyboard plugged into the PS2 port
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Dawid Bodzek & Jakub Bukowski
+ *
+ * Description:
+ * PS2 Receiver for keyboard
+ * Source:
+ * https://digilent.com/reference/programmable-logic/basys-3/demos/keyboard
+ */
 
 
 module PS2Receiver(

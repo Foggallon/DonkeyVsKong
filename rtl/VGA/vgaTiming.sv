@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
@@ -7,7 +8,7 @@
  * Vga timing controller.
  */
 
-module vga_timing (
+module vgaTiming (
     input  logic clk,
     input  logic rst,
 
@@ -17,7 +18,7 @@ module vga_timing (
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vga_pkg::*;
+    import vgaPkg::*;
 
 
     /**

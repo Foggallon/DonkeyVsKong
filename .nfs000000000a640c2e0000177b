@@ -1,0 +1,393 @@
+*** Start analyzing build configuration ***
+INFO: Auto-config - Scanning: /student/dbodzek/DonkeyVsKong/DonkeyVsKong
+INFO: Auto-config - VLOG: /student/dbodzek/DonkeyVsKong/DonkeyVsKong
+INFO: Auto-config - VHDL: /student/dbodzek/DonkeyVsKong/DonkeyVsKong
+INFO: Auto-config - Wrote:
+    .dvt/default.build.auto.1
+*** List of included argument files ***
+    Build configuration file:  /student/dbodzek/DonkeyVsKong/DonkeyVsKong/.dvt/default.build
+    -f /home/student/dbodzek/DonkeyVsKong/DonkeyVsKong/.dvt/default.build.auto.1
+*** List of invocations ***
+Invocation #1 +dvt_init+dvt in /home/student/dbodzek/DonkeyVsKong/DonkeyVsKong/.dvt/default.build.auto.1 at line 9
+*** Done analyzing build configuration [354 ms] ***
+
+*** Start VHDL build ***
+*** Done parsing [243 ms] ***
+*** Total number of lines [0] ***
+Performing post full build step 1 (VHDL - RU) [24 ms] ...
+*** Files summary [0 total, 0 unique] ***
+*** Done VHDL build [269 ms] ***
+
+*** Start SystemVerilog build ***
+*** Invocation #1***
+Loading (1) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv [46 ms, 112 lines, SystemVerilog_2012] ...
+Loading (2) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv [29 ms, 189 lines, SystemVerilog_2012] ...
+Loading (3) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv [7 ms, 79 lines, SystemVerilog_2012] ...
+Loading (4) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/MainMenu/drawMenu.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/MainMenu/drawMenu.sv [7 ms, 93 lines, SystemVerilog_2012] ...
+Loading (5) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv [8 ms, 98 lines, SystemVerilog_2012] ...
+Loading (6) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv [21 ms, 159 lines, SystemVerilog_2012] ...
+Loading (7) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65.v [3 ms, 91 lines, Verilog_2001] ...
+Loading (8) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v [10 ms, 214 lines, Verilog_2001] ...
+Loading (9) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/top_game_basys3.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/top_game_basys3.sv [3 ms, 59 lines, SystemVerilog_2012] ...
+Loading (10) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v [9 ms, 77 lines, Verilog_2001] ...
+Loading (11) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/bin2ascii.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/bin2ascii.v [7 ms, 28 lines, Verilog_2001] ...
+Loading (12) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/debouncer.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/debouncer.v [4 ms, 34 lines, Verilog_2001] ...
+Loading (13) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/ROM/imageRom.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/ROM/imageRom.sv [4 ms, 47 lines, SystemVerilog_2012] ...
+Loading (14) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vga_if.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vga_if.sv [5 ms, 39 lines, SystemVerilog_2012] ...
+Loading (15) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/delay.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/delay.sv [5 ms, 48 lines, SystemVerilog_2012] ...
+Loading (16) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv [9 ms, 162 lines, SystemVerilog_2012] ...
+Loading (17) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/tiff_writer.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/tiff_writer.sv [48 ms, 405 lines, SystemVerilog_2012] ...
+Loading (18) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/draw_menu/draw_menu_tb.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/draw_menu/draw_menu_tb.sv [8 ms, 120 lines, SystemVerilog_2012] ...
+Loading (19) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_prog.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_prog.sv [3 ms, 58 lines, SystemVerilog_2012] ...
+Loading (20) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_tb.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_tb.sv [3 ms, 75 lines, SystemVerilog_2012] ...
+Loading (21) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/top_game/top_game_tb.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/top_game/top_game_tb.sv [4 ms, 97 lines, SystemVerilog_2012] ...
+Loading (22) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/characterPkg.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/characterPkg.sv [2 ms, 21 lines, SystemVerilog_2012] ...
+Loading (23) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/keyboardPkg.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/keyboardPkg.sv [2 ms, 20 lines, SystemVerilog_2012] ...
+Loading (24) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/vgaPkg.sv ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/vgaPkg.sv [3 ms, 30 lines, SystemVerilog_2012] ...
+Loading (25) /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v ...
+Done /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v [5 ms, 85 lines, Verilog_2001] ...
+*** Done invocation #1 [262 ms] ***
+*** Done parsing [LT 151 ms, PT 262 ms] ***
+*** Total number of lines [2 440] ***
+Performing post full build actions ...
+Performing post full build step 1 (SRI) [1 ms] ...
+Performing post full build step 2 (RI) [1 ms] ...
+Performing post full build step 3 (RCP) [0 ms] ...
+*** Files summary [25 total, 25 unique, 0 optimized] ***
+*** Done SystemVerilog build [444 ms] ***
+
+*** Start mixed mode extension build ***
+Performing mixed post full build step (VHDL - RU) [6 ms] ...
+Performing mixed post full build step (VHDL - RT) [367 ms] ...
+Performing mixed post full build step (VLOG - RI) [6 ms] ...
+*** Warning: UNSPECIFIED_TOP: Please specify a -top module/entity/configuration in the project build file
+*** Top design candidates: work.drawCharacter, work.drawMenu, work.vga_timing_tb, work.top_game_basys3, work.draw_menu_tb, work.movement_tb, work.top_game_tb
+Performing mixed post full build step (MIXED - ELAB) [422 ms] ...
+Performing mixed post full build step (MIXED - UNEL) [52 ms] ...
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 71 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:71 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_TOTAL_TIME' is not declared
+    at line 74 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:74 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_SYNC_START' is not declared
+    at line 81 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:81 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_SYNC_STOP' is not declared
+    at line 81 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:81 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_SYNC_START' is not declared
+    at line 88 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:88 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_SYNC_START' is not declared
+    at line 92 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:92 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_SYNC_STOP' is not declared
+    at line 92 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:92 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_BLANK_START' is not declared
+    at line 103 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:103 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 103 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:103 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_BLANK_START' is not declared
+    at line 110 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:110 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_BLANK_START' is not declared
+    at line 114 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:114 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 128 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:128 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_TOTAL_TIME' is not declared
+    at line 132 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:132 [compile index 6]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 132 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:132 [compile index 6]
+*** Warning: UNDECLARED_MODULE: Module 'vga_timing' is not declared
+    at line 59 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:59 [compile index 6]
+*** Warning: UNDECLARED_MODULE: Module 'IBUF' is not declared
+    at line 81 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:81 [compile index 8]
+*** Warning: UNDECLARED_MODULE: Module 'MMCME2_ADV' is not declared
+    at line 126 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:126 [compile index 8]
+*** Warning: UNDECLARED_MODULE: Module 'BUFG' is not declared
+    at line 188 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:188 [compile index 8]
+*** Warning: UNDECLARED_MODULE: Module 'BUFGCE' is not declared
+    at line 198 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:198 [compile index 8]
+*** Warning: UNDECLARED_MODULE: Module 'BUFH' is not declared
+    at line 203 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:203 [compile index 8]
+*** Warning: UNDECLARED_MODULE: Module 'vga_timing' is not declared
+    at line 89 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv:89 [compile index 16]
+*** Warning: UNDECLARED_MODULE: Module 'image_rom' is not declared
+    at line 96 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv:96 [compile index 16]
+*** Warning: UNDECLARED_MODULE: Module 'draw_menu' is not declared
+    at line 108 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv:108 [compile index 16]
+*** Warning: UNDECLARED_MODULE: Module 'draw_donkey' is not declared
+    at line 119 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv:119 [compile index 16]
+*** Warning: UNDECLARED_MODULE: Module 'image_rom' is not declared
+    at line 136 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/top_game.sv:136 [compile index 16]
+*** Warning: UNDECLARED_MODULE: Module 'vga_timing' is not declared
+    at line 56 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/draw_menu/draw_menu_tb.sv:56 [compile index 18]
+*** Warning: UNDECLARED_MODULE: Module 'image_rom' is not declared
+    at line 63 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/draw_menu/draw_menu_tb.sv:63 [compile index 18]
+*** Warning: UNDECLARED_MODULE: Module 'draw_menu' is not declared
+    at line 75 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/draw_menu/draw_menu_tb.sv:75 [compile index 18]
+*** Warning: MISSING_PORT_CONNECTION: Instance 'dut' of module 'movement' is missing port connection to input 'start_game'
+    at line 52 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_tb.sv:52 [compile index 20]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'A' is not declared
+    at line 53 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:53 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'RELEASED' is not declared
+    at line 53 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:53 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'D' is not declared
+    at line 56 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:56 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'RELEASED' is not declared
+    at line 56 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:56 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'SPACE' is not declared
+    at line 59 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:59 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'RELEASED' is not declared
+    at line 59 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:59 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'A' is not declared
+    at line 62 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:62 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'RELEASED' is not declared
+    at line 62 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:62 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'ENTER' is not declared
+    at line 65 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:65 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'RELEASED' is not declared
+    at line 65 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:65 [compile index 3]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_PIXELS' is not declared
+    at line 83 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/MainMenu/drawMenu.sv:83 [compile index 4]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_PIXELS' is not declared
+    at line 83 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/MainMenu/drawMenu.sv:83 [compile index 4]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'MOVE_TAKI_NIE_MACQUEEN' is not declared
+    at line 89 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:89 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'MOVE_TAKI_NIE_MACQUEEN' is not declared
+    at line 93 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:93 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_JUMP_HEIGHT' is not declared
+    at line 97 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:97 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_INITIAL_YPOS' is not declared
+    at line 114 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:114 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_INITIAL_YPOS' is not declared
+    at line 116 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:116 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'MOVE_TAKI_NIE_MACQUEEN' is not declared
+    at line 124 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:124 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'MOVE_TAKI_NIE_MACQUEEN' is not declared
+    at line 137 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:137 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_WIDTH' is not declared
+    at line 139 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:139 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_PIXELS' is not declared
+    at line 139 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:139 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'JUMP_TAKI_W_MIARE' is not declared
+    at line 149 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:149 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_JUMP_HEIGHT' is not declared
+    at line 152 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:152 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_JUMP_HEIGHT' is not declared
+    at line 153 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:153 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'JUMP_TAKI_W_MIARE' is not declared
+    at line 167 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:167 [compile index 2]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_HEIGHT' is not declared
+    at line 97 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:97 [compile index 1]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_WIDTH' is not declared
+    at line 97 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:97 [compile index 1]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'DONKEY_WIDTH' is not declared
+    at line 106 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:106 [compile index 1]
+*** Warning: ASSIGNMENT_BLOCKING: Blocking assignment of 'frame_number' in sequential logic (use non-blocking assignment)
+    at line 401 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/tiff_writer.sv:401 [compile index 17]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '0' of '32-bit' type
+    at line 48 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:48 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '1' of '32-bit' type
+    at line 49 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:49 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '2' of '32-bit' type
+    at line 50 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:50 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '3' of '32-bit' type
+    at line 51 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:51 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '4' of '32-bit' type
+    at line 52 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:52 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '5' of '32-bit' type
+    at line 53 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:53 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '6' of '32-bit' type
+    at line 54 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:54 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '7' of '32-bit' type
+    at line 55 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:55 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '8' of '32-bit' type
+    at line 56 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:56 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '9' of '32-bit' type
+    at line 57 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:57 [compile index 10]
+*** Warning: CASE_ITEM_WIDTH_MISMATCH: Comparison between case expression 'cnt' of '4-bit' type and item expression '10' of '32-bit' type
+    at line 58 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:58 [compile index 10]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 56 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:56 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_BLANK_START' is not declared
+    at line 62 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:62 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_SYNC_START' is not declared
+    at line 66 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:66 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_SYNC_STOP' is not declared
+    at line 66 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:66 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_TOTAL_TIME' is not declared
+    at line 74 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:74 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 74 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:74 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 79 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:79 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_BLANK_START' is not declared
+    at line 83 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:83 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 83 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:83 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_SYNC_START' is not declared
+    at line 87 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:87 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'HOR_TOTAL_TIME' is not declared
+    at line 87 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:87 [compile index 5]
+*** Error: UNDECLARED_IDENTIFIER: Identifier 'VER_SYNC_STOP' is not declared
+    at line 88 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:88 [compile index 5]
+*** Warning: UNELABORATED_MODULE: Module 'work.vgaTiming' is not elaborated
+    at line 11 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:11 [compile index 5]
+*** Warning: UNELABORATED_MODULE: Module 'work.imageRom' is not elaborated
+    at line 16 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/ROM/imageRom.sv:16 [compile index 13]
+*** Warning: UNELABORATED_MODULE: Module 'work.glbl' is not elaborated
+    at line 6 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:6 [compile index 25]
+*** Warning: UNELABORATED_PACKAGE: Package 'work.characterPkg' is not elaborated
+    at line 11 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/characterPkg.sv:11 [compile index 22]
+*** Warning: UNELABORATED_PACKAGE: Package 'work.keyboardPkg' is not elaborated
+    at line 11 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/keyboardPkg.sv:11 [compile index 23]
+*** Warning: UNELABORATED_PACKAGE: Package 'work.vgaPkg' is not elaborated
+    at line 11 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Packages/vgaPkg.sv:11 [compile index 24]
+Performing mixed post full build step (VHDL - RD) [5 ms] ...
+Performing mixed post full build step (VHDL - US) [0 ms] ...
+Performing mixed post full build step (VHDL - USBD) [51 ms] ...
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'vga_pkg'
+    at line 33 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:33 [compile index 1]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'keyboard_pkg'
+    at line 34 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:34 [compile index 1]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'character_pkg'
+    at line 35 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/drawCharacter.sv:35 [compile index 1]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'vga_pkg'
+    at line 25 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:25 [compile index 2]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'keyboard_pkg'
+    at line 26 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:26 [compile index 2]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'character_pkg'
+    at line 27 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/movement.sv:27 [compile index 2]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'keyboard_pkg'
+    at line 25 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/keyDecoder.sv:25 [compile index 3]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'vga_pkg'
+    at line 25 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/MainMenu/drawMenu.sv:25 [compile index 4]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'vga_pkg'
+    at line 21 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/VGA/vgaTiming.sv:21 [compile index 5]
+*** Error: NON_EXISTING_PACKAGE: Non existing package 'vga_pkg'
+    at line 15 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/vga_timing/vga_timing_tb.sv:15 [compile index 6]
+Performing mixed post full build step (VLOG - RD) [8 ms] ...
+Performing mixed post full build step (VLOG - US) [100 ms] ...
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_in2_clk_wiz_65' is never used
+    at line 80 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:80 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out2_clk_wiz_65' is never used
+    at line 96 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:96 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out3_clk_wiz_65' is never used
+    at line 97 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:97 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out4_clk_wiz_65' is never used
+    at line 98 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:98 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out5_clk_wiz_65' is never used
+    at line 99 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:99 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out6_clk_wiz_65' is never used
+    at line 100 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:100 [compile index 8]
+*** Warning: SIGNAL_NEVER_USED: Signal 'clk_out7_clk_wiz_65' is never used
+    at line 101 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:101 [compile index 8]
+*** Warning: IMPLICIT_DECLARATION: Implicit declaration of 'clk65MHz_clk_wiz_65_en_clk' using `default_nettype set to wire
+    at line 204 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:204 [compile index 8]
+*** Warning: INTERNAL_GENERATED_CLOCK: Clock signal 'clk65MHz_clk_wiz_65_en_clk' is not an input port
+    at line 206 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/fpga/rtl/clk_wiz_65_clk_wiz.v:206 [compile index 8]
+*** Warning: INTERNAL_GENERATED_CLOCK: Clock signal 'kclkf' is not an input port
+    at line 46 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:46 [compile index 10]
+*** Warning: SIGNAL_NOT_RESET: Signal 'datacur' is not reset
+    at line 49 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:49 [compile index 10]
+*** Warning: SIGNAL_NOT_RESET: Signal 'flag' is not reset
+    at line 57 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:57 [compile index 10]
+*** Warning: INTERNAL_GENERATED_RESET: Reset signal 'cnt' is not an input port
+    at line 62 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/Keyboard/PS2Receiver.v:62 [compile index 10]
+*** Warning: SIGNAL_NEVER_WRITTEN: Signal 'rom' is never written
+    at line 30 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/rtl/ROM/imageRom.sv:30 [compile index 13]
+*** Warning: INTERNAL_GENERATED_RESET: Reset signal 'file_open' is not an input port
+    at line 388 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/tiff_writer.sv:388 [compile index 17]
+*** Warning: MULTIPLE_CLOCKS_BLOCK: Procedural block driven by multiple clocks (go_delayed, go)
+    at line 395 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/tiff_writer.sv:395 [compile index 17]
+*** Warning: SIGNAL_NEVER_READ: Signal 'xpos' is never read (connected to sub-instance output port)
+    at line 26 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_tb.sv:26 [compile index 20]
+*** Warning: SIGNAL_NEVER_READ: Signal 'ypos' is never read (connected to sub-instance output port)
+    at line 26 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/movement/movement_tb.sv:26 [compile index 20]
+*** Warning: SIGNAL_NEVER_READ: Signal 'hs' is never read (connected to sub-instance output port)
+    at line 32 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/top_game/top_game_tb.sv:32 [compile index 21]
+*** Warning: SIGNAL_NEVER_WRITTEN: Signal 'ps2data' is never written (connected to sub-instance input port)
+    at line 32 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/top_game/top_game_tb.sv:32 [compile index 21]
+*** Warning: SIGNAL_NEVER_WRITTEN: Signal 'ps2clk' is never written (connected to sub-instance input port)
+    at line 32 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/top_game/top_game_tb.sv:32 [compile index 21]
+*** Warning: SIGNAL_NEVER_READ: Signal 'GSR' is never read
+    at line 14 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:14 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'GTS' is never read
+    at line 15 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:15 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'GWE' is never used
+    at line 16 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:16 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'PRLD' is never read
+    at line 17 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:17 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'GRESTORE' is never read
+    at line 18 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:18 [compile index 25]
+*** Warning: SIGNAL_NEVER_WRITTEN: Signal 'p_up_tmp' is never written
+    at line 19 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:19 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'PLL_LOCKG' is never read
+    at line 20 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:20 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'PROGB_GLBL' is never used
+    at line 22 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:22 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'CCLKO_GLBL' is never used
+    at line 23 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:23 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'FCSBO_GLBL' is never used
+    at line 24 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:24 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'DO_GLBL' is never used
+    at line 25 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:25 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'DI_GLBL' is never used
+    at line 26 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:26 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_TDO_GLBL' is never used
+    at line 34 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:34 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_TCK_GLBL' is never used
+    at line 35 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:35 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_TDI_GLBL' is never used
+    at line 36 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:36 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_TMS_GLBL' is never used
+    at line 37 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:37 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_TRST_GLBL' is never used
+    at line 38 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:38 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_CAPTURE_GLBL' is never used
+    at line 40 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:40 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_RESET_GLBL' is never used
+    at line 41 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:41 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_SHIFT_GLBL' is never used
+    at line 42 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:42 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_UPDATE_GLBL' is never used
+    at line 43 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:43 [compile index 25]
+*** Warning: SIGNAL_NEVER_USED: Signal 'JTAG_RUNTEST_GLBL' is never used
+    at line 44 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:44 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_SEL1_GLBL' is never read
+    at line 46 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:46 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_SEL2_GLBL' is never read
+    at line 47 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:47 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_SEL3_GLBL' is never read
+    at line 48 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:48 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_SEL4_GLBL' is never read
+    at line 49 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:49 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_USER_TDO1_GLBL' is never read
+    at line 51 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:51 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_USER_TDO2_GLBL' is never read
+    at line 52 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:52 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_USER_TDO3_GLBL' is never read
+    at line 53 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:53 [compile index 25]
+*** Warning: SIGNAL_NEVER_READ: Signal 'JTAG_USER_TDO4_GLBL' is never read
+    at line 54 in /student/dbodzek/DonkeyVsKong/DonkeyVsKong/sim/common/glbl.v:54 [compile index 25]
+*** Done mixed mode extension build [1s.198ms] ***
+*** Total build time [2s.302ms] ***

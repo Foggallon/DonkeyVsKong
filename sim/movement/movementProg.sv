@@ -1,4 +1,6 @@
 /**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
@@ -6,27 +8,18 @@
  * Main test for movement module.
  */
 
- module movement_prog (
-    input logic clk,
-    input logic rst,
+module movementProg (
+  input logic clk,
+  input logic rst,
 
-    output logic jump,
-    output logic left,
-    output logic right
+  output logic jump,
+  output logic left,
+  output logic right
     
   );
   
-    timeunit 1ns;
-    timeprecision 1ps;
-  
-    /**
-     * Local parameters
-     */
-  
-  
-    /**
-     * Local variables and signals
-     */
+  timeunit 1ns;
+  timeprecision 1ps;
   
     /**
      * Main Test

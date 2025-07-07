@@ -28,19 +28,19 @@ set xdc_files {
 
 # Specify SystemVerilog design files location
 set sv_files {
-    ../rtl/vga_pkg.sv
-    ../rtl/ROM/image_rom.sv
-    ../rtl/MainMenu/draw_menu.sv
+    ../rtl/Packages/vgaPkg.sv
+    ../rtl/ROM/imageRom.sv
+    ../rtl/MainMenu/drawMenu.sv
     ../rtl/delay.sv
     ../rtl/top_game.sv
-    ../rtl/vga_timing.sv
-    ../rtl/vga_if.sv
+    ../rtl/VGA/vgaTiming.sv
+    ../rtl/VGA/vga_if.sv
     ../rtl/movement.sv
-    ../rtl/draw_donkey.sv
+    ../rtl/drawCharacter.sv
     rtl/top_game_basys3.sv
-    ../rtl/Keyboard/keyboard_pkg.sv
-    ../rtl/keyDecoder.sv
-    ../rtl/character_pkg.sv
+    ../rtl/Packages/keyboardPkg.sv
+    ../rtl/Keyboard/keyDecoder.sv
+    ../rtl/Packages/characterPkg.sv
 }
 
 # Specify Verilog design files location

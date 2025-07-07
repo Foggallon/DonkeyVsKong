@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Jakub Bukowski
  *

@@ -1,12 +1,14 @@
 /**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
  * Description:
- * Testbench for draw_menu module.
+ * Testbench for drawMenu module.
  */
 
-module draw_menu_tb;
+module drawMenu_tb;
 
     timeunit 1ns;
     timeprecision 1ps;
@@ -53,18 +55,18 @@ module draw_menu_tb;
      * Submodules instances
      */
 
-    vga_timing u_vga_timing (
+    vgaTiming u_vgaTiming (
         .clk,
         .rst,
         .out(vga_timing_if)
 
     );
 
-    image_rom  #(
+    imageRom  #(
         .BITS(14),
         .PIXELS(12292),
         .ROM_FILE("../../rtl/ROM/proba.dat")
-   ) u_image_rom (
+   ) u_imageRom (
       .clk,
       
       .address(pixel_addr),
@@ -72,11 +74,12 @@ module draw_menu_tb;
 
    );
 
-    draw_menu dut (
+    drawMenu dut (
         .clk,
         .rst,
         .rgb_pixel,
         .pixel_addr,
+        .start_game('0),
 
         .in(vga_timing_if),
         .out(dut_if)
@@ -103,16 +106,12 @@ module draw_menu_tb;
         # 30 rst = 1'b1;
         # 30 rst = 1'b0;
 
-        $display("If simulation ends before the testbench");
-        $display("completes, use the menu option to run all.");
-        $display("Prepare to wait a long time...");
-
         wait (dut_if.vsync == 1'b0);
         @(negedge dut_if.vsync) $display("Info: negedge VS at %t",$time);
         @(negedge dut_if.vsync) $display("Info: negedge VS at %t",$time);
 
         // End the simulation.
-        $display("Simulation is over, check the waveforms.");
+        $display("Simulation is over, check the tiff file.");
         $finish;
     end
 

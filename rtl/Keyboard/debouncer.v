@@ -1,24 +1,15 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 07/27/2016 02:04:22 PM
-// Design Name: 
-// Module Name: debouncer
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Dawid Bodzek & Jakub Bukowski
+ *
+ * Description:
+ * Debouncer for keyboard
+ * Source:
+ * https://digilent.com/reference/programmable-logic/basys-3/demos/keyboard
+ */
 
 module debouncer(
     input clk,

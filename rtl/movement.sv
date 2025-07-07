@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Jakub Bukowski
  * Modified: Dawid Bodzek
@@ -21,9 +22,9 @@ module movement(
     output logic [11:0] ypos
 );
 
-import vga_pkg::*;
-import keyboard_pkg::*;
-import character_pkg::*;
+import vgaPkg::*;
+import keyboardPkg::*;
+import characterPkg::*;
 
 /**
  * Local variables and signals
@@ -135,7 +136,7 @@ always_comb begin
             ypos_jump_nxt = ypos_jump;
             if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                 mov_counter_nxt = '0;
-                xpos_nxt = ((xpos + DONKEY_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
+                xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
             end else begin
                 mov_counter_nxt = mov_counter + 1;
                 xpos_nxt = xpos;

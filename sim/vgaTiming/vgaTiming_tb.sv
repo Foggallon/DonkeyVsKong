@@ -1,18 +1,19 @@
 /**
  * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
  *
  * Description:
- * Testbench for vga_timing module.
+ * Testbench for vgaTiming module.
  */
 
-module vga_timing_tb;
+module vgaTiming_tb;
 
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vga_pkg::*;
+    import vgaPkg::*;
 
 
     /**
@@ -56,7 +57,7 @@ module vga_timing_tb;
      * Dut placement
      */
 
-    vga_timing dut(
+    vgaTiming dut(
         .clk,
         .rst,
         .out(vga_timing_tb)
