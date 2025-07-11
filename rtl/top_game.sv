@@ -94,9 +94,9 @@ module top_game (
   );
 
   imageRom  #(
-        .BITS(14),
-        .PIXELS(12292),
-        .ROM_FILE("../../rtl/ROM/proba.dat")
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/proba.dat")
    ) u_imageRom_menu (
       .clk(clk65MHz),
       
@@ -134,9 +134,9 @@ module top_game (
    );
    
    imageRom  #(
-    .BITS(12),
-    .PIXELS(4096),
-    .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
    
    ) u_imageRom_donkey (
       .clk(clk65MHz),

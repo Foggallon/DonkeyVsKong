@@ -5,16 +5,16 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module for main menu.
+ * Map
  */
 
-module drawMenu (
-    input logic clk,
-    input logic rst,
-    input logic start_game,
-    input  logic [11:0] rgb_pixel,
-    output logic [13:0] pixel_addr,
-    
+module gameMap (
+    input logic         clk,
+    input logic         rst,
+    input logic         start_game,
+    input logic  [11:0] rgb_pixel,
+    output logic [10:0] pixel_addr,
+
     vga_if.in in,
     vga_if.out out
 );
@@ -38,6 +38,8 @@ module drawMenu (
     logic [10:0] vcount_buf;
     logic vblnk_buf;
     logic vsync_buf;
+
+    logic [10:0] pixel_addr_nxt;
  
     /**
      * Signals buffer
@@ -49,11 +51,7 @@ module drawMenu (
         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
- 
-    /**
-     * Internal logic
-     */
- 
+
     always_ff @(posedge clk) begin
         if (rst) begin
             out.vcount <= '0;
@@ -72,7 +70,7 @@ module drawMenu (
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= {7'(in.vcount >> 3), 7'(in.hcount >> 3)};
+            pixel_addr <= pixel_addr_nxt;
         end
     end
 
@@ -80,13 +78,20 @@ module drawMenu (
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
+            if ((vcount_buf >= VER_PIXELS - 32) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS/2) && start_game) begin
                 rgb_nxt = rgb_pixel;
-            else if (start_game)
-                rgb_nxt = 12'h0_0_0;
-            else
+                pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
+            end else if ((vcount_buf >= 239) && (vcount_buf <= 271) && (hcount_buf >= 0) && (hcount_buf < 640) && start_game) begin
+                rgb_nxt = rgb_pixel;
+                pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
+            end else if ((vcount_buf >= 128) && (vcount_buf <= 160) && (hcount_buf >= 320) && (hcount_buf < 576) && start_game) begin
+                rgb_nxt = rgb_pixel;
+                pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
+            end else begin
                 rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
+            end
         end
     end
-
+        
 endmodule
