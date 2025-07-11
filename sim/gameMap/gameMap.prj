@@ -10,6 +10,7 @@
 
 
 sv work ../../rtl/Packages/vgaPkg.sv \
+        ../../rtl/Packages/mapPkg.sv \
         ../../rtl/VGA/vga_if.sv \
         ../../rtl/VGA/vgaTiming.sv \
         ../../rtl/delay.sv \
