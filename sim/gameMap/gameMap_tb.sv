@@ -67,7 +67,7 @@
 
     );
 
-    ladderControl u_ladderControl (
+    drawLadder u_drawLadder (
         .clk,
         .rst,
         .pixel_addr(pixel_addr_3),
@@ -109,7 +109,6 @@
       
       .address(pixel_addr_2),
       .rgb(rgb_pixel_2)
-
    );
 
     imageRom  #(

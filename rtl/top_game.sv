@@ -42,18 +42,23 @@ module top_game (
    vga_if draw_menu_if();
    vga_if vga_timing_if();
    vga_if draw_donkey_if();
+   vga_if draw_ladder_if();
+   vga_if ramp_if();
+   vga_if gameMap_if();
 
    /**
     * Local variables and signals
     */
 
-   logic [11:0] rgb_pixel;
-   logic [11:0] pixel_addr, rgb_pixel_menu;;
+   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map;
+   logic [10:0] pixel_addr_ramp, pixel_addr_map;
+   logic [9:0] pixel_addr_ladder;
+   logic [11:0] pixel_addr;
    logic [13:0] pixel_addr_menu;
    logic [11:0] xpos, ypos;
    logic [15:0] keycode;
    logic [31:0] ascii_code;
-   logic left, right, jump, rotate, start_game;
+   logic left, right, jump, rotate, start_game, up, down;
    
    /**
     * Submodules instances
@@ -80,6 +85,8 @@ module top_game (
       .right,
       .jump,
       .start_game(start_game),
+      .up,
+      .down,
 
       .keyCode(ascii_code),
 
@@ -102,7 +109,6 @@ module top_game (
       
       .address(pixel_addr_menu),
       .rgb(rgb_pixel_menu)
-
    );
 
    drawMenu u_drawMenu (
@@ -114,6 +120,71 @@ module top_game (
 
       .in(vga_timing_if),
       .out(draw_menu_if)
+   );
+
+   drawLadder u_drawLadder (
+      .clk(clk65MHz),
+      .rst,
+      .start_game,
+      .pixel_addr(pixel_addr_ladder),
+      .rgb_pixel(rgb_pixel_ladder),
+
+      .in(draw_menu_if),
+      .out(draw_ladder_if)
+   );
+
+   imageRom  #(
+        .BITS(10),
+        .PIXELS(1028),
+        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
+   ) u_imageRom_3 (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_ladder),
+      .rgb(rgb_pixel_ladder)
+   );
+
+   slopedRamp u_slopedRamp (
+      .clk(clk65MHz),
+      .rst,
+      .pixel_addr(pixel_addr_ramp),
+      .rgb_pixel(rgb_pixel_ramp),
+      .start_game,
+      .in(draw_ladder_if),
+      .out(ramp_if)
+   );
+
+   imageRom  #(
+      .BITS(11),
+      .PIXELS(2052),
+      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_imageRom_2 (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_ramp),
+      .rgb(rgb_pixel_ramp)
+   );
+
+   gameMap u_gameMap (
+        .clk(clk65MHz),
+        .rst,
+        .rgb_pixel(rgb_pixel_map),
+        .pixel_addr(pixel_addr_map),
+        .start_game,
+
+        .in(ramp_if),
+        .out(gameMap_if)
+    );
+
+   imageRom  #(
+      .BITS(11),
+      .PIXELS(2052),
+      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_imageRom_map (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_map),
+      .rgb(rgb_pixel_map)
    );
 
    drawCharacter u_drawCharacter_donkey (
@@ -129,7 +200,7 @@ module top_game (
       .xpos(xpos),
       .ypos(ypos),
 
-      .in(draw_menu_if),
+      .in(gameMap_if),
       .out(draw_donkey_if)
    );
    
@@ -143,7 +214,6 @@ module top_game (
       
       .address(pixel_addr),
       .rgb(rgb_pixel)
-
    );
 
    movement u_movement (
@@ -155,7 +225,9 @@ module top_game (
       .start_game,
       .left,
       .right,
-      .jump
+      .jump,
+      .down,
+      .up
    );
 
 endmodule

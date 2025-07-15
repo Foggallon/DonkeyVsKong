@@ -77,6 +77,7 @@ module gameMap (
     always_comb begin
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
+            pixel_addr_nxt = pixel_addr;
         end else begin
             if ((vcount_buf >= VER_PIXELS - 32) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS/2) && start_game) begin
                 rgb_nxt = rgb_pixel;

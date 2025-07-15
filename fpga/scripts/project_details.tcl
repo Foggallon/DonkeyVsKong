@@ -39,6 +39,11 @@ set sv_files {
     ../rtl/drawCharacter.sv
     rtl/top_game_basys3.sv
     ../rtl/Packages/keyboardPkg.sv
+    ../rtl/Packages/mapPkg.sv
+    ../rtl/drawLadder.sv
+    ../rtl/gameMap.sv
+    ../rtl/ladderControl.sv
+    ../rtl/slopedRamp.sv
     ../rtl/Keyboard/keyDecoder.sv
     ../rtl/Packages/characterPkg.sv
 }

@@ -18,6 +18,6 @@ sv work ../../rtl/Packages/vgaPkg.sv \
         ../../rtl/ROM/imageRom.sv \
         ../../rtl/gameMap.sv \
         ../../rtl/slopedRamp.sv \
-        ../../rtl/ladderControl.sv \
+        ../../rtl/drawLadder.sv \
         ../../rtl/MainMenu/drawMenu.sv \
         gameMap_tb.sv

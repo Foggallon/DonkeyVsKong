@@ -95,7 +95,7 @@
             rgb_nxt = 12'h8_8_8;
         end else begin
             if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH) && start_game)
-                rgb_nxt = rgb_pixel;
+                rgb_nxt = (rgb_pixel == 12'h0_0_0 ? rgb_buf : rgb_pixel);
             else
                 rgb_nxt = rgb_buf;
         end

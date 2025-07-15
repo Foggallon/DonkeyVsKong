@@ -14,6 +14,8 @@ package keyboardPkg;
     localparam A = 'h3143;
     localparam RELEASED = 'h4630;
     localparam SPACE = 'h3239;
+    localparam W = 'h3144;
+    localparam S = 'h3142;
     localparam ENTER = 'h3541; // temp
 
 endpackage
