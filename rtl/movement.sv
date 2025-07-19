@@ -33,8 +33,9 @@ module movement(
      * Local variables and signals
      */
 
-    logic ladder, done, done_nxt;
-    logic [11:0] limit_ypos, limit_ypos_max;
+    logic ladder, done, done_nxt, end_of_ramp;
+    logic [1:0] ramp;
+    logic [11:0] limit_ypos, limit_ypos_max, landing_ypos;
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [11:0] xpos_nxt, ypos_nxt, save_ypos, save_ypos_nxt, velocity, velocity_nxt;
 
@@ -57,8 +58,11 @@ module movement(
         .xpos,
         .ypos,
         .ladder(ladder),
+        .ramp(ramp),
         .limit_ypos_min(limit_ypos),
-        .limit_ypos_max(limit_ypos_max)
+        .limit_ypos_max(limit_ypos_max),
+        .end_of_ramp(end_of_ramp),
+        .landing_ypos(landing_ypos)
     );
 
     /**
@@ -76,7 +80,7 @@ module movement(
     always_ff @(posedge clk) begin
         if (rst) begin
             xpos <= 1;
-            ypos <= LADDER_5_VSTOP - 96;   // (VER_PIXELS - 32)
+            ypos <= VER_PIXELS - 96;
             mov_counter <= '0;
             save_ypos <= '0;
             velocity <= '0;
@@ -94,7 +98,9 @@ module movement(
     always_comb begin : next_state_logic
         case (state)
             ST_IDLE: begin
-                if (left & start_game)
+                if (end_of_ramp)
+                    state_nxt = ST_FALL_DOWN;
+                else if (left & start_game)
                     state_nxt = ST_GO_LEFT;
                 else if (right & start_game)
                     state_nxt = ST_GO_RIGHT;
@@ -111,9 +117,9 @@ module movement(
             ST_IDLE_LADDER: begin
                 if (done)
                     state_nxt = ST_IDLE;
-                else if (up & !done)
+                else if (up)
                     state_nxt = ST_GO_UP;
-                else if (down &!done)
+                else if (down)
                     state_nxt = ST_GO_DOWN;
                 else
                     state_nxt = ST_IDLE_LADDER;
@@ -155,7 +161,7 @@ module movement(
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
                 mov_counter_nxt = '0;
-                save_ypos_nxt = LADDER_5_VSTOP - 96; // for test only
+                save_ypos_nxt = (end_of_ramp ? landing_ypos : ypos);
                 velocity_nxt = '0;
                 done_nxt = '0;
             end
@@ -164,36 +170,48 @@ module movement(
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
                 mov_counter_nxt = '0;
-                save_ypos_nxt = save_ypos; // for test only
+                save_ypos_nxt = save_ypos;
                 velocity_nxt = '0;
                 done_nxt = done;
             end
 
             ST_GO_LEFT: begin
-                ypos_nxt = ypos;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
+                    if ((ramp == 2'b01) & (xpos % 64 == 0))
+                        ypos_nxt = ypos + 4;
+                    else if ((ramp == 2'b10) & (xpos % 64 == 0))
+                        ypos_nxt = ypos - 4;
+                    else
+                        ypos_nxt = ypos;
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
+                    ypos_nxt = ypos;
                 end
             end
 
             ST_GO_RIGHT: begin
-                ypos_nxt = ypos;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
+                    if ((ramp == 2'b01) & (xpos % 64 == 0))
+                        ypos_nxt = ypos - 4;
+                    else if ((ramp == 2'b10) & (xpos % 64 == 0))
+                        ypos_nxt = ypos + 4;
+                    else
+                        ypos_nxt = ypos;
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
+                    ypos_nxt = ypos;
                 end
             end
 

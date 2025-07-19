@@ -92,11 +92,11 @@ module drawLadder (
                 end else if ((vcount_buf >= LADDER_2_VSTART) && (vcount_buf <= LADDER_2_VSTOP) &&
                              (hcount_buf >= LADDER_2_HSTART) && (hcount_buf < LADDER_2_HSTOP)) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - RAMP_OFFSET)};
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
                 end else if ((vcount_buf >= LADDER_3_VSTART) && (vcount_buf <= LADDER_3_VSTOP) &&
                              (hcount_buf >= LADDER_3_HSTART) && (hcount_buf < LADDER_3_HSTOP)) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - RAMP_OFFSET)};
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
                 end else if ((vcount_buf >= LADDER_4_VSTART) && (vcount_buf <= LADDER_4_VSTOP) &&
                              (hcount_buf >= LADDER_4_HSTART) && (hcount_buf < LADDER_4_HSTOP)) begin
                     rgb_nxt = rgb_pixel;

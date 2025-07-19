@@ -21,13 +21,13 @@ package mapPkg;
 
     localparam LADDER_2_VSTART = 398;
     localparam LADDER_2_VSTOP = 567;
-    localparam LADDER_2_HSTART = 388;
-    localparam LADDER_2_HSTOP = 420;
+    localparam LADDER_2_HSTART = 412;
+    localparam LADDER_2_HSTOP = 444;
 
     localparam LADDER_3_VSTART = 410;
     localparam LADDER_3_VSTOP = 555;
-    localparam LADDER_3_HSTART = 196;
-    localparam LADDER_3_HSTOP = 228;
+    localparam LADDER_3_HSTART = 220;
+    localparam LADDER_3_HSTOP = 252;
 
     localparam LADDER_4_VSTART = 247;
     localparam LADDER_4_VSTOP = 372;
