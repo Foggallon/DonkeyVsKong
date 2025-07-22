@@ -45,17 +45,22 @@ module top_game (
    vga_if draw_ladder_if();
    vga_if ramp_if();
    vga_if gameMap_if();
+   vga_if animationLadder_if();
+   vga_if animationPlatform_if();
+   vga_if draw_kong_if();
 
    /**
     * Local variables and signals
     */
 
-   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map;
-   logic [10:0] pixel_addr_ramp, pixel_addr_map;
-   logic [9:0] pixel_addr_ladder;
-   logic [11:0] pixel_addr;
+   logic animation;
+   logic [3:0] ramp_en;
+   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong;
+   logic [10:0] pixel_addr_ramp, pixel_addr_map, pixel_addr_Aramp;
+   logic [9:0] pixel_addr_ladder, pixel_addr_Aladder;
+   logic [11:0] pixel_addr, pixel_addr_kong;
    logic [13:0] pixel_addr_menu;
-   logic [11:0] xpos, ypos;
+   logic [11:0] xpos, ypos, xpos_kong, ypos_kong;
    logic [15:0] keycode;
    logic [31:0] ascii_code;
    logic left, right, jump, rotate, start_game, up, down;
@@ -122,14 +127,97 @@ module top_game (
       .out(draw_menu_if)
    );
 
+   animationLadder u_animationLadder (
+        .clk(clk65MHz),
+        .rst,
+        .pixel_addr(pixel_addr_Aladder),
+        .rgb_pixel(rgb_pixel_Aladder),
+        .start_game,
+        .in(draw_menu_if),
+        .out(animationLadder_if)
+    );
+
+    imageRom  #(
+        .BITS(10),
+        .PIXELS(1028),
+        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
+    ) u_imageRom_Aladder (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_Aladder),
+      .rgb(rgb_pixel_Aladder)
+   );
+
+   animationPlatform u_animationPlatform (
+        .clk(clk65MHz),
+        .rst,
+        .pixel_addr(pixel_addr_Aramp),
+        .rgb_pixel(rgb_pixel_Aramp),
+        .start_game,
+        .ramp_en,
+        .in(animationLadder_if),
+        .out(animationPlatform_if)
+    );
+
+    imageRom  #(
+        .BITS(11),
+        .PIXELS(2052),
+        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_imageRom_Aplatform (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_Aramp),
+      .rgb(rgb_pixel_Aramp)
+   );
+
+   animation u_animation (
+      .clk(clk65MHz),
+      .rst,
+      .start_game,
+      .animation(animation),
+      .xpos(xpos_kong),
+      .ypos(ypos_kong),
+      .ramp_en(ramp_en)
+   );
+
+   drawCharacter u_drawCharacter_Kong (
+      .clk(clk65MHz),
+      .rst,
+
+      .rotate('0),
+      .start_game,
+
+      .pixel_addr(pixel_addr_kong),
+      .rgb_pixel(rgb_pixel_kong),
+
+      .xpos(xpos_kong),
+      .ypos(ypos_kong),
+
+      .in(animationPlatform_if),
+      .out(draw_kong_if)
+   );
+   
+   imageRom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/Kong/Kong.dat")
+   
+   ) u_imageRom_Kong (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_kong),
+      .rgb(rgb_pixel_kong)
+   );
+
    drawLadder u_drawLadder (
       .clk(clk65MHz),
       .rst,
       .start_game,
+      .animation,
       .pixel_addr(pixel_addr_ladder),
       .rgb_pixel(rgb_pixel_ladder),
 
-      .in(draw_menu_if),
+      .in(draw_kong_if),
       .out(draw_ladder_if)
    );
 
@@ -150,6 +238,7 @@ module top_game (
       .pixel_addr(pixel_addr_ramp),
       .rgb_pixel(rgb_pixel_ramp),
       .start_game,
+      .ramp_en,
       .in(draw_ladder_if),
       .out(ramp_if)
    );
@@ -171,6 +260,7 @@ module top_game (
         .rgb_pixel(rgb_pixel_map),
         .pixel_addr(pixel_addr_map),
         .start_game,
+        .animation,
 
         .in(ramp_if),
         .out(gameMap_if)
@@ -223,6 +313,7 @@ module top_game (
       .ypos(ypos),
       
       .start_game,
+      .animation,
       .left,
       .right,
       .jump,

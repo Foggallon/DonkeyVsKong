@@ -12,6 +12,7 @@ module drawLadder (
     input logic clk,
     input logic rst,
     input logic start_game,
+    input logic animation,
     input logic  [11:0] rgb_pixel,
     output logic [9:0] pixel_addr,
 
@@ -78,7 +79,7 @@ module drawLadder (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game) begin
+            if (start_game & !animation) begin
                 if ((vcount_buf >= LADDER_1_VSTART) && (vcount_buf <= LADDER_1_VSTOP) && 
                     (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTOP)) begin
                     rgb_nxt = rgb_pixel;

@@ -84,7 +84,6 @@
       
       .address(pixel_addr_3),
       .rgb(rgb_pixel_3)
-
    );
 
     animationPlatform dut (

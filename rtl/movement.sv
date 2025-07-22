@@ -19,6 +19,7 @@ module movement(
     input logic start_game,
     input logic up,
     input logic down,
+    input logic animation,
 
     output logic [11:0] xpos,
     output logic [11:0] ypos
@@ -100,15 +101,15 @@ module movement(
             ST_IDLE: begin
                 if (end_of_ramp)
                     state_nxt = ST_FALL_DOWN;
-                else if (left & start_game)
+                else if (left & start_game & !animation)
                     state_nxt = ST_GO_LEFT;
-                else if (right & start_game)
+                else if (right & start_game & !animation)
                     state_nxt = ST_GO_RIGHT;
-                else if (jump & start_game)
+                else if (jump & start_game & !animation)
                     state_nxt = ST_JUMP;
-                else if (up & start_game & ladder)
+                else if (up & start_game & ladder & !animation)
                     state_nxt = ST_GO_UP;
-                else if (down & start_game & ladder)
+                else if (down & start_game & ladder & !animation)
                     state_nxt = ST_GO_DOWN;
                 else
                     state_nxt = ST_IDLE;
