@@ -10,7 +10,7 @@
  * The project top module.
  */
 
-module top_game (
+ module top_game (
    input  logic clk65MHz,
    input  logic rst,
    
@@ -54,7 +54,6 @@ module top_game (
     */
 
    logic animation;
-   logic [3:0] ramp_en;
    logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong;
    logic [10:0] pixel_addr_ramp, pixel_addr_map, pixel_addr_Aramp;
    logic [9:0] pixel_addr_ladder, pixel_addr_Aladder;
@@ -85,16 +84,13 @@ module top_game (
   keyDecoder u_keyDecoder (
       .clk(clk65MHz),
       .rst,
-      
       .left,
       .right,
       .jump,
       .start_game(start_game),
       .up,
       .down,
-
       .keyCode(ascii_code),
-
       .rotate
    );
 
@@ -133,7 +129,8 @@ module top_game (
         .pixel_addr(pixel_addr_Aladder),
         .rgb_pixel(rgb_pixel_Aladder),
         .start_game,
-        .in(draw_menu_if),
+        .animation,
+        .in(gameMap_if),
         .out(animationLadder_if)
     );
 
@@ -154,8 +151,8 @@ module top_game (
         .pixel_addr(pixel_addr_Aramp),
         .rgb_pixel(rgb_pixel_Aramp),
         .start_game,
-        .ramp_en,
-        .in(animationLadder_if),
+        .animation,
+        .in(ramp_if),
         .out(animationPlatform_if)
     );
 
@@ -176,8 +173,7 @@ module top_game (
       .start_game,
       .animation(animation),
       .xpos(xpos_kong),
-      .ypos(ypos_kong),
-      .ramp_en(ramp_en)
+      .ypos(ypos_kong)
    );
 
    drawCharacter u_drawCharacter_Kong (
@@ -193,7 +189,7 @@ module top_game (
       .xpos(xpos_kong),
       .ypos(ypos_kong),
 
-      .in(animationPlatform_if),
+      .in(animationLadder_if),
       .out(draw_kong_if)
    );
    
@@ -217,7 +213,7 @@ module top_game (
       .pixel_addr(pixel_addr_ladder),
       .rgb_pixel(rgb_pixel_ladder),
 
-      .in(draw_kong_if),
+      .in(draw_menu_if),
       .out(draw_ladder_if)
    );
 
@@ -238,7 +234,6 @@ module top_game (
       .pixel_addr(pixel_addr_ramp),
       .rgb_pixel(rgb_pixel_ramp),
       .start_game,
-      .ramp_en,
       .in(draw_ladder_if),
       .out(ramp_if)
    );
@@ -262,7 +257,7 @@ module top_game (
         .start_game,
         .animation,
 
-        .in(ramp_if),
+        .in(animationPlatform_if),
         .out(gameMap_if)
     );
 
@@ -290,7 +285,7 @@ module top_game (
       .xpos(xpos),
       .ypos(ypos),
 
-      .in(gameMap_if),
+      .in(draw_kong_if),
       .out(draw_donkey_if)
    );
    

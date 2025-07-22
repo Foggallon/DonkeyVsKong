@@ -46,6 +46,9 @@ set sv_files {
     ../rtl/slopedRamp.sv
     ../rtl/Keyboard/keyDecoder.sv
     ../rtl/Packages/characterPkg.sv
+    ../rtl/animation.sv
+    ../rtl/animationLadder.sv
+    ../rtl/animationPlatform.sv
 }
 
 # Specify Verilog design files location

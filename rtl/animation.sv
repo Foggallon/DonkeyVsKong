@@ -8,13 +8,12 @@
  * 
  */
 
-module animation (
+ module animation (
     input logic clk,
     input logic rst,
     input logic start_game,
 
     output logic       animation,
-    output logic [3:0] ramp_en,
     output logic [11:0] xpos,
     output logic [11:0] ypos
 );
@@ -34,7 +33,6 @@ module animation (
     STATE_T state, state_nxt;
 
     logic animation_nxt;
-    logic [3:0] ramp_en_nxt, counter, counter_nxt;
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [11:0] xpos_nxt, ypos_nxt, velocity, velocity_nxt;
 
@@ -43,7 +41,7 @@ module animation (
      */
 
     always_ff @(posedge clk) begin : state_register
-        state <= rst ? ST_IDLE : state_nxt;
+        state <= rst ? ST_LADDER : state_nxt;
     end
 
     always_ff @(posedge clk) begin
@@ -52,16 +50,12 @@ module animation (
             ypos <= VER_PIXELS - 96;
             mov_counter <= '0;
             velocity <= '0;
-            ramp_en <= '0;
-            counter <= '0;
             animation <= '1;
         end else begin
             xpos <= xpos_nxt;
             ypos <= ypos_nxt;
             mov_counter <= mov_counter_nxt;
             velocity <= velocity_nxt;
-            ramp_en <= ramp_en_nxt;
-            counter <= counter_nxt;
             animation <= animation_nxt;
         end
     end
@@ -81,7 +75,7 @@ module animation (
             end
 
             ST_IDLE: begin
-                state_nxt = (counter == 3 ? ST_IDLE : ST_JUMP);
+                state_nxt = ST_IDLE;
             end
 
             default: begin
@@ -95,12 +89,10 @@ module animation (
             ST_LADDER: begin
                 animation_nxt = animation;
                 xpos_nxt = xpos;
-                counter_nxt = counter;
                 velocity_nxt = velocity;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= 175) ? ypos : ypos - 1);
-                    ramp_en_nxt = (ypos == 175 ? 4'b1000 : '0);
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     ypos_nxt = ypos;
@@ -110,8 +102,6 @@ module animation (
             ST_JUMP: begin
                 animation_nxt = animation;
                 xpos_nxt = xpos;
-                counter_nxt = counter;
-                ramp_en_nxt = ramp_en;
                 if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
@@ -133,30 +123,18 @@ module animation (
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     ypos_nxt = ((ypos + velocity >= 175) ? 175 : (ypos + velocity));
-                    if (ypos + velocity >= 175) begin
-                        counter_nxt = counter + 1;
-                        ramp_en_nxt = ramp_en | (ramp_en << 1);
-                        animation_nxt = '0;
-                    end else begin
-                        counter_nxt = counter;
-                        ramp_en_nxt = ramp_en;
-                        animation_nxt = animation;
-                    end
+                    animation_nxt = ((ypos + velocity >= 175) ? '0 : animation);
                 end else begin
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
                     animation_nxt = animation;
-                    counter_nxt = counter;
-                    ramp_en_nxt = ramp_en;
                 end
             end
 
             ST_IDLE: begin
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
-                counter_nxt = counter;
-                ramp_en_nxt = ramp_en;
                 animation_nxt = animation;
                 mov_counter_nxt = '0;
                 velocity_nxt = '0;
@@ -165,8 +143,6 @@ module animation (
             default: begin
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
-                counter_nxt = counter;
-                ramp_en_nxt = ramp_en;
                 animation_nxt = animation;
                 mov_counter_nxt = '0;
                 velocity_nxt = '0;
