@@ -40,7 +40,8 @@ module animationLadder (
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [10:0] pixel_addr_nxt;
+    logic [9:0] pixel_addr_nxt;
+    logic [3:0] counter, counter_nxt;
 
     /**
      * Signals buffer
@@ -81,13 +82,17 @@ module animationLadder (
             pixel_addr_nxt = pixel_addr;
         end else begin
             if ((vcount_buf >= 239) && (vcount_buf <= VER_PIXELS) &&
-                (hcount_buf >= 480) && (hcount_buf <= 544) && start_game) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                end else begin
-                    rgb_nxt = rgb_buf;
-                    pixel_addr_nxt = pixel_addr;
-                end
+                (hcount_buf >= 480) && (hcount_buf < 512) && start_game) begin
+                rgb_nxt = rgb_pixel;
+                pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
+            end else if ((vcount_buf >= 239) && (vcount_buf <= VER_PIXELS) &&
+                         (hcount_buf >= 516) && (hcount_buf < 548) && start_game) begin
+                rgb_nxt = rgb_pixel;
+                pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
+            end else begin
+                rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
+            end
         end
     end
 
