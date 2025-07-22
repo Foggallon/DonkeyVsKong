@@ -40,6 +40,7 @@ module animationLadder (
     logic vsync_buf;
 
     logic [9:0] pixel_addr_nxt;
+    logic [3:0] counter, counter_nxt;
 
     /**
      * Signals buffer
