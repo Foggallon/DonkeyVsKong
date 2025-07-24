@@ -12,9 +12,9 @@
     input logic         clk,
     input logic         rst,
     input logic         start_game,
-    input logic  [11:0] rgb_pixel,
     input logic         animation,
-    input logic  [3:0] counter,
+    input logic  [3:0]  counter,
+    input logic  [11:0] rgb_pixel,
     output logic [9:0]  pixel_addr,
 
     vga_if.in in,
@@ -81,14 +81,17 @@
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if ((vcount_buf >= 239) && (vcount_buf <= VER_PIXELS - 32 * counter) &&
-                (hcount_buf >= 480) && (hcount_buf < 512) && start_game && animation) begin
-                rgb_nxt = rgb_pixel;
-                pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-            end else if ((vcount_buf >= 239) && (vcount_buf <= VER_PIXELS - 32 * counter) &&
-                         (hcount_buf >= 516) && (hcount_buf < 548) && start_game && animation) begin
-                rgb_nxt = rgb_pixel;
-                pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
+            if (start_game && animation) begin
+                if ((vcount_buf >= 271) && (vcount_buf <= (VER_PIXELS - 32 * counter)) && (hcount_buf >= 480) && (hcount_buf < 512)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
+                end else if ((vcount_buf >= 271) && (vcount_buf <= (VER_PIXELS - 32 * counter)) && (hcount_buf >= 516) && (hcount_buf < 548)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
+                end else begin
+                    rgb_nxt = rgb_buf;
+                    pixel_addr_nxt = pixel_addr;
+                end
             end else begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;

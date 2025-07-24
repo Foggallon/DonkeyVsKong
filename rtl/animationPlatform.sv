@@ -12,8 +12,8 @@
     input logic         clk,
     input logic         rst,
     input logic         start_game,
+    input logic  [3:0]  ctl,
     input logic  [11:0] rgb_pixel,
-    input logic         animation,
     output logic [10:0] pixel_addr,
 
     vga_if.in in,
@@ -80,21 +80,34 @@
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (animation) begin
-                if ((vcount_buf >= VER_PIXELS - 32) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && start_game) begin
+            if (start_game) begin
+                if ((vcount_buf >= VER_PIXELS - 32) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS/2)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
-                end else if ((vcount_buf >= 239) && (vcount_buf <= 271) && (hcount_buf >= 0) && (hcount_buf < 896) && start_game) begin
+                // TA NA DOLE
+                end else  if ((vcount_buf >= VER_PIXELS - 32) && (vcount_buf <= VER_PIXELS) && (hcount_buf >= HOR_PIXELS/2) && (hcount_buf < HOR_PIXELS) && ctl[3] == 0) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
-                end else if ((vcount_buf >= 362) && (vcount_buf <= 394) && (hcount_buf >= 128) && (hcount_buf < HOR_PIXELS) && start_game) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount + 52), 6'(in.hcount)};
-                end else if ((vcount_buf >= 539) && (vcount_buf <= 571) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS - 128) && start_game) begin
+                    pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
+                // DRUGA OD DOLU
+                end else if ((vcount_buf >= 539) && (vcount_buf <= 571) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS - 128) && ctl[2] == 0) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount + 4), 6'(in.hcount)};
+                // TRZECIA OD DOLU
+                end else if ((vcount_buf >= 362) && (vcount_buf <= 394) && (hcount_buf >= 128) && (hcount_buf < HOR_PIXELS) && ctl[1] == 0) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount + 52), 6'(in.hcount)};
+                end else if ((vcount_buf >= 239) && (vcount_buf <= 271) && (hcount_buf >= 0) && (hcount_buf < 640)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
+                // GORNA
+                end else if ((vcount_buf >= 239) && (vcount_buf <= 271) && (hcount_buf >= 640) && (hcount_buf < 896) && ctl[0] == 0) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
+                end else if ((vcount_buf >= 128) && (vcount_buf <= 160) && (hcount_buf >= 320) && (hcount_buf < 576)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
                 end else begin
-                    rgb_nxt = start_game ? 12'h0_0_0 : rgb_buf;
+                    rgb_nxt = rgb_buf;
                     pixel_addr_nxt = pixel_addr;
                 end
             end else begin

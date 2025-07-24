@@ -24,7 +24,7 @@
      */
 
     vga_if vga_timing_if();
-    vga_if ladder_if();
+    vga_if platform_if();
     vga_if dut_if();
 
     logic clk, rst;
@@ -64,15 +64,38 @@
 
     );
 
-    animationLadder u_animationLadder (
+    animationPlatform u_animationPlatform (
+        .clk,
+        .rst,
+        .pixel_addr(pixel_addr),
+        .rgb_pixel(rgb_pixel),
+        .start_game('1),
+        .ctl(4'b0000),
+        .in(vga_timing_if),
+        .out(platform_if)
+    );
+
+    imageRom  #(
+        .BITS(11),
+        .PIXELS(2052),
+        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_imageRom_2 (
+      .clk,
+      
+      .address(pixel_addr),
+      .rgb(rgb_pixel)
+   );
+
+    animationLadder dut (
         .clk,
         .rst,
         .pixel_addr(pixel_addr_3),
         .rgb_pixel(rgb_pixel_3),
         .start_game('1),
-        .en('1),
-        .in(vga_timing_if),
-        .out(ladder_if)
+        .animation('1),
+        .counter('0),
+        .in(platform_if),
+        .out(dut_if)
     );
 
     imageRom  #(
@@ -86,27 +109,6 @@
       .rgb(rgb_pixel_3)
    );
 
-    animationPlatform dut (
-        .clk,
-        .rst,
-        .pixel_addr(pixel_addr),
-        .rgb_pixel(rgb_pixel),
-        .start_game('1),
-        .ramp_en(4'b0000),
-        .in(ladder_if),
-        .out(dut_if)
-    );
-
-    imageRom  #(
-        .BITS(11),
-        .PIXELS(2052),
-        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_imageRom_2 (
-      .clk,
-      
-      .address(pixel_addr),
-      .rgb(rgb_pixel)
-   );
 
     tiff_writer #(
         .XDIM(16'd1344),

@@ -9,9 +9,10 @@
  */
 
  module slopedRamp (
-    input logic clk,
-    input logic rst,
-    input logic start_game,
+    input logic         clk,
+    input logic         rst,
+    input logic         start_game,
+    input logic  [3:0]  ctl,
     input logic  [11:0] rgb_pixel,
     output logic [10:0] pixel_addr,
 
@@ -83,28 +84,28 @@
             if (start_game) begin
                 for (int i = 0; i < 8; i++) begin
                     if ((vcount_buf >= VER_PIXELS - 36 - (i * 4)) && (vcount_buf <= VER_PIXELS - 4 - (i * 4)) &&
-                        (hcount_buf >= HOR_PIXELS/2 - 2 + (i * 64)) && (hcount_buf < HOR_PIXELS/2 - 2 + ((i + 1) * 64))) begin
+                        (hcount_buf >= HOR_PIXELS/2 - 2 + (i * 64)) && (hcount_buf < HOR_PIXELS/2 - 2 + ((i + 1) * 64)) && ctl[3] == 1) begin
                             rgb_nxt = rgb_pixel;
                             pixel_addr_nxt = {5'(in.vcount + ((i + 1) * 4)), 6'(in.hcount)};
                     end
                 end
                 for (int i = 0; i < 14; i++) begin
                     if ((vcount_buf >= 575 - 36 + (i * 4)) && (vcount_buf <= 575 - 4 + (i * 4)) &&
-                        (hcount_buf >= 0 + (i * 64)) && (hcount_buf < 0 + 1 + ((i + 1) * 64))) begin
+                        (hcount_buf >= 0 + (i * 64)) && (hcount_buf < 0 + 1 + ((i + 1) * 64)) && ctl[2] == 1) begin
                             rgb_nxt = rgb_pixel;
                             pixel_addr_nxt = {5'(in.vcount - ((i - 1) * 4)), 6'(in.hcount - 3)};
                     end
                 end
                 for (int i = 0; i < 14; i++) begin
                     if ((vcount_buf >= 450 - 36 - (i * 4)) && (vcount_buf <= 450 - 4 - (i * 4)) &&
-                        (hcount_buf >= 128 - 2 + (i * 64)) && (hcount_buf < 128 - 2 + ((i + 1) * 64))) begin
+                        (hcount_buf >= 128 - 2 + (i * 64)) && (hcount_buf < 128 - 2 + ((i + 1) * 64)) && ctl[1] == 1) begin
                             rgb_nxt = rgb_pixel;
                             pixel_addr_nxt = {5'(in.vcount + (i * 4)), 6'(in.hcount)};
                     end
                 end
                 for (int i = 0; i < 4; i++) begin
                     if ((vcount_buf >= 275 - 36 + (i * 4)) && (vcount_buf <= 275 - 4 + (i * 4)) &&
-                        (hcount_buf >= 640 - 2 + (i * 64)) && (hcount_buf < 640 - 2 + ((i + 1) * 64))) begin
+                        (hcount_buf >= 640 - 2 + (i * 64)) && (hcount_buf < 640 - 2 + ((i + 1) * 64)) && ctl[0] == 1) begin
                             rgb_nxt = rgb_pixel;
                             pixel_addr_nxt = {5'(in.vcount - ((i - 4) * 4)), 6'(in.hcount)};
                     end

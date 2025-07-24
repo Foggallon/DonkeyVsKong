@@ -11,14 +11,12 @@
  */
 
  module top_game (
-   input  logic clk65MHz,
-   input  logic rst,
-   
-   input  logic ps2_clk,
-   input  logic ps2_data,
-   
-   output logic vs,
-   output logic hs,
+   input  logic       clk65MHz,
+   input  logic       rst,
+   input  logic       ps2_clk,
+   input  logic       ps2_data,
+   output logic       vs,
+   output logic       hs,
    output logic [3:0] r,
    output logic [3:0] g,
    output logic [3:0] b
@@ -44,7 +42,6 @@
    vga_if draw_donkey_if();
    vga_if draw_ladder_if();
    vga_if ramp_if();
-   vga_if gameMap_if();
    vga_if animationLadder_if();
    vga_if animationPlatform_if();
    vga_if draw_kong_if();
@@ -54,9 +51,9 @@
     */
 
    logic animation;
-   logic [3:0] counter;
-   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong;
-   logic [10:0] pixel_addr_ramp, pixel_addr_map, pixel_addr_Aramp;
+   logic [3:0] counter, ctl;
+   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong;
+   logic [10:0] pixel_addr_ramp, pixel_addr_Aramp;
    logic [9:0] pixel_addr_ladder, pixel_addr_Aladder;
    logic [11:0] pixel_addr, pixel_addr_kong;
    logic [13:0] pixel_addr_menu;
@@ -108,7 +105,6 @@
       .ROM_FILE("../../rtl/ROM/proba.dat")
    ) u_imageRom_menu (
       .clk(clk65MHz),
-      
       .address(pixel_addr_menu),
       .rgb(rgb_pixel_menu)
    );
@@ -132,17 +128,16 @@
         .start_game,
         .animation,
         .counter(counter),
-        .in(gameMap_if),
+        .in(animationPlatform_if),
         .out(animationLadder_if)
-    );
+   );
 
-    imageRom  #(
+   imageRom  #(
         .BITS(10),
         .PIXELS(1028),
         .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
     ) u_imageRom_Aladder (
       .clk(clk65MHz),
-      
       .address(pixel_addr_Aladder),
       .rgb(rgb_pixel_Aladder)
    );
@@ -153,8 +148,8 @@
         .pixel_addr(pixel_addr_Aramp),
         .rgb_pixel(rgb_pixel_Aramp),
         .start_game,
-        .animation,
-        .in(ramp_if),
+        .ctl(ctl),
+        .in(draw_ladder_if),
         .out(animationPlatform_if)
     );
 
@@ -164,7 +159,6 @@
         .ROM_FILE("../../rtl/LevelElements/platforma.dat")
    ) u_imageRom_Aplatform (
       .clk(clk65MHz),
-      
       .address(pixel_addr_Aramp),
       .rgb(rgb_pixel_Aramp)
    );
@@ -175,24 +169,26 @@
       .start_game,
       .animation(animation),
       .counter,
+      .ctl,
       .xpos(xpos_kong),
       .ypos(ypos_kong)
    );
 
-   drawCharacter u_drawCharacter_Kong (
+   drawCharacter #(
+      .CHARACTER_HEIGHT(64),
+      .CHARACTER_WIDTH(64)
+   ) u_drawCharacter_Kong (
       .clk(clk65MHz),
       .rst,
-
       .rotate('0),
       .start_game,
-
       .pixel_addr(pixel_addr_kong),
       .rgb_pixel(rgb_pixel_kong),
-
       .xpos(xpos_kong),
       .ypos(ypos_kong),
+      .en(animation),
 
-      .in(animationLadder_if),
+      .in(ramp_if),
       .out(draw_kong_if)
    );
    
@@ -203,7 +199,6 @@
    
    ) u_imageRom_Kong (
       .clk(clk65MHz),
-      
       .address(pixel_addr_kong),
       .rgb(rgb_pixel_kong)
    );
@@ -237,7 +232,9 @@
       .pixel_addr(pixel_addr_ramp),
       .rgb_pixel(rgb_pixel_ramp),
       .start_game,
-      .in(draw_ladder_if),
+      .ctl,
+
+      .in(animationLadder_if),
       .out(ramp_if)
    );
 
@@ -247,46 +244,23 @@
       .ROM_FILE("../../rtl/LevelElements/platforma.dat")
    ) u_imageRom_2 (
       .clk(clk65MHz),
-      
       .address(pixel_addr_ramp),
       .rgb(rgb_pixel_ramp)
    );
 
-   gameMap u_gameMap (
-        .clk(clk65MHz),
-        .rst,
-        .rgb_pixel(rgb_pixel_map),
-        .pixel_addr(pixel_addr_map),
-        .start_game,
-        .animation,
-
-        .in(animationPlatform_if),
-        .out(gameMap_if)
-    );
-
-   imageRom  #(
-      .BITS(11),
-      .PIXELS(2052),
-      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_imageRom_map (
-      .clk(clk65MHz),
-      
-      .address(pixel_addr_map),
-      .rgb(rgb_pixel_map)
-   );
-
-   drawCharacter u_drawCharacter_donkey (
+   drawCharacter #(
+      .CHARACTER_HEIGHT(64),
+      .CHARACTER_WIDTH(48)
+   ) u_drawCharacter_donkey (
       .clk(clk65MHz),
       .rst,
-
       .rotate,
       .start_game,
-
       .pixel_addr,
       .rgb_pixel,
-
       .xpos(xpos),
       .ypos(ypos),
+      .en(!animation),
 
       .in(draw_kong_if),
       .out(draw_donkey_if)

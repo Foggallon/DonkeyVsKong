@@ -99,7 +99,7 @@ module movement(
     always_comb begin : next_state_logic
         case (state)
             ST_IDLE: begin
-                if (end_of_ramp)
+                if (end_of_ramp & !animation)
                     state_nxt = ST_FALL_DOWN;
                 else if (left & start_game & !animation)
                     state_nxt = ST_GO_LEFT;

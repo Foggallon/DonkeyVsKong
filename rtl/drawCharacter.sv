@@ -10,16 +10,17 @@
  * Draw character module.
  */
 
- module drawCharacter (
-    input  logic clk,
-    input  logic rst,
-
-    input logic [11:0] xpos,
-    input logic [11:0] ypos,
-
-    input logic rotate,
-    input logic start_game,
-    
+ module drawCharacter #(parameter
+    CHARACTER_HEIGHT = 64,
+    CHARACTER_WIDTH = 64
+    )(
+    input  logic        clk,
+    input  logic        rst,
+    input logic         rotate,
+    input logic         start_game,
+    input logic         en,
+    input logic  [11:0] xpos,
+    input logic  [11:0] ypos,
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
 
@@ -29,10 +30,6 @@
 
     timeunit 1ns;
     timeprecision 1ps;
-
-    import vgaPkg::*;
-    import keyboardPkg::*;
-    import characterPkg::*;
 
     /**
      * Local variables and signals
@@ -50,7 +47,6 @@
     logic vsync_buf;
 
     logic [11:0] pixel_addr_nxt;
-
 
     /**
      * Signals buffer
@@ -94,9 +90,12 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH) && start_game)
-                rgb_nxt = (rgb_pixel == 12'h0_0_0 ? rgb_buf : rgb_pixel);
-            else
+            if (en && start_game) begin
+                if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH))
+                    rgb_nxt = (rgb_pixel == 12'h0_0_0 ? rgb_buf : rgb_pixel);
+                else
+                    rgb_nxt = rgb_buf;
+            end else 
                 rgb_nxt = rgb_buf;
         end
     end

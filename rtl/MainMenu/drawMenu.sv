@@ -9,9 +9,9 @@
  */
 
 module drawMenu (
-    input logic clk,
-    input logic rst,
-    input logic start_game,
+    input logic         clk,
+    input logic         rst,
+    input logic         start_game,
     input  logic [11:0] rgb_pixel,
     output logic [13:0] pixel_addr,
     

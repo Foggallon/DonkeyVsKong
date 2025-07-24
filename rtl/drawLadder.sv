@@ -9,10 +9,10 @@
  */
 
 module drawLadder (
-    input logic clk,
-    input logic rst,
-    input logic start_game,
-    input logic animation,
+    input logic         clk,
+    input logic         rst,
+    input logic         start_game,
+    input logic         animation,
     input logic  [11:0] rgb_pixel,
     output logic [9:0] pixel_addr,
 
