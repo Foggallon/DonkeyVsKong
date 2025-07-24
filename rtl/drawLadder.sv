@@ -79,32 +79,32 @@ module drawLadder (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game & !animation) begin
+            if (start_game) begin
                 if ((vcount_buf >= LADDER_1_VSTART) && (vcount_buf <= LADDER_1_VSTOP) && 
-                    (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTOP)) begin
+                    (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTOP) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
                 // Decoration
                 end else if (((vcount_buf >= 704) && (vcount_buf <= 736) || (vcount_buf >= 588) && (vcount_buf <= 640)) &&
-                            (hcount_buf >= 320) && (hcount_buf < 352)) begin
+                            (hcount_buf >= 320) && (hcount_buf < 352) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
                 //---------
                 end else if ((vcount_buf >= LADDER_2_VSTART) && (vcount_buf <= LADDER_2_VSTOP) &&
-                             (hcount_buf >= LADDER_2_HSTART) && (hcount_buf < LADDER_2_HSTOP)) begin
+                             (hcount_buf >= LADDER_2_HSTART) && (hcount_buf < LADDER_2_HSTOP) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
                 end else if ((vcount_buf >= LADDER_3_VSTART) && (vcount_buf <= LADDER_3_VSTOP) &&
-                             (hcount_buf >= LADDER_3_HSTART) && (hcount_buf < LADDER_3_HSTOP)) begin
+                             (hcount_buf >= LADDER_3_HSTART) && (hcount_buf < LADDER_3_HSTOP) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
                 end else if ((vcount_buf >= LADDER_4_VSTART) && (vcount_buf <= LADDER_4_VSTOP) &&
-                             (hcount_buf >= LADDER_4_HSTART) && (hcount_buf < LADDER_4_HSTOP)) begin
+                             (hcount_buf >= LADDER_4_HSTART) && (hcount_buf < LADDER_4_HSTOP) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};            
                 // Decoration
                 end else if (((vcount_buf >= 271) && (vcount_buf <= 302) || (vcount_buf >= 354) && (vcount_buf <= 386) ) && 
-                            (hcount_buf >= 576) && (hcount_buf < 608)) begin
+                             (hcount_buf >= 576) && (hcount_buf < 608) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
                 //----------

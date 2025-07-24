@@ -86,7 +86,7 @@ module gameMap (
             end else if ((vcount_buf >= 239) && (vcount_buf <= 271) && (hcount_buf >= 0) && (hcount_buf < 640) && start_game && !animation) begin
                 rgb_nxt = rgb_pixel;
                 pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
-            end else if ((vcount_buf >= 128) && (vcount_buf <= 160) && (hcount_buf >= 320) && (hcount_buf < 576) && start_game && !animation) begin
+            end else if ((vcount_buf >= 128) && (vcount_buf <= 160) && (hcount_buf >= 320) && (hcount_buf < 576) && start_game) begin
                 rgb_nxt = rgb_pixel;
                 pixel_addr_nxt = {5'(in.vcount), 6'(in.hcount)};
             end else begin

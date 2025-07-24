@@ -15,7 +15,8 @@
 
     output logic       animation,
     output logic [11:0] xpos,
-    output logic [11:0] ypos
+    output logic [11:0] ypos,
+    output logic [3:0] counter
 );
 
     import vgaPkg::*;
@@ -32,6 +33,7 @@
 
     STATE_T state, state_nxt;
 
+    logic [3:0] counter_nxt;
     logic animation_nxt;
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [11:0] xpos_nxt, ypos_nxt, velocity, velocity_nxt;
@@ -51,12 +53,14 @@
             mov_counter <= '0;
             velocity <= '0;
             animation <= '1;
+            counter <= '0;
         end else begin
             xpos <= xpos_nxt;
             ypos <= ypos_nxt;
             mov_counter <= mov_counter_nxt;
             velocity <= velocity_nxt;
             animation <= animation_nxt;
+            counter <= counter_nxt;
         end
     end
 
@@ -93,15 +97,21 @@
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= 175) ? ypos : ypos - 1);
+                    if (ypos <= 576 && ypos % 32 == 0)
+                        counter_nxt = counter < 16 ? counter + 1 : counter;
+                    else
+                        counter_nxt = counter;
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     ypos_nxt = ypos;
+                    counter_nxt = counter;
                 end
             end
 
             ST_JUMP: begin
                 animation_nxt = animation;
                 xpos_nxt = xpos;
+                counter_nxt = counter;
                 if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
@@ -119,6 +129,7 @@
 
             ST_FALL_DOWN: begin
                 xpos_nxt = xpos;
+                counter_nxt = counter;
                 if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
@@ -138,6 +149,7 @@
                 animation_nxt = animation;
                 mov_counter_nxt = '0;
                 velocity_nxt = '0;
+                counter_nxt = counter;
             end
 
             default: begin
@@ -146,6 +158,7 @@
                 animation_nxt = animation;
                 mov_counter_nxt = '0;
                 velocity_nxt = '0;
+                counter_nxt = counter;
             end
         endcase
     end

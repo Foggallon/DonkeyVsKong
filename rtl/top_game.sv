@@ -54,6 +54,7 @@
     */
 
    logic animation;
+   logic [3:0] counter;
    logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_map, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong;
    logic [10:0] pixel_addr_ramp, pixel_addr_map, pixel_addr_Aramp;
    logic [9:0] pixel_addr_ladder, pixel_addr_Aladder;
@@ -130,6 +131,7 @@
         .rgb_pixel(rgb_pixel_Aladder),
         .start_game,
         .animation,
+        .counter(counter),
         .in(gameMap_if),
         .out(animationLadder_if)
     );
@@ -172,6 +174,7 @@
       .rst,
       .start_game,
       .animation(animation),
+      .counter,
       .xpos(xpos_kong),
       .ypos(ypos_kong)
    );
