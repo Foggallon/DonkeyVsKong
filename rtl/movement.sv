@@ -163,7 +163,7 @@ module movement(
                 ypos_nxt = ypos;
                 mov_counter_nxt = '0;
                 save_ypos_nxt = (end_of_ramp ? landing_ypos : ypos);
-                velocity_nxt = '0;
+                velocity_nxt = (end_of_ramp ? velocity : '0);
                 done_nxt = '0;
             end
 
@@ -183,7 +183,7 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
-                    if ((ramp == 2'b01) & (xpos % 64 == 0))
+                    if ((ramp == 2'b01) & ((xpos - 16) % 64 == 0))
                         ypos_nxt = ypos + 4;
                     else if ((ramp == 2'b10) & (xpos % 64 == 0))
                         ypos_nxt = ypos - 4;
@@ -203,7 +203,7 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                    if ((ramp == 2'b01) & (xpos % 64 == 0))
+                    if ((ramp == 2'b01) & ((xpos + 52) % 64 == 0))
                         ypos_nxt = ypos - 4;
                     else if ((ramp == 2'b10) & (xpos % 64 == 0))
                         ypos_nxt = ypos + 4;
@@ -217,10 +217,20 @@ module movement(
             end
 
             ST_JUMP: begin
-                xpos_nxt = xpos;
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
-                if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                if (mov_counter % 500_000 == 0) begin
+                    mov_counter_nxt = mov_counter + 1;
+                    velocity_nxt = velocity;
+                    ypos_nxt = ypos;
+                    if (left)
+                        xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
+                    else if (right)
+                        xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
+                    else
+                        xpos_nxt = xpos;
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                    xpos_nxt = xpos;
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     if (ypos - velocity <= save_ypos - DONKEY_JUMP_HEIGHT) begin
@@ -232,21 +242,48 @@ module movement(
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
+                    xpos_nxt = xpos;
                 end
             end
 
             ST_FALL_DOWN: begin
-                xpos_nxt = xpos;
-                save_ypos_nxt = save_ypos;
                 done_nxt = done;
-                if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                if (mov_counter % 500_000 == 0) begin
+                    mov_counter_nxt = mov_counter +1;
+                    velocity_nxt = velocity;
+                    ypos_nxt = ypos;
+                    if (left) begin
+                        xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
+                            if ((ramp == 2'b01) & ((xpos - 16) % 64 == 0))
+                                save_ypos_nxt = save_ypos + 4;
+                            else if ((ramp == 2'b10) & (xpos % 64 == 0))
+                                save_ypos_nxt = save_ypos - 4;
+                            else
+                                save_ypos_nxt = save_ypos;
+                    end else if (right) begin
+                        xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
+                            if ((ramp == 2'b01) & ((xpos + 52) % 64 == 0))
+                                save_ypos_nxt = save_ypos - 4;
+                            else if ((ramp == 2'b10) & (xpos % 64 == 0))
+                                save_ypos_nxt = save_ypos + 4;
+                            else
+                                save_ypos_nxt = save_ypos;
+                    end else begin
+                        save_ypos_nxt = save_ypos;
+                        xpos_nxt = xpos;
+                    end
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                    save_ypos_nxt = save_ypos;
+                    xpos_nxt = xpos;
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     ypos_nxt = ((ypos + velocity >= save_ypos) ? save_ypos : (ypos + velocity));
                 end else begin
+                    save_ypos_nxt = save_ypos;
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
+                    xpos_nxt = xpos;
                 end
             end
 

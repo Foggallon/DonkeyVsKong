@@ -79,16 +79,16 @@ module ladderControl (
     end
 
     always_comb begin
-        if ((ypos >= VER_PIXELS - 128) && (ypos <= VER_PIXELS - 96) &&
-            (xpos >= HOR_PIXELS/2) && (xpos <= HOR_PIXELS)) begin
+        if ((ypos >= VER_PIXELS - 128 - 58) && (ypos <= VER_PIXELS - 96) &&
+            (xpos >= HOR_PIXELS/2 - 64) && (xpos <= HOR_PIXELS)) begin
             ramp_nxt = 2'b01;
-        end else if ((ypos >= 450 - 156) && (ypos <= 450 - 96) && 
-                     (xpos >= 192) && (xpos <= HOR_PIXELS)) begin
+        end else if ((ypos >= 450 - 156 - 58) && (ypos <= 450 - 96) && 
+                     (xpos >= 128) && (xpos <= HOR_PIXELS)) begin
             ramp_nxt = 2'b01;
-        end else if ((ypos >= 475) && (ypos <= 623 - 64) && 
+        end else if ((ypos >= 475 - 58) && (ypos <= 623 - 64) && 
                      (xpos >= 0) && (xpos <= HOR_PIXELS - 192)) begin
             ramp_nxt = 2'b10;
-        end else if ((ypos >= 175) && (ypos <= 191) && 
+        end else if ((ypos >= 175 - 58) && (ypos <= 191) && 
                      (xpos >= HOR_PIXELS - 320) && (xpos <= HOR_PIXELS - 192)) begin
             ramp_nxt = 2'b10;
         end else begin
@@ -97,19 +97,19 @@ module ladderControl (
     end
     
     always_comb begin
-        if ((ypos >= 619 - 96) && (ypos <= 623 - 92) &&
+        if ((ypos >= 619 - 96 - 58) && (ypos <= 623 - 92) &&
             (xpos >= HOR_PIXELS - 128)) begin
             end_of_ramp_nxt = '1;
             landing_ypos_nxt = VER_PIXELS - 124;
-        end else if ((ypos >= 350) && (ypos <= 354) &&
+        end else if ((ypos >= 350 - 58) && (ypos <= 354) &&
                      (xpos <= 128 - 48)) begin
             end_of_ramp_nxt = '1;
             landing_ypos_nxt = 543 - 64;
-        end else if ((ypos >= 187) && (ypos <= 191) &&
+        end else if ((ypos >= 187 - 58) && (ypos <= 191) &&
                      (xpos >= HOR_PIXELS - 128)) begin
             end_of_ramp_nxt = '1;
             landing_ypos_nxt = 366 - 64;
-        end else if ((ypos >= 64) && (ypos <= 68) &&
+        end else if ((ypos >= 64 - 58) && (ypos <= 68) &&
                      (xpos >= 576)) begin
             end_of_ramp_nxt = '1;
             landing_ypos_nxt = 239 - 64;

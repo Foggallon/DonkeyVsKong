@@ -101,7 +101,7 @@
                 velocity_nxt = velocity;
                 jump_ctl_nxt = jump_ctl;
                 ctl_nxt = ctl;
-                if (mov_counter == 375_000 && start_game) begin
+                if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= 175) ? ypos : ypos - 1);
                     if (ypos <= 576 && ypos % 32 == 0)
