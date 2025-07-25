@@ -101,7 +101,7 @@
                 velocity_nxt = velocity;
                 jump_ctl_nxt = jump_ctl;
                 ctl_nxt = ctl;
-                if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
+                if (mov_counter == 375_000 && start_game) begin
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= 175) ? ypos : ypos - 1);
                     if (ypos <= 576 && ypos % 32 == 0)
@@ -117,13 +117,18 @@
 
             ST_JUMP: begin
                 animation_nxt = animation;
-                xpos_nxt = xpos;
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
-                if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                if (mov_counter % 500_000 == 0) begin
+                    xpos_nxt = xpos - 1;
+                    mov_counter_nxt = mov_counter + 1;
+                    velocity_nxt = velocity;
+                    ypos_nxt = ypos;
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
+                    xpos_nxt = xpos;
                     if (ypos - velocity <= 175 - DONKEY_JUMP_HEIGHT) begin
                         ypos_nxt = (175 - DONKEY_JUMP_HEIGHT);
                         velocity_nxt = '0;
@@ -133,16 +138,24 @@
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
+                    xpos_nxt = xpos;
                 end
             end
 
             ST_FALL_DOWN: begin
-                xpos_nxt = xpos;
                 counter_nxt = counter;
                 animation_nxt = animation;
-                if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                if (mov_counter % 500_000 == 0) begin
+                    xpos_nxt = xpos - 1;
+                    mov_counter_nxt = mov_counter + 1;
+                    velocity_nxt = velocity;
+                    ypos_nxt = ypos;
+                    ctl_nxt = ctl;
+                    jump_ctl_nxt = jump_ctl;
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
+                    xpos_nxt = xpos;
                     ypos_nxt = ((ypos + velocity >= 175) ? 175 : (ypos + velocity));
                     ctl_nxt = ((ypos + velocity >= 175) ? (ctl | (1 << jump_ctl)) : ctl);
                     jump_ctl_nxt = ((ypos + velocity >= 175) ? jump_ctl + 1 : jump_ctl);
@@ -152,6 +165,7 @@
                     ypos_nxt = ypos;
                     ctl_nxt = ctl;
                     jump_ctl_nxt = jump_ctl;
+                    xpos_nxt = xpos;
                 end
             end
 

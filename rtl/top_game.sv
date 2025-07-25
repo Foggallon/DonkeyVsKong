@@ -149,7 +149,7 @@
         .rgb_pixel(rgb_pixel_Aramp),
         .start_game,
         .ctl(ctl),
-        .in(draw_ladder_if),
+        .in(ramp_if),
         .out(animationPlatform_if)
     );
 
@@ -188,7 +188,7 @@
       .ypos(ypos_kong),
       .en(animation),
 
-      .in(ramp_if),
+      .in(animationLadder_if),
       .out(draw_kong_if)
    );
    
@@ -234,7 +234,7 @@
       .start_game,
       .ctl,
 
-      .in(animationLadder_if),
+      .in(draw_ladder_if),
       .out(ramp_if)
    );
 
