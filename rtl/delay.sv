@@ -18,6 +18,9 @@ module delay
         output logic [WIDTH-1:0] dout // delayed data
     );
 
+    timeunit 1ns;
+    timeprecision 1ps;
+
     logic [WIDTH-1:0] del_mem [CLK_DEL-1:0];
 
     assign dout = del_mem[CLK_DEL-1];

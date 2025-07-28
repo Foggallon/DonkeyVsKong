@@ -25,6 +25,9 @@ module movement(
     output logic [11:0] ypos
 );
 
+    timeunit 1ns;
+    timeprecision 1ps;
+
     import vgaPkg::*;
     import keyboardPkg::*;
     import characterPkg::*;
@@ -80,8 +83,8 @@ module movement(
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            xpos <= 1;
-            ypos <= VER_PIXELS - 96;
+            xpos <= DONKEY_INITIAL_XPOS;
+            ypos <= DONKEY_INITIAL_YPOS;
             mov_counter <= '0;
             save_ypos <= '0;
             velocity <= '0;
@@ -183,10 +186,10 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
-                    if ((ramp == 2'b01) & ((xpos - 16) % 64 == 0))
-                        ypos_nxt = ypos + 4;
-                    else if ((ramp == 2'b10) & (xpos % 64 == 0))
-                        ypos_nxt = ypos - 4;
+                    if ((ramp == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0))
+                        ypos_nxt = ypos + PLATFORM_OFFSET;
+                    else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                        ypos_nxt = ypos - PLATFORM_OFFSET;
                     else
                         ypos_nxt = ypos;
                 end else begin
@@ -203,10 +206,10 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                    if ((ramp == 2'b01) & ((xpos + 52) % 64 == 0))
-                        ypos_nxt = ypos - 4;
-                    else if ((ramp == 2'b10) & (xpos % 64 == 0))
-                        ypos_nxt = ypos + 4;
+                    if ((ramp == 2'b01) & ((xpos + 52) % PLATFORM_WIDTH == 0))
+                        ypos_nxt = ypos - PLATFORM_OFFSET;
+                    else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                        ypos_nxt = ypos + PLATFORM_OFFSET;
                     else
                         ypos_nxt = ypos;
                 end else begin
@@ -219,7 +222,7 @@ module movement(
             ST_JUMP: begin
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
-                if (mov_counter % 500_000 == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
@@ -248,24 +251,24 @@ module movement(
 
             ST_FALL_DOWN: begin
                 done_nxt = done;
-                if (mov_counter % 500_000 == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
                     if (left) begin
                         xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
-                            if ((ramp == 2'b01) & ((xpos - 16) % 64 == 0))
-                                save_ypos_nxt = save_ypos + 4;
-                            else if ((ramp == 2'b10) & (xpos % 64 == 0))
-                                save_ypos_nxt = save_ypos - 4;
+                            if ((ramp == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0))
+                                save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
+                            else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                                save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
                             else
                                 save_ypos_nxt = save_ypos;
                     end else if (right) begin
                         xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                            if ((ramp == 2'b01) & ((xpos + 52) % 64 == 0))
-                                save_ypos_nxt = save_ypos - 4;
-                            else if ((ramp == 2'b10) & (xpos % 64 == 0))
-                                save_ypos_nxt = save_ypos + 4;
+                            if ((ramp == 2'b01) & ((xpos + 52) % PLATFORM_WIDTH == 0))
+                                save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
+                            else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                                save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
                             else
                                 save_ypos_nxt = save_ypos;
                     end else begin

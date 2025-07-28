@@ -59,6 +59,9 @@
         .left,
         .right,
         .start_game('1),
+        .animation('0),
+        .down('0),
+        .up('0),
 
         .xpos,
         .ypos
@@ -71,7 +74,6 @@
         .jump,
         .left,
         .right
-        
     );
 
 endmodule

@@ -25,6 +25,7 @@
     timeprecision 1ps;
 
     import vgaPkg::*;
+    import mapPkg::*;
 
     /**
      * Local variables and signals
@@ -83,31 +84,31 @@
         end else begin
             if (start_game) begin
                 for (int i = 0; i < 8; i++) begin
-                    if ((vcount_buf >= VER_PIXELS - 36 - (i * 4)) && (vcount_buf <= VER_PIXELS - 4 - (i * 4)) &&
-                        (hcount_buf >= HOR_PIXELS/2 - 2 + (i * 64)) && (hcount_buf < HOR_PIXELS/2 - 2 + ((i + 1) * 64)) && ctl[3] == 1) begin
+                    if ((vcount_buf >= SP_VSTART_1 - (i * PLATFORM_OFFSET)) && (vcount_buf <= SP_VSTART_1 + PLATFORM_HEIGHT - (i * PLATFORM_OFFSET)) &&
+                        (hcount_buf >= SP_HSTART_1 + (i * PLATFORM_WIDTH)) && (hcount_buf < SP_HSTART_1 + ((i + 1) * PLATFORM_WIDTH)) && ctl[3] == 1) begin
                             rgb_nxt = rgb_pixel;
-                            pixel_addr_nxt = {5'(in.vcount + ((i + 1) * 4)), 6'(in.hcount)};
+                            pixel_addr_nxt = {5'(in.vcount + ((i + 1) * PLATFORM_OFFSET)), 6'(in.hcount)};
                     end
                 end
                 for (int i = 0; i < 14; i++) begin
-                    if ((vcount_buf >= 575 - 36 + (i * 4)) && (vcount_buf <= 575 - 4 + (i * 4)) &&
-                        (hcount_buf >= 0 + (i * 64)) && (hcount_buf < 0 + 1 + ((i + 1) * 64)) && ctl[2] == 1) begin
+                    if ((vcount_buf >= SP_VSTART_2 + (i * PLATFORM_OFFSET)) && (vcount_buf <= SP_VSTART_2 + PLATFORM_HEIGHT + (i * PLATFORM_OFFSET)) &&
+                        (hcount_buf >= (i * PLATFORM_WIDTH)) && (hcount_buf < 1 + ((i + 1) * PLATFORM_WIDTH)) && ctl[2] == 1) begin
                             rgb_nxt = rgb_pixel;
-                            pixel_addr_nxt = {5'(in.vcount - ((i - 1) * 4)), 6'(in.hcount - 3)};
+                            pixel_addr_nxt = {5'(in.vcount - ((i - 1) * PLATFORM_OFFSET)), 6'(in.hcount - 3)};
                     end
                 end
                 for (int i = 0; i < 14; i++) begin
-                    if ((vcount_buf >= 450 - 36 - (i * 4)) && (vcount_buf <= 450 - 4 - (i * 4)) &&
-                        (hcount_buf >= 128 - 2 + (i * 64)) && (hcount_buf < 128 - 2 + ((i + 1) * 64)) && ctl[1] == 1) begin
+                    if ((vcount_buf >= SP_VSTART_3 - (i * PLATFORM_OFFSET)) && (vcount_buf <= SP_VSTART_3 + PLATFORM_HEIGHT - (i * PLATFORM_OFFSET)) &&
+                        (hcount_buf >= SP_HSTART_3 + (i * PLATFORM_WIDTH)) && (hcount_buf < SP_HSTART_3 + ((i + 1) * PLATFORM_WIDTH)) && ctl[1] == 1) begin
                             rgb_nxt = rgb_pixel;
-                            pixel_addr_nxt = {5'(in.vcount + (i * 4)), 6'(in.hcount)};
+                            pixel_addr_nxt = {5'(in.vcount + (i * PLATFORM_OFFSET)), 6'(in.hcount)};
                     end
                 end
                 for (int i = 0; i < 4; i++) begin
-                    if ((vcount_buf >= 275 - 36 + (i * 4)) && (vcount_buf <= 275 - 4 + (i * 4)) &&
-                        (hcount_buf >= 640 - 2 + (i * 64)) && (hcount_buf < 640 - 2 + ((i + 1) * 64)) && ctl[0] == 1) begin
+                    if ((vcount_buf >= SP_VSTART_4 + (i * PLATFORM_OFFSET)) && (vcount_buf <= SP_VSTART_4 + PLATFORM_HEIGHT + (i * PLATFORM_OFFSET)) &&
+                        (hcount_buf >= SP_HSTART_4 + (i * PLATFORM_WIDTH)) && (hcount_buf < SP_HSTART_4 + ((i + 1) * PLATFORM_WIDTH)) && ctl[0] == 1) begin
                             rgb_nxt = rgb_pixel;
-                            pixel_addr_nxt = {5'(in.vcount - ((i - 4) * 4)), 6'(in.hcount)};
+                            pixel_addr_nxt = {5'(in.vcount - ((i - PLATFORM_OFFSET) * PLATFORM_OFFSET)), 6'(in.hcount)};
                     end
                 end
             end

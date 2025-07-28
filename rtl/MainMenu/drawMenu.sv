@@ -23,6 +23,7 @@ module drawMenu (
     timeprecision 1ps;
 
     import vgaPkg::*;
+    import mapPkg::*;
 
     /**
      * Local variables and signals
@@ -83,7 +84,7 @@ module drawMenu (
             if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
                 rgb_nxt = rgb_pixel;
             else if (start_game)
-                rgb_nxt = 12'h0_0_0;
+                rgb_nxt = BLACK;
             else
                 rgb_nxt = rgb_buf;
         end

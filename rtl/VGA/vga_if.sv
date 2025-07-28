@@ -10,6 +10,9 @@
 
 interface vga_if();
 
+    timeunit 1ns;
+    timeprecision 1ps;
+
     logic [10:0] vcount, hcount;
     logic vsync, hsync;
     logic vblnk, hblnk;

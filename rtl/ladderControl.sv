@@ -47,30 +47,30 @@ module ladderControl (
 
     always_comb begin 
         if ((ypos >= LADDER_1_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_1_VSTOP) && 
-            (xpos >= LADDER_1_HSTART - 16) && (xpos <= LADDER_1_HSTOP - 16)) begin
+            (xpos >= LADDER_1_HSTART - LADDER_OFFSET) && (xpos <= LADDER_1_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
             limit_ypos_min_nxt = LADDER_1_VSTART - CHARACTER_HEIGHT;
-            limit_ypos_max_nxt = LADDER_1_VSTOP - 64;
+            limit_ypos_max_nxt = LADDER_1_VSTOP - CHARACTER_HEIGHT;
         end else if ((ypos >= LADDER_2_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_2_VSTOP) && 
-                     (xpos >= LADDER_2_HSTART- 16) && (xpos <= LADDER_2_HSTOP - 16)) begin
+                     (xpos >= LADDER_2_HSTART- LADDER_OFFSET) && (xpos <= LADDER_2_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
             limit_ypos_min_nxt = LADDER_2_VSTART - CHARACTER_HEIGHT;
-            limit_ypos_max_nxt = LADDER_2_VSTOP - 64;
+            limit_ypos_max_nxt = LADDER_2_VSTOP - CHARACTER_HEIGHT;
         end else if ((ypos >= LADDER_3_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_3_VSTOP) && 
-                     (xpos >= LADDER_3_HSTART - 16) && (xpos <= LADDER_3_HSTOP - 16)) begin
+                     (xpos >= LADDER_3_HSTART - LADDER_OFFSET) && (xpos <= LADDER_3_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
             limit_ypos_min_nxt = LADDER_3_VSTART - CHARACTER_HEIGHT;
-            limit_ypos_max_nxt = LADDER_3_VSTOP - 64;
+            limit_ypos_max_nxt = LADDER_3_VSTOP - CHARACTER_HEIGHT;
         end else if ((ypos >= LADDER_4_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_4_VSTOP) && 
-                     (xpos >= LADDER_4_HSTART - 16) && (xpos <= LADDER_4_HSTOP - 16)) begin
+                     (xpos >= LADDER_4_HSTART - LADDER_OFFSET) && (xpos <= LADDER_4_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
             limit_ypos_min_nxt = LADDER_4_VSTART - CHARACTER_HEIGHT;
-            limit_ypos_max_nxt = LADDER_4_VSTOP - 64;
+            limit_ypos_max_nxt = LADDER_4_VSTOP - CHARACTER_HEIGHT;
         end else if ((ypos >= LADDER_5_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_5_VSTOP) && 
-                     (xpos >= LADDER_5_HSTART - 16) && (xpos <= LADDER_5_HSTOP - 16)) begin
+                     (xpos >= LADDER_5_HSTART - LADDER_OFFSET) && (xpos <= LADDER_5_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
             limit_ypos_min_nxt = LADDER_5_VSTART - CHARACTER_HEIGHT;
-            limit_ypos_max_nxt = LADDER_5_VSTOP - 96;
+            limit_ypos_max_nxt = LADDER_5_VSTOP - (CHARACTER_HEIGHT + PLATFORM_HEIGHT);
         end else begin
             ladder_nxt = '0;
             limit_ypos_min_nxt = limit_ypos_min;
@@ -97,22 +97,22 @@ module ladderControl (
     end
     
     always_comb begin
-        if ((ypos >= 619 - 96 - 58) && (ypos <= 623 - 92) &&
-            (xpos >= HOR_PIXELS - 128)) begin
+        if ((ypos >= EO_PLATFORM_1_VSTART) && (ypos <= EO_PLATFORM_1_VSTOP) &&
+            (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
             end_of_ramp_nxt = '1;
-            landing_ypos_nxt = VER_PIXELS - 124;
-        end else if ((ypos >= 350 - 58) && (ypos <= 354) &&
-                     (xpos <= 128 - 48)) begin
+            landing_ypos_nxt = LANDING_POS_1;
+        end else if ((ypos >= EO_PLATFORM_2_VSTART) && (ypos <= EO_PLATFORM_2_VSTOP) &&
+                     (xpos <= (2 * PLATFORM_WIDTH) - CHARACTER_WIDTH)) begin
             end_of_ramp_nxt = '1;
-            landing_ypos_nxt = 543 - 64;
-        end else if ((ypos >= 187 - 58) && (ypos <= 191) &&
-                     (xpos >= HOR_PIXELS - 128)) begin
+            landing_ypos_nxt = LANDING_POS_2;
+        end else if ((ypos >= EO_PLATFORM_3_VSTART) && (ypos <= EO_PLATFORM_3_VSTOP) &&
+                     (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
             end_of_ramp_nxt = '1;
-            landing_ypos_nxt = 366 - 64;
-        end else if ((ypos >= 64 - 58) && (ypos <= 68) &&
-                     (xpos >= 576)) begin
+            landing_ypos_nxt = LANDING_POS_3;
+        end else if ((ypos >= EO_PLATFORM_4_VSTART) && (ypos <= EO_PLATFORM_4_VSTOP) &&
+                     (xpos >= PLATFORM_3_HSTOP)) begin
             end_of_ramp_nxt = '1;
-            landing_ypos_nxt = 239 - 64;
+            landing_ypos_nxt = LANDING_POS_4;
         end else begin
             end_of_ramp_nxt = '0;
             landing_ypos_nxt = landing_ypos;

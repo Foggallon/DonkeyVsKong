@@ -70,7 +70,7 @@
         .pixel_addr(pixel_addr),
         .rgb_pixel(rgb_pixel),
         .start_game('1),
-        .ctl(4'b0000),
+        .ctl(4'b0001),
         .in(vga_timing_if),
         .out(platform_if)
     );

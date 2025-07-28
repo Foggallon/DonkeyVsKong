@@ -41,7 +41,6 @@ set sv_files {
     ../rtl/Packages/keyboardPkg.sv
     ../rtl/Packages/mapPkg.sv
     ../rtl/drawLadder.sv
-    ../rtl/gameMap.sv
     ../rtl/ladderControl.sv
     ../rtl/slopedRamp.sv
     ../rtl/Keyboard/keyDecoder.sv

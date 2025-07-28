@@ -31,6 +31,8 @@
     timeunit 1ns;
     timeprecision 1ps;
 
+    import mapPkg::*;
+
     /**
      * Local variables and signals
      */
@@ -92,7 +94,7 @@
         end else begin
             if (en && start_game) begin
                 if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH))
-                    rgb_nxt = (rgb_pixel == 12'h0_0_0 ? rgb_buf : rgb_pixel);
+                    rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
                 else
                     rgb_nxt = rgb_buf;
             end else 

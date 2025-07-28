@@ -81,35 +81,33 @@ module drawLadder (
         end else begin
             if (start_game) begin
                 if ((vcount_buf >= LADDER_1_VSTART) && (vcount_buf <= LADDER_1_VSTOP) && 
-                    (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTOP) && !animation) begin
+                    (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
-                // Decoration
-                end else if (((vcount_buf >= 704) && (vcount_buf <= 736) || (vcount_buf >= 588) && (vcount_buf <= 640)) &&
-                            (hcount_buf >= 320) && (hcount_buf < 352) && !animation) begin
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + PLATFORM_OFFSET)};
+                end else if (((vcount_buf >= DECORATION_1_VSTART) && (vcount_buf <= DECORATION_1_VSTART + LADDER_HEIGHT) || 
+                             (vcount_buf >= DECORATION_1_VSTART_2) && (vcount_buf <= DECORATION_1_VSTART_2 + LADDER_HEIGHT)) &&
+                             (hcount_buf >= DECORATION_1_HSTART) && (hcount_buf < DECORATION_1_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                //---------
                 end else if ((vcount_buf >= LADDER_2_VSTART) && (vcount_buf <= LADDER_2_VSTOP) &&
-                             (hcount_buf >= LADDER_2_HSTART) && (hcount_buf < LADDER_2_HSTOP) && !animation) begin
+                             (hcount_buf >= LADDER_2_HSTART) && (hcount_buf < LADDER_2_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + PLATFORM_OFFSET)};
                 end else if ((vcount_buf >= LADDER_3_VSTART) && (vcount_buf <= LADDER_3_VSTOP) &&
-                             (hcount_buf >= LADDER_3_HSTART) && (hcount_buf < LADDER_3_HSTOP) && !animation) begin
+                             (hcount_buf >= LADDER_3_HSTART) && (hcount_buf < LADDER_3_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + PLATFORM_OFFSET)};
                 end else if ((vcount_buf >= LADDER_4_VSTART) && (vcount_buf <= LADDER_4_VSTOP) &&
-                             (hcount_buf >= LADDER_4_HSTART) && (hcount_buf < LADDER_4_HSTOP) && !animation) begin
+                             (hcount_buf >= LADDER_4_HSTART) && (hcount_buf < LADDER_4_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + RAMP_OFFSET)};            
-                // Decoration
-                end else if (((vcount_buf >= 271) && (vcount_buf <= 302) || (vcount_buf >= 354) && (vcount_buf <= 386) ) && 
-                             (hcount_buf >= 576) && (hcount_buf < 608) && !animation) begin
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount + PLATFORM_OFFSET)};            
+                end else if (((vcount_buf >= DECORATION_2_VSTART) && (vcount_buf <= DECORATION_2_VSTART + LADDER_HEIGHT) || 
+                             (vcount_buf >= DECORATION_2_VSTART_2) && (vcount_buf <= DECORATION_2_VSTART_2 + LADDER_HEIGHT)) &&
+                             (hcount_buf >= DECORATION_2_HSTART) && (hcount_buf < DECORATION_2_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                //----------
                 end else if ((vcount_buf >= LADDER_5_VSTART) && (vcount_buf <= LADDER_5_VSTOP) &&
-                             (hcount_buf >= LADDER_5_HSTART) && (hcount_buf < LADDER_5_HSTOP)) begin
+                             (hcount_buf >= LADDER_5_HSTART) && (hcount_buf < LADDER_5_HSTART + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
                 end else begin

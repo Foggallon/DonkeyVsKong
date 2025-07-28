@@ -10,12 +10,12 @@
 
 package keyboardPkg;
 
-    localparam D = 'h3233;
-    localparam A = 'h3143;
-    localparam RELEASED = 'h4630;
-    localparam SPACE = 'h3239;
     localparam W = 'h3144;
+    localparam A = 'h3143;
     localparam S = 'h3142;
+    localparam D = 'h3233;
     localparam ENTER = 'h3541; // temp
+    localparam SPACE = 'h3239;
+    localparam RELEASED = 'h4630;
 
 endpackage

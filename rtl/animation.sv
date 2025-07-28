@@ -39,6 +39,9 @@
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [11:0] xpos_nxt, ypos_nxt, velocity, velocity_nxt;
 
+    localparam JUMPS = 4;
+    localparam LADDER_ANIMATION_START = 576;
+
     /**
      * Internal logic
      */
@@ -49,8 +52,8 @@
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            xpos <= 484;
-            ypos <= VER_PIXELS - 96;
+            xpos <= KONG_ANIMATION_INITIAL_XPOS;
+            ypos <= KONG_ANIMATION_INITIAL_YPOS;
             mov_counter <= '0;
             velocity <= '0;
             animation <= '1;
@@ -69,22 +72,22 @@
         end
     end
 
-    always_comb begin :next_state_logic
+    always_comb begin : next_state_logic
         case (state)
             ST_LADDER: begin
-                state_nxt = ((ypos <= 175) ? ST_JUMP : ST_LADDER);
+                state_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ST_JUMP : ST_LADDER);
             end
 
             ST_JUMP: begin
-                state_nxt = (ypos <= (175 - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
+                state_nxt = (ypos <= (KONG_PLATFORM_YPOS - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
             end
 
             ST_FALL_DOWN: begin
-                state_nxt = ((ypos >= 175) ? ST_IDLE : ST_FALL_DOWN);
+                state_nxt = ((ypos >= KONG_PLATFORM_YPOS) ? ST_IDLE : ST_FALL_DOWN);
             end
 
             ST_IDLE: begin
-                state_nxt = ((jump_ctl == 4) ? ST_IDLE : ST_JUMP);
+                state_nxt = ((jump_ctl == JUMPS) ? ST_IDLE : ST_JUMP);
             end
 
             default: begin
@@ -103,8 +106,8 @@
                 ctl_nxt = ctl;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
-                    ypos_nxt = ((ypos <= 175) ? ypos : ypos - 1);
-                    if (ypos <= 576 && ypos % 32 == 0)
+                    ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
+                    if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0)
                         counter_nxt = counter < 16 ? counter + 1 : counter;
                     else
                         counter_nxt = counter;
@@ -120,7 +123,7 @@
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
-                if (mov_counter % 500_000 == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
                     xpos_nxt = xpos - 1;
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
@@ -129,8 +132,8 @@
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     xpos_nxt = xpos;
-                    if (ypos - velocity <= 175 - DONKEY_JUMP_HEIGHT) begin
-                        ypos_nxt = (175 - DONKEY_JUMP_HEIGHT);
+                    if (ypos - velocity <= KONG_PLATFORM_YPOS - DONKEY_JUMP_HEIGHT) begin
+                        ypos_nxt = (KONG_PLATFORM_YPOS - DONKEY_JUMP_HEIGHT);
                         velocity_nxt = '0;
                     end else
                         ypos_nxt = ypos - velocity;
@@ -145,7 +148,7 @@
             ST_FALL_DOWN: begin
                 counter_nxt = counter;
                 animation_nxt = animation;
-                if (mov_counter % 500_000 == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
                     xpos_nxt = xpos - 1;
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
@@ -156,9 +159,15 @@
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     xpos_nxt = xpos;
-                    ypos_nxt = ((ypos + velocity >= 175) ? 175 : (ypos + velocity));
-                    ctl_nxt = ((ypos + velocity >= 175) ? (ctl | (1 << jump_ctl)) : ctl);
-                    jump_ctl_nxt = ((ypos + velocity >= 175) ? jump_ctl + 1 : jump_ctl);
+                    if (ypos + velocity >= 175) begin
+                        ypos_nxt = KONG_PLATFORM_YPOS;
+                        ctl_nxt = (ctl | (1 << jump_ctl));
+                        jump_ctl_nxt = jump_ctl + 1;
+                    end else begin
+                        ypos_nxt = ypos + velocity;
+                        ctl_nxt = ctl;
+                        jump_ctl_nxt = jump_ctl;
+                    end
                 end else begin
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
@@ -172,7 +181,7 @@
             ST_IDLE: begin
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
-                animation_nxt = ((jump_ctl == 4) ? '0 : animation);
+                animation_nxt = ((jump_ctl == JUMPS) ? '0 : animation);
                 mov_counter_nxt = '0;
                 velocity_nxt = '0;
                 counter_nxt = counter;

@@ -25,6 +25,7 @@
     timeprecision 1ps;
 
     import vgaPkg::*;
+    import mapPkg::*;
 
     /**
      * Local variables and signals
@@ -82,10 +83,12 @@
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (start_game && animation) begin
-                if ((vcount_buf >= 271) && (vcount_buf <= (VER_PIXELS - 32 * counter)) && (hcount_buf >= 480) && (hcount_buf < 512)) begin
+                if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
+                    (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                end else if ((vcount_buf >= 271) && (vcount_buf <= (VER_PIXELS - 32 * counter)) && (hcount_buf >= 516) && (hcount_buf < 548)) begin
+                end else if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
+                             (hcount_buf >= LADDER_HSTART_2) && (hcount_buf < LADDER_HSTART_2 + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
                 end else begin
