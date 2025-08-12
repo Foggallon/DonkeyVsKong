@@ -8,12 +8,12 @@
  * 
  */
 
- module animationPlatform (
-    input logic         clk,
-    input logic         rst,
-    input logic         start_game,
-    input logic  [3:0]  ctl,
-    input logic  [11:0] rgb_pixel,
+module animation_platform (
+    input  logic        clk,
+    input  logic        rst,
+    input  logic        start_game,
+    input  logic [3:0]  ctl,
+    input  logic [11:0] rgb_pixel,
     output logic [10:0] pixel_addr,
 
     vga_if.in in,
@@ -23,8 +23,9 @@
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vgaPkg::*;
-    import mapPkg::*;
+    import platform_pkg::*;
+    import animation_pkg::*;
+    import vga_pkg::*;
 
     /**
      * Local variables and signals
@@ -54,7 +55,7 @@
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;
@@ -76,7 +77,7 @@
         end
     end
 
-    always_comb begin
+    always_comb begin : out_comb_blk
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;

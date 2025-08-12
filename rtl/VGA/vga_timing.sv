@@ -8,7 +8,7 @@
  * Vga timing controller.
  */
 
-module vgaTiming (
+module vga_timing (
     input  logic clk,
     input  logic rst,
 
@@ -18,8 +18,7 @@ module vgaTiming (
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vgaPkg::*;
-
+    import vga_pkg::*;
 
     /**
      * Local variables and signals
@@ -34,7 +33,7 @@ module vgaTiming (
      * Internal logic
      */
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync <= '0;
@@ -52,7 +51,7 @@ module vgaTiming (
         end
     end
 
-    always_comb begin
+    always_comb begin : out_hor_comb_blk
         if (out.hcount == HOR_TOTAL_TIME -1) begin
             hcount_nxt = '0;
             hblnk_nxt = '0;
@@ -70,7 +69,7 @@ module vgaTiming (
         end
     end
 
-    always_comb begin
+    always_comb begin : out_ver_comb_blk
         if ((out.vcount == VER_TOTAL_TIME -1) && (out.hcount == HOR_TOTAL_TIME -1)) begin
             vcount_nxt = '0;
             vblnk_nxt = '0;

@@ -9,39 +9,36 @@
  * 
  */
 
-module movement(
-    input logic clk,
-    input logic rst,
-
-    input logic left,
-    input logic right,
-    input logic jump,
-    input logic start_game,
-    input logic up,
-    input logic down,
-    input logic animation,
-
-    output logic [11:0] xpos,
-    output logic [11:0] ypos
+module donkey_movement (
+    input  logic        clk,
+    input  logic        rst,
+    input  logic        left,
+    input  logic        right,
+    input  logic        jump,
+    input  logic        start_game,
+    input  logic        up,
+    input  logic        down,
+    input  logic        animation,
+    output logic [10:0] xpos,
+    output logic [10:0] ypos
 );
 
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vgaPkg::*;
-    import keyboardPkg::*;
-    import characterPkg::*;
-    import mapPkg::*;
+    import donkey_pkg::*;
+    import vga_pkg::*;
+    import platform_pkg::*;
 
     /**
      * Local variables and signals
      */
 
-    logic ladder, done, done_nxt, end_of_ramp;
-    logic [1:0] ramp;
-    logic [11:0] limit_ypos, limit_ypos_max, landing_ypos;
+    logic ladder, done, done_nxt, end_of_platform;
+    logic [1:0] platform;
+    logic [10:0] limit_ypos, limit_ypos_max, landing_ypos;
     logic [20:0] mov_counter, mov_counter_nxt;
-    logic [11:0] xpos_nxt, ypos_nxt, save_ypos, save_ypos_nxt, velocity, velocity_nxt;
+    logic [10:0] xpos_nxt, ypos_nxt, save_ypos, save_ypos_nxt, velocity, velocity_nxt;
 
     typedef enum logic [2:0] {
         ST_IDLE,
@@ -56,16 +53,16 @@ module movement(
 
     STATE_T state, state_nxt;
 
-    ladderControl u_ladderControl (
+    map_control u_map_control (
         .clk,
         .rst,
         .xpos,
         .ypos,
         .ladder(ladder),
-        .ramp(ramp),
+        .platform(platform),
         .limit_ypos_min(limit_ypos),
         .limit_ypos_max(limit_ypos_max),
-        .end_of_ramp(end_of_ramp),
+        .end_of_platform(end_of_platform),
         .landing_ypos(landing_ypos)
     );
 
@@ -73,7 +70,7 @@ module movement(
      * Internal logic
      */
 
-    always_ff @(posedge clk) begin : state_register
+    always_ff @(posedge clk) begin : state_seg_blk
         if (rst) begin
             state <= ST_IDLE;
         end else begin
@@ -81,7 +78,7 @@ module movement(
         end
     end
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             xpos <= DONKEY_INITIAL_XPOS;
             ypos <= DONKEY_INITIAL_YPOS;
@@ -99,34 +96,36 @@ module movement(
         end
     end
 
-    always_comb begin : next_state_logic
+    always_comb begin : state_comb_blk
         case (state)
             ST_IDLE: begin
-                if (end_of_ramp & !animation)
+                if (end_of_platform && !animation) begin
                     state_nxt = ST_FALL_DOWN;
-                else if (left & start_game & !animation)
+                end else if (left && start_game && !animation) begin
                     state_nxt = ST_GO_LEFT;
-                else if (right & start_game & !animation)
+                end else if (right && start_game && !animation) begin
                     state_nxt = ST_GO_RIGHT;
-                else if (jump & start_game & !animation)
+                end else if (jump && start_game && !animation) begin
                     state_nxt = ST_JUMP;
-                else if (up & start_game & ladder & !animation)
+                end else if (up && start_game & ladder && !animation) begin
                     state_nxt = ST_GO_UP;
-                else if (down & start_game & ladder & !animation)
+                end else if (down && start_game & ladder && !animation) begin
                     state_nxt = ST_GO_DOWN;
-                else
+                end else begin
                     state_nxt = ST_IDLE;
+                end
             end
 
             ST_IDLE_LADDER: begin
-                if (done)
+                if (done) begin
                     state_nxt = ST_IDLE;
-                else if (up)
+                end else if (up) begin
                     state_nxt = ST_GO_UP;
-                else if (down)
+                end else if (down) begin
                     state_nxt = ST_GO_DOWN;
-                else
+                end else begin
                     state_nxt = ST_IDLE_LADDER;
+                end
             end
 
             ST_GO_UP: begin
@@ -159,14 +158,14 @@ module movement(
         endcase
     end
 
-    always_comb begin
+    always_comb begin : out_comb_blk
         case (state)
             ST_IDLE: begin
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
                 mov_counter_nxt = '0;
-                save_ypos_nxt = (end_of_ramp ? landing_ypos : ypos);
-                velocity_nxt = (end_of_ramp ? velocity : '0);
+                save_ypos_nxt = (end_of_platform ? landing_ypos : ypos);
+                velocity_nxt = (end_of_platform ? velocity : '0);
                 done_nxt = '0;
             end
 
@@ -186,12 +185,13 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
-                    if ((ramp == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0))
+                    if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;
-                    else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                    end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos - PLATFORM_OFFSET;
-                    else
+                    end else begin
                         ypos_nxt = ypos;
+                    end
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
@@ -206,12 +206,13 @@ module movement(
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                    if ((ramp == 2'b01) & ((xpos + 52) % PLATFORM_WIDTH == 0))
+                    if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos - PLATFORM_OFFSET;
-                    else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                    end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;
-                    else
+                    end else begin
                         ypos_nxt = ypos;
+                    end
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
@@ -226,21 +227,23 @@ module movement(
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
-                    if (left)
+                    if (left) begin
                         xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
-                    else if (right)
+                    end else if (right) begin
                         xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                    else
+                    end else begin
                         xpos_nxt = xpos;
+                    end
                 end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     xpos_nxt = xpos;
                     mov_counter_nxt = '0;
-                    velocity_nxt = velocity +1;
                     if (ypos - velocity <= save_ypos - DONKEY_JUMP_HEIGHT) begin
                         ypos_nxt = (save_ypos - DONKEY_JUMP_HEIGHT);
                         velocity_nxt = '0;
-                    end else
+                    end else begin
                         ypos_nxt = ypos - velocity;
+                        velocity_nxt = velocity + 1;
+                    end
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
@@ -257,20 +260,22 @@ module movement(
                     ypos_nxt = ypos;
                     if (left) begin
                         xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
-                            if ((ramp == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0))
+                            if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
-                            else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                            end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
-                            else
+                            end else begin
                                 save_ypos_nxt = save_ypos;
+                            end
                     end else if (right) begin
                         xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                            if ((ramp == 2'b01) & ((xpos + 52) % PLATFORM_WIDTH == 0))
+                            if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
-                            else if ((ramp == 2'b10) & (xpos % PLATFORM_WIDTH == 0))
+                            end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
-                            else
+                            end else begin
                                 save_ypos_nxt = save_ypos;
+                            end
                     end else begin
                         save_ypos_nxt = save_ypos;
                         xpos_nxt = xpos;

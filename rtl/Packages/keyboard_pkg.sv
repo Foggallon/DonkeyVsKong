@@ -8,7 +8,7 @@
  * Package with keyboard keys constants.
  */
 
-package keyboardPkg;
+package keyboard_pkg;
 
     localparam W = 'h3144;
     localparam A = 'h3143;

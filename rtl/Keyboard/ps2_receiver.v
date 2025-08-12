@@ -12,7 +12,7 @@
  */
 
 
-module PS2Receiver(
+module ps2_receiver(
     input clk,
     input kclk,
     input kdata,

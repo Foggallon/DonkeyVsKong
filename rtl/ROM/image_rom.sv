@@ -13,7 +13,7 @@
  * red, green and blue color values (4-bit each)
  */
 
-module imageRom #(parameter
+module image_rom #(parameter
     PIXELS = 4096,
     BITS = 8,
     ROM_FILE = "../../rtl/MainMenu/DonkeyVsKong.dat"

@@ -28,33 +28,40 @@ set xdc_files {
 
 # Specify SystemVerilog design files location
 set sv_files {
-    ../rtl/Packages/vgaPkg.sv
-    ../rtl/ROM/imageRom.sv
-    ../rtl/MainMenu/drawMenu.sv
+    ../rtl/Packages/vga_pkg.sv
+    ../rtl/ROM/image_rom.sv
+    ../rtl/MainMenu/draw_menu.sv
     ../rtl/delay.sv
     ../rtl/top_game.sv
-    ../rtl/VGA/vgaTiming.sv
+    ../rtl/VGA/vga_timing.sv
     ../rtl/VGA/vga_if.sv
-    ../rtl/movement.sv
-    ../rtl/drawCharacter.sv
+    ../rtl/donkey_movement.sv
+    ../rtl/draw_character.sv
     rtl/top_game_basys3.sv
-    ../rtl/Packages/keyboardPkg.sv
-    ../rtl/Packages/mapPkg.sv
-    ../rtl/drawLadder.sv
-    ../rtl/ladderControl.sv
-    ../rtl/slopedRamp.sv
-    ../rtl/Keyboard/keyDecoder.sv
-    ../rtl/Packages/characterPkg.sv
-    ../rtl/animation.sv
-    ../rtl/animationLadder.sv
-    ../rtl/animationPlatform.sv
+    ../rtl/Packages/keyboard_pkg.sv
+    ../rtl/Packages/donkey_pkg.sv
+    ../rtl/Packages/kong_pkg.sv
+    ../rtl/Packages/platform_pkg.sv
+    ../rtl/Packages/ladder_pkg.sv
+    ../rtl/Packages/animation_pkg.sv
+    ../rtl/draw_ladder.sv
+    ../rtl/map_control.sv
+    ../rtl/incline_platform.sv
+    ../rtl/Keyboard/key_decoder.sv
+    ../rtl/start_animation.sv
+    ../rtl/animation_ladder.sv
+    ../rtl/animation_platform.sv
+    ../rtl/ver_barrel.sv
+    ../rtl/draw_barrel.sv
+    ../rtl/barrel_ctl.sv
+
 }
 
 # Specify Verilog design files location
 set verilog_files {
     rtl/clk_wiz_65.v
     rtl/clk_wiz_65_clk_wiz.v
-    ../rtl/Keyboard/PS2Receiver.v
+    ../rtl/Keyboard/ps2_receiver.v
     ../rtl/Keyboard/bin2ascii.v
     ../rtl/Keyboard/debouncer.v
 }

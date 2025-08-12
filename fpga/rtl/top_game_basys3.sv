@@ -8,16 +8,15 @@
  */
 
 module top_game_basys3 (
-    input  wire clk,
-    input  wire btnC,
-    output wire Vsync,
-    output wire Hsync,
+    input  wire       clk,
+    input  wire       btnC,
+    input  wire       PS2Clk,
+    input  wire       PS2Data,
+    output wire       Vsync,
+    output wire       Hsync,
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
-    output wire [3:0] vgaBlue,
-
-    input wire PS2Clk,
-    input wire PS2Data
+    output wire [3:0] vgaBlue
 );
 
     timeunit 1ns;

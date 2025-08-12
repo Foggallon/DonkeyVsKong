@@ -8,44 +8,54 @@
  * Module for contoling movement with ladders on the map
  */
 
-module ladderControl (
-    input logic         clk,
-    input logic         rst,
-    input logic  [11:0] xpos,
-    input logic  [11:0] ypos,
+module map_control (
+    input  logic        clk,
+    input  logic        rst,
+    input  logic [10:0] xpos,
+    input  logic [10:0] ypos,
     output logic        ladder,
-    output logic [1:0]  ramp,
-    output logic [11:0] limit_ypos_min,
-    output logic [11:0] limit_ypos_max,
-    output logic        end_of_ramp,
-    output logic [11:0] landing_ypos
+    output logic [1:0]  platform,
+    output logic [10:0] limit_ypos_min,
+    output logic [10:0] limit_ypos_max,
+    output logic        end_of_platform,
+    output logic [10:0] landing_ypos
 );
 
     timeunit 1ns;
     timeprecision 1ps;
 
-    import mapPkg::*;
-    import vgaPkg::*;
-    import characterPkg::*;
+    import vga_pkg::*;
+    import ladder_pkg::*;
+    import platform_pkg::*;
+    import donkey_pkg::*;
 
     /**
      * Local variables and signals
      */
 
-    logic ladder_nxt, end_of_ramp_nxt;
-    logic [11:0] limit_ypos_min_nxt, limit_ypos_max_nxt, landing_ypos_nxt;
-    logic [1:0] ramp_nxt;
+    logic ladder_nxt, end_of_platform_nxt;
+    logic [10:0] limit_ypos_min_nxt, limit_ypos_max_nxt, landing_ypos_nxt;
+    logic [1:0] platform_nxt;
 
-    always_ff @(posedge clk) begin
-        ladder <= rst ? '0 : ladder_nxt;
-        limit_ypos_min <= rst ? '0 : limit_ypos_min_nxt;
-        limit_ypos_max <= rst ? '0 : limit_ypos_max_nxt;
-        ramp <= rst ? '0 : ramp_nxt;
-        end_of_ramp <= rst ? '0 : end_of_ramp_nxt;
-        landing_ypos <= rst ? '0 : landing_ypos_nxt;
+    always_ff @(posedge clk) begin : out_reg_blk
+        if (rst) begin
+            ladder <= '0;
+            limit_ypos_min <= '0;
+            limit_ypos_max <= '0;
+            platform <= '0;
+            end_of_platform <= '0;
+            landing_ypos <= '0;
+        end else begin
+            ladder <= ladder_nxt;
+            limit_ypos_min <= limit_ypos_min_nxt;
+            limit_ypos_max <= limit_ypos_max_nxt;
+            platform <= platform_nxt;
+            end_of_platform <= end_of_platform_nxt;
+            landing_ypos <= landing_ypos_nxt;
+        end
     end
 
-    always_comb begin 
+    always_comb begin : out_comb_ladder_blk
         if ((ypos >= LADDER_1_VSTART - CHARACTER_HEIGHT) && (ypos <= LADDER_1_VSTOP) && 
             (xpos >= LADDER_1_HSTART - LADDER_OFFSET) && (xpos <= LADDER_1_HSTART + LADDER_WIDTH - LADDER_OFFSET)) begin
             ladder_nxt = '1;
@@ -78,43 +88,43 @@ module ladderControl (
         end
     end
 
-    always_comb begin
+    always_comb begin : out_comb_platform_blk
         if ((ypos >= VER_PIXELS - 128 - 58) && (ypos <= VER_PIXELS - 96) &&
             (xpos >= HOR_PIXELS/2 - 64) && (xpos <= HOR_PIXELS)) begin
-            ramp_nxt = 2'b01;
+            platform_nxt = 2'b01;
         end else if ((ypos >= 450 - 156 - 58) && (ypos <= 450 - 96) && 
                      (xpos >= 128) && (xpos <= HOR_PIXELS)) begin
-            ramp_nxt = 2'b01;
+            platform_nxt = 2'b01;
         end else if ((ypos >= 475 - 58) && (ypos <= 623 - 64) && 
                      (xpos >= 0) && (xpos <= HOR_PIXELS - 192)) begin
-            ramp_nxt = 2'b10;
+            platform_nxt = 2'b10;
         end else if ((ypos >= 175 - 58) && (ypos <= 191) && 
                      (xpos >= HOR_PIXELS - 320) && (xpos <= HOR_PIXELS - 192)) begin
-            ramp_nxt = 2'b10;
+            platform_nxt = 2'b10;
         end else begin
-            ramp_nxt = '0;
+            platform_nxt = '0;
         end
     end
     
-    always_comb begin
+    always_comb begin : out_comb_end_of_platform_blk
         if ((ypos >= EO_PLATFORM_1_VSTART) && (ypos <= EO_PLATFORM_1_VSTOP) &&
             (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
-            end_of_ramp_nxt = '1;
+            end_of_platform_nxt = '1;
             landing_ypos_nxt = LANDING_POS_1;
         end else if ((ypos >= EO_PLATFORM_2_VSTART) && (ypos <= EO_PLATFORM_2_VSTOP) &&
                      (xpos <= (2 * PLATFORM_WIDTH) - CHARACTER_WIDTH)) begin
-            end_of_ramp_nxt = '1;
+            end_of_platform_nxt = '1;
             landing_ypos_nxt = LANDING_POS_2;
         end else if ((ypos >= EO_PLATFORM_3_VSTART) && (ypos <= EO_PLATFORM_3_VSTOP) &&
                      (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
-            end_of_ramp_nxt = '1;
+            end_of_platform_nxt = '1;
             landing_ypos_nxt = LANDING_POS_3;
         end else if ((ypos >= EO_PLATFORM_4_VSTART) && (ypos <= EO_PLATFORM_4_VSTOP) &&
                      (xpos >= PLATFORM_3_HSTOP)) begin
-            end_of_ramp_nxt = '1;
+            end_of_platform_nxt = '1;
             landing_ypos_nxt = LANDING_POS_4;
         end else begin
-            end_of_ramp_nxt = '0;
+            end_of_platform_nxt = '0;
             landing_ypos_nxt = landing_ypos;
         end
     end

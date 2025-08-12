@@ -7,7 +7,7 @@
  */
 
 module delay
-    #( parameter
+    #(parameter
         WIDTH   = 8, // bit width of the input/output data
         CLK_DEL = 1  // number of clock cycles the data is delayed
     )
@@ -26,23 +26,25 @@ module delay
     assign dout = del_mem[CLK_DEL-1];
 
     // The first delay stage
-    always_ff @(posedge clk) begin : delay_stage_0
-        if (rst)
+    always_ff @(posedge clk) begin : delay_stage_0_blk
+        if (rst) begin
             del_mem[0] <= 0;
-        else
+        end else begin
             del_mem[0] <= din;
+        end
     end
 
     // All the other delay stages
     genvar                   i;
     generate
 
-        for (i = 1; i < CLK_DEL ; i = i + 1) begin : delay_stage
+        for (i = 1; i < CLK_DEL ; i = i + 1) begin : delay_stage_blk
             always_ff @(posedge clk) begin
-                if (rst)
+                if (rst) begin
                     del_mem[i] <= 0;
-                else
+                end else begin
                     del_mem[i] <= del_mem[i-1];
+                end
             end
         end
     endgenerate

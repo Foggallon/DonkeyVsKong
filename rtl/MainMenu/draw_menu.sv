@@ -5,18 +5,16 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * 
+ * Module for main menu.
  */
 
- module animationLadder (
+module draw_menu (
     input logic         clk,
     input logic         rst,
     input logic         start_game,
-    input logic         animation,
-    input logic  [3:0]  counter,
-    input logic  [11:0] rgb_pixel,
-    output logic [9:0]  pixel_addr,
-
+    input  logic [11:0] rgb_pixel,
+    output logic [13:0] pixel_addr,
+    
     vga_if.in in,
     vga_if.out out
 );
@@ -24,8 +22,7 @@
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vgaPkg::*;
-    import mapPkg::*;
+    import vga_pkg::*;
 
     /**
      * Local variables and signals
@@ -33,29 +30,33 @@
 
     logic [11:0] rgb_nxt;
     logic [11:0] rgb_buf;
-
+ 
     logic [10:0] hcount_buf;
     logic hblnk_buf;
     logic hsync_buf;
-
+ 
     logic [10:0] vcount_buf;
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [9:0] pixel_addr_nxt;
-
+    localparam BLACK = 12'h0_0_0;
+ 
     /**
      * Signals buffer
      */
-
+ 
     delay #(.WIDTH(38), .CLK_DEL(2)) u_delay (
         .clk,
         .rst,
         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
-
-    always_ff @(posedge clk) begin
+ 
+    /**
+     * Internal logic
+     */
+ 
+    always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;
@@ -73,32 +74,20 @@
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= pixel_addr_nxt;
+            pixel_addr <= {7'(in.vcount >> 3), 7'(in.hcount >> 3)};
         end
     end
 
-    always_comb begin
+    always_comb begin : out_comb_blk
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
-            pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game && animation) begin
-                if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
-                    (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                end else if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
-                             (hcount_buf >= LADDER_HSTART_2) && (hcount_buf < LADDER_HSTART_2 + LADDER_WIDTH)) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
-                end else begin
-                    rgb_nxt = rgb_buf;
-                    pixel_addr_nxt = pixel_addr;
-                end
-            end else begin
+            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
+                rgb_nxt = rgb_pixel;
+            else if (start_game)
+                rgb_nxt = BLACK;
+            else
                 rgb_nxt = rgb_buf;
-                pixel_addr_nxt = pixel_addr;
-            end
         end
     end
 

@@ -3,26 +3,23 @@
  * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
- * 
- * Modified: Jakub Bukowski
  *
  * Description:
- * Draw character module.
+ * Module for drawing barrels
  */
 
- module drawCharacter #(parameter
-    CHARACTER_HEIGHT = 64,
-    CHARACTER_WIDTH = 64
+ module draw_barrel #(parameter 
+    BARRELS = 5             // Max barrels count = 7
     )(
-    input  logic        clk,
-    input  logic        rst,
-    input logic         rotate,
-    input logic         start_game,
-    input logic         en,
-    input logic  [11:0] xpos,
-    input logic  [11:0] ypos,
-    input  logic [11:0] rgb_pixel,
-    output logic [11:0] pixel_addr,
+    input  logic                      clk,
+    input  logic                      rst,
+    input  logic                      start_game,
+    input  logic                      animation,
+    input  logic        [BARRELS-1:0] barrel,
+    input  logic  [BARRELS-1:0][10:0] xpos,
+    input  logic  [BARRELS-1:0][10:0] ypos,
+    input  logic               [11:0] rgb_pixel,
+    output logic               [11:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -31,7 +28,7 @@
     timeunit 1ns;
     timeprecision 1ps;
 
-    import mapPkg::*;
+    import donkey_pkg::*;
 
     /**
      * Local variables and signals
@@ -49,6 +46,9 @@
     logic vsync_buf;
 
     logic [11:0] pixel_addr_nxt;
+    reg [2:0] i;
+
+    localparam BLACK = 12'h0_0_0;
 
     /**
      * Signals buffer
@@ -66,7 +66,7 @@
      * Internal logic
      */
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;
@@ -88,25 +88,25 @@
         end
     end
 
-    always_comb begin
+    always_comb begin : out_comb_blk
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
+            pixel_addr_nxt = pixel_addr;
         end else begin
-            if (en && start_game) begin
-                if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH))
-                    rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
-                else
-                    rgb_nxt = rgb_buf;
-            end else 
+            if (start_game && !animation) begin
                 rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
+                for (i = 0; i < BARRELS; i++) begin
+                    if ((vcount_buf >= ypos[i]) && (vcount_buf < ypos[i] + CHARACTER_HEIGHT) && 
+                        (hcount_buf >=  xpos[i]) && (hcount_buf < xpos[i] + CHARACTER_WIDTH) && barrel[i]) begin
+                        rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
+                        pixel_addr_nxt = {6'(in.vcount - ypos[i]), 6'(in.hcount - xpos[i])};
+                    end
+                end
+            end else begin
+                rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
+            end
         end
     end
-
-    always_comb begin
-        if (rotate)
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((CHARACTER_WIDTH - 1) - (in.hcount - xpos))};
-        else
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
-    end
-
 endmodule
