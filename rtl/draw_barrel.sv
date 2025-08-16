@@ -46,7 +46,7 @@
     logic vsync_buf;
 
     logic [11:0] pixel_addr_nxt;
-    reg [2:0] i;
+    reg [3:0] i;
 
     localparam BLACK = 12'h0_0_0;
 

@@ -85,7 +85,7 @@ module hor_barrel (
                 end
             end
 
-            ST_GO_VER: begin
+            ST_GO_HOR: begin
                 state_nxt = end_of_platform ? ST_FALL_DOWN : ST_GO_HOR;
             end
 

@@ -51,9 +51,11 @@ set sv_files {
     ../rtl/start_animation.sv
     ../rtl/animation_ladder.sv
     ../rtl/animation_platform.sv
-    ../rtl/ver_barrel.sv
+    ../rtl/hor_barrel.sv
     ../rtl/draw_barrel.sv
     ../rtl/barrel_ctl.sv
+    ../rtl/ver_barrel.sv
+    ../rtl/kong_movement.sv
 
 }
 
