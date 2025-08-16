@@ -136,7 +136,7 @@
   image_rom  #(
       .BITS(14),
       .PIXELS(12292),
-      .ROM_FILE("../../rtl/ROM/proba.dat")
+      .ROM_FILE("../../rtl/MainMenu/DonkeyVsKong_small.dat")
    ) u_image_Rom_menu (
       .clk(clk65MHz),
       .address(pixel_addr_menu),
@@ -422,7 +422,7 @@
       .ypos(ypos_barrel_5_v)
    );
 
-   barrel_ctl #(.BARRELS(5)) u_barrel_ctl_hor (
+   barrel_ctl #(.BARRELS(5), .DELAY_TIME(162_500_000)) u_barrel_ctl_hor (
       .clk(clk65MHz),
       .rst(rst),
       .start_game,
@@ -432,7 +432,7 @@
       .barrel(barrel)
    );
    
-   barrel_ctl #(.BARRELS(5)) u_barrel_ctl_ver (
+   barrel_ctl #(.BARRELS(5), .DELAY_TIME(500_000)) u_barrel_ctl_ver (
       .clk(clk65MHz),
       .rst(rst),
       .start_game,

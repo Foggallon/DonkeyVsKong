@@ -9,6 +9,7 @@
  */
 
 module barrel_ctl #(parameter
+    DELAY_TIME = 162_500_000,
     BARRELS = 5         // Max barrels count = 7
     )(
     input  logic               clk,
@@ -64,7 +65,7 @@ module barrel_ctl #(parameter
             end
 
             ST_DELAY: begin
-                state_nxt = delay_counter == 162_500_000 ? ST_IDLE : ST_DELAY;
+                state_nxt = delay_counter == DELAY_TIME ? ST_IDLE : ST_DELAY;
             end
 
             default: begin
@@ -92,7 +93,7 @@ module barrel_ctl #(parameter
 
             ST_DELAY: begin
                 done_prev_nxt = done;
-                delay_counter_nxt = ((delay_counter == 162_500_000) ? '0 : delay_counter + 1);
+                delay_counter_nxt = ((delay_counter == DELAY_TIME) ? '0 : delay_counter + 1);
                 if (done != '0 && (done != done_prev)) begin
                     barrel_counter_nxt = barrel_counter % (BARRELS - 1);
                     barrel_nxt = (barrel ^ done);
