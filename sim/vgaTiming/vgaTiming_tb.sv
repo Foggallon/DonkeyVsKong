@@ -13,7 +13,7 @@ module vgaTiming_tb;
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vgaPkg::*;
+    import vga_pkg::*;
 
 
     /**
@@ -57,7 +57,7 @@ module vgaTiming_tb;
      * Dut placement
      */
 
-    vgaTiming dut(
+    vga_timing dut(
         .clk,
         .rst,
         .out(vga_timing_tb)

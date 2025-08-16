@@ -55,17 +55,17 @@ module drawMenu_tb;
      * Submodules instances
      */
 
-    vgaTiming u_vgaTiming (
+    vga_timing u_vgaTiming (
         .clk,
         .rst,
         .out(vga_timing_if)
 
     );
 
-    imageRom  #(
+    image_rom  #(
         .BITS(14),
         .PIXELS(12292),
-        .ROM_FILE("../../rtl/ROM/proba.dat")
+        .ROM_FILE("../../rtl/ROM/DonkeyVsKong_small.dat")
    ) u_imageRom (
       .clk,
       
@@ -74,7 +74,7 @@ module drawMenu_tb;
 
    );
 
-    drawMenu dut (
+    draw_menu dut (
         .clk,
         .rst,
         .rgb_pixel,

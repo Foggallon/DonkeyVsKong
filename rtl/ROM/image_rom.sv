@@ -16,7 +16,7 @@
 module image_rom #(parameter
     PIXELS = 4096,
     BITS = 8,
-    ROM_FILE = "../../rtl/MainMenu/DonkeyVsKong.dat"
+    ROM_FILE = "../../rtl/MainMenu/DonkeyVsKong_small.dat"
     )(
     input  logic clk ,
     input  logic [BITS-1:0] address,  // address = {addry, addrx}
