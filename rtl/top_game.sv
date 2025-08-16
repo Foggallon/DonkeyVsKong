@@ -432,7 +432,7 @@
       .barrel(barrel)
    );
    
-   barrel_ctl #(.BARRELS(5), .DELAY_TIME(500_000)) u_barrel_ctl_ver (
+   barrel_ctl #(.BARRELS(5), .DELAY_TIME(20_500_000)) u_barrel_ctl_ver (
       .clk(clk65MHz),
       .rst(rst),
       .start_game,

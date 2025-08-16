@@ -81,7 +81,7 @@ module barrel_ctl #(parameter
                 delay_counter_nxt = '0;
                 if (key && (barrel_counter < BARRELS)) begin
                     barrel_nxt = (barrel ^ done) | (1'b1 << barrel_counter);
-                    barrel_counter_nxt = (barrel_counter == BARRELS - 1) || (barrel == '1) ? barrel_counter : barrel_counter + 1;
+                    barrel_counter_nxt = (barrel_counter == BARRELS - 1) || (barrel == '1) ? (barrel_counter % (BARRELS - 1)) : barrel_counter + 1;
                 end else if (done != '0 && (done != done_prev)) begin
                     barrel_nxt = (barrel ^ done);
                     barrel_counter_nxt = barrel_counter % (BARRELS - 1);
