@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module vertical barrel movement
+ * Module horizontal barrel movement
  */
 
 module barrel_ctl #(parameter

@@ -53,6 +53,7 @@
    logic [10:0] xpos, ypos, xpos_kong, ypos_kong;
 
    logic [4:0] barrel;
+   logic [4:0] barrel_v;
    logic done_1, done_2, done_3, done_4, done_5;
    logic [4:0][10:0] xpos_barrel, ypos_barrel;
    logic [10:0] xpos_barrel_1, ypos_barrel_1;
@@ -79,6 +80,16 @@
    assign ypos_barrel[3] = ypos_barrel_4;
    assign xpos_barrel[4] = xpos_barrel_5;
    assign ypos_barrel[4] = ypos_barrel_5;
+   assign xpos_barrel[5] = xpos_barrel_1_v;
+   assign ypos_barrel[5] = ypos_barrel_1_v;
+   assign xpos_barrel[6] = xpos_barrel_2_v;
+   assign ypos_barrel[6] = ypos_barrel_2_v;
+   assign xpos_barrel[7] = xpos_barrel_3_v;
+   assign ypos_barrel[7] = ypos_barrel_3_v;
+   assign xpos_barrel[8] = xpos_barrel_4_v;
+   assign ypos_barrel[8] = ypos_barrel_4_v;
+   assign xpos_barrel[9] = xpos_barrel_5_v;
+   assign ypos_barrel[9] = ypos_barrel_5_v;
 
    assign vs = draw_donkey_if.vsync;
    assign hs = draw_donkey_if.hsync;
@@ -315,7 +326,7 @@
       .up
    );
 
-   ver_barrel u_ver_barrel_1 (
+   hor_barrel u_ver_barrel_1 (
       .clk(clk65MHz),
       .rst(rst),
       .barrel(barrel[0]),
@@ -324,7 +335,7 @@
       .ypos(ypos_barrel_1)
    );
 
-   ver_barrel u_ver_barrel_2 (
+   hor_barrel u_ver_barrel_2 (
       .clk(clk65MHz),
       .rst(rst),
       .barrel(barrel[1]),
@@ -333,7 +344,7 @@
       .ypos(ypos_barrel_2)
    );
 
-   ver_barrel u_ver_barrel_3 (
+   hor_barrel u_ver_barrel_3 (
       .clk(clk65MHz),
       .rst(rst),
       .barrel(barrel[2]),
@@ -342,7 +353,7 @@
       .ypos(ypos_barrel_3)
    );
 
-   ver_barrel u_ver_barrel_4 (
+   hor_barrel u_ver_barrel_4 (
       .clk(clk65MHz),
       .rst(rst),
       .barrel(barrel[3]),
@@ -351,7 +362,7 @@
       .ypos(ypos_barrel_4)
    );
 
-   ver_barrel u_ver_barrel_5 (
+   hor_barrel u_ver_barrel_5 (
       .clk(clk65MHz),
       .rst(rst),
       .barrel(barrel[4]),
@@ -360,7 +371,7 @@
       .ypos(ypos_barrel_5)
    );
 
-   barrel_ctl #(.BARRELS(5)) u_barrel_ctl (
+   barrel_ctl #(.BARRELS(5)) u_barrel_ctl_hor (
       .clk(clk65MHz),
       .rst(rst),
       .start_game,
@@ -369,13 +380,23 @@
       .done({done_5, done_4, done_3, done_2, done_1}),
       .barrel(barrel)
    );
-
-   draw_barrel #(.BARRELS(5)) u_draw_barrel (
+   
+   barrel_ctl #(.BARRELS(5)) u_barrel_ctl_ver (
       .clk(clk65MHz),
       .rst(rst),
       .start_game,
       .animation,
-      .barrel,
+      .key(throw),
+      .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
+      .barrel(barrel)
+   );
+
+   draw_barrel #(.BARRELS(10)) u_draw_barrel (
+      .clk(clk65MHz),
+      .rst(rst),
+      .start_game,
+      .animation,
+      .barrel({barrel_v, barrel}),
       .xpos(xpos_barrel),
       .ypos(ypos_barrel),
       .rgb_pixel(rgb_pixel_barrel),
