@@ -7,7 +7,13 @@
  * Draw rectangular with characters on the screen.
  */
 
- module draw_rect_char (
+ module draw_rect_char#(parameter
+    SCALE=2,
+    TEXT_POS_X = 128,
+    TEXT_POS_Y = 128,
+    TEXT_WIDTH = 256,
+    TEXT_HEIGHT = 128
+ )(
     input  logic clk,
     input  logic rst,
     input  logic [7:0] char_line_pixels,
@@ -33,10 +39,7 @@ logic hsync, vsync, hblnk, vblnk, hsync1, vsync1, hblnk1, vblnk1, hsync2, vsync2
 logic [7:0] char_xy_nxt;
 logic [3:0] char_line_nxt;
 
-localparam TEXT_POS_X = 128;
-localparam TEXT_POS_Y = 128;
-localparam TEXT_WIDTH = 256;
-localparam TEXT_HEIGHT = 128;
+
 
 /**
  * Internal logic
@@ -115,8 +118,8 @@ always_ff @(posedge clk) begin
 end
 
 always_comb begin 
-    char_line_nxt = 4'((in.vcount - TEXT_POS_Y)>>2);
-    char_xy_nxt = {5'((in.hcount - TEXT_POS_X)>>5), 3'((in.vcount - TEXT_POS_Y)>>6)};
+    char_line_nxt = 4'((in.vcount - TEXT_POS_Y)>>SCALE);
+    char_xy_nxt = {5'((in.hcount - TEXT_POS_X)>>(3+SCALE)), 3'((in.vcount - TEXT_POS_Y)>>(4+SCALE))};
 end
 
 always_ff @(posedge clk) begin
@@ -146,7 +149,7 @@ always_comb begin : rect_comb_blk
         rgb_nxt = 12'h0_0_0;
     end else begin
         if(hcount2 >= TEXT_POS_X && vcount2 >= TEXT_POS_Y && hcount2 < (TEXT_POS_X + TEXT_WIDTH) && vcount2 < (TEXT_POS_Y + TEXT_HEIGHT)) begin
-            if (char_line_pixels[(7-3'((hcount2 - TEXT_POS_X)>>2))]) begin
+            if (char_line_pixels[(7-3'((hcount2 - TEXT_POS_X)>>SCALE))]) begin
                 rgb_nxt = 12'hf_f_f;
             end else begin
                 rgb_nxt = rgb_h2;
