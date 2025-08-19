@@ -1,3 +1,12 @@
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Jakub Bukowski
+ *
+ * Description:
+ * Module for barrels falling straight down.
+ */
+
 module ver_barrel(
     input logic clk,
     input logic rst,

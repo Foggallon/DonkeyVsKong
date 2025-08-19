@@ -56,6 +56,9 @@ set sv_files {
     ../rtl/barrel_ctl.sv
     ../rtl/ver_barrel.sv
     ../rtl/kong_movement.sv
+    ../rtl/Text/char_rom.sv
+    ../rtl/Text/font_rom.sv
+    ../rtl/Text/draw_rect_char.sv
 
 }
 
