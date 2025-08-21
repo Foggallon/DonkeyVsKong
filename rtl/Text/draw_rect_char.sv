@@ -16,6 +16,7 @@
  )(
     input  logic clk,
     input  logic rst,
+    input logic start_game,
     input  logic [7:0] char_line_pixels,
     output logic [7:0] char_xy,
     output logic [3:0] char_line,
@@ -39,7 +40,7 @@ logic hsync, vsync, hblnk, vblnk, hsync1, vsync1, hblnk1, vblnk1, hsync2, vsync2
 logic [7:0] char_xy_nxt;
 logic [3:0] char_line_nxt;
 
-
+localparam BLACK = 12'h0_0_0;
 
 /**
  * Internal logic
@@ -154,6 +155,8 @@ always_comb begin : rect_comb_blk
             end else begin
                 rgb_nxt = rgb_h2;
             end
+        end else if(start_game) begin
+            rgb_nxt = BLACK;
         end
         else begin
             rgb_nxt = rgb_h2;

@@ -219,9 +219,16 @@
       .out(draw_menu_if)
    );
 
-   draw_rect_char u_draw_rect_char (
+   draw_rect_char#(
+      .SCALE(2),
+      .TEXT_POS_X(190),
+      .TEXT_POS_Y(320),
+      .TEXT_WIDTH(256),
+      .TEXT_HEIGHT(128)
+   ) u_draw_rect_char (
       .clk(clk65MHz),
       .rst,
+      .start_game,
       .char_line_pixels(char_line_pixels),
       .char_xy(char_xy),
       .char_line(char_line),
