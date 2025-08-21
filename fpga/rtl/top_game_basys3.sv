@@ -12,6 +12,8 @@ module top_game_basys3 (
     input  wire       btnC,
     input  wire       PS2Clk,
     input  wire       PS2Data,
+    input  wire       JA1,
+    output wire [1:1] JA,
     output wire       Vsync,
     output wire       Hsync,
     output wire [3:0] vgaRed,
@@ -51,7 +53,9 @@ module top_game_basys3 (
         .g(vgaGreen),
         .b(vgaBlue),
         .hs(Hsync),
-        .vs(Vsync)
+        .vs(Vsync),
+        .rx(JA1),
+        .tx(JA)
     );
 
 endmodule

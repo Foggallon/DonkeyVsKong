@@ -56,6 +56,8 @@ set sv_files {
     ../rtl/barrel_ctl.sv
     ../rtl/ver_barrel.sv
     ../rtl/kong_movement.sv
+    ../rtl/UART/uart_tx_ctl.sv
+    ../rtl/UART/uart_rx_ctl.sv
 
 }
 
@@ -66,6 +68,11 @@ set verilog_files {
     ../rtl/Keyboard/ps2_receiver.v
     ../rtl/Keyboard/bin2ascii.v
     ../rtl/Keyboard/debouncer.v
+    ../rtl/UART/fifo.v
+    ../rtl/UART/mod_m_counter.v
+    ../rtl/UART/uart_rx.v
+    ../rtl/UART/uart_tx.v
+    ../rtl/UART/uart.v
 }
 
 # Specify VHDL design files location

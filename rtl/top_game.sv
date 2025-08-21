@@ -15,6 +15,8 @@
    input  logic       rst,
    input  logic       ps2_clk,
    input  logic       ps2_data,
+   input  logic       rx,
+   output logic       tx,       
    output logic       vs,
    output logic       hs,
    output logic [3:0] r,
@@ -64,8 +66,12 @@
    logic [10:0] xpos_barrel_5, ypos_barrel_5, xpos_barrel_5_v, ypos_barrel_5_v;
 
    logic [15:0] keycode;
-   logic [31:0] ascii_code;
+   logic [31:0] ascii_code, ascii_code_uart;
    logic left, right, jump, rotate, start_game, up, down;
+
+   logic [7:0] r_data, w_data;
+   logic [15:0] keycode_uart;
+   logic rd_uart, wr_uart, tx_full, rx_empty, oflag, uart_en, up_uart, down_uart;
 
    /**
     * Signals assignments
@@ -100,12 +106,46 @@
     * Submodules instances
     */
 
+   uart #(.DBIT(8), .SB_TICK(16), .DVSR(33), .DVSR_BIT(7), .FIFO_W(1)) u_uart (
+      .clk(clk65MHz),
+      .reset(rst),
+      .rd_uart(rd_uart),
+      .wr_uart(wr_uart),
+      .rx(rx),
+      .w_data(w_data),
+
+      .tx_full(tx_full),
+      .rx_empty(rx_empty),
+      .tx(tx),
+      .r_data(r_data)
+  );
+
+  uart_rx_ctl u_uart_rx_ctl(
+   .clk(clk65MHz),
+   .rst(rst),
+   .rx_empty,
+   .r_data,
+   .rd_uart,
+   .uart_data(keycode_uart),
+   .uart_en(uart_en)
+  );
+
+  uart_tx_ctl u_uart_tx_ctl(
+   .clk(clk65MHz),
+   .rst(rst),
+   .keycode,
+   .oflag,
+   .tx_full,
+   .w_data,
+   .wr_uart
+  );
+  
    ps2_receiver u_ps2_receiver (
       .clk(clk65MHz),
       .kclk(ps2_clk),
       .kdata(ps2_data),
       .keycode(keycode),
-      .oflag()
+      .oflag(oflag)
    );       
 
    bin2ascii u_bin2ascii (
@@ -113,9 +153,15 @@
       .O(ascii_code)
   );
 
+  bin2ascii u_bin2ascii_uart (
+      .I(keycode_uart),
+      .O(ascii_code_uart)
+  );
+
   key_decoder u_key_decoder (
       .clk(clk65MHz),
       .rst,
+      .en('1),
       .left,
       .right,
       .jump,
@@ -124,6 +170,20 @@
       .down,
       .keyCode(ascii_code),
       .rotate
+   );
+
+   key_decoder u_key_decoder_uart (
+      .clk(clk65MHz),
+      .rst,
+      .en(uart_en),
+      .left(),
+      .right(),
+      .jump(),
+      .start_game(),
+      .up(up_uart),
+      .down(down_uart),
+      .keyCode(ascii_code_uart),
+      .rotate()
    );
 
    vga_timing u_vga_timing (
@@ -427,7 +487,7 @@
       .rst(rst),
       .start_game,
       .animation,
-      .key(down),
+      .key(down_uart),
       .done({done_5, done_4, done_3, done_2, done_1}),
       .barrel(barrel)
    );
@@ -437,7 +497,7 @@
       .rst(rst),
       .start_game,
       .animation,
-      .key(up),
+      .key(up_uart),
       .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
       .barrel(barrel_v)
    );
