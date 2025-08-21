@@ -40,6 +40,7 @@
    vga_if animation_platform_if();
    vga_if draw_kong_if();
    vga_if draw_barrel_if();
+   vga_if draw_rect_char_if();
 
    /**
     * Local variables and signals
@@ -64,6 +65,10 @@
    logic [10:0] xpos_barrel_3, ypos_barrel_3, xpos_barrel_3_v, ypos_barrel_3_v;
    logic [10:0] xpos_barrel_4, ypos_barrel_4, xpos_barrel_4_v, ypos_barrel_4_v;
    logic [10:0] xpos_barrel_5, ypos_barrel_5, xpos_barrel_5_v, ypos_barrel_5_v;
+
+   wire [7:0] char_xy, char_line_pixels;
+   wire [6:0] char_code;
+   wire [3:0] char_line;
 
    logic [15:0] keycode;
    logic [31:0] ascii_code, ascii_code_uart;
@@ -214,6 +219,30 @@
       .out(draw_menu_if)
    );
 
+   draw_rect_char u_draw_rect_char (
+      .clk(clk65MHz),
+      .rst,
+      .char_line_pixels(char_line_pixels),
+      .char_xy(char_xy),
+      .char_line(char_line),
+
+      .in(draw_menu_if),
+      .out(draw_rect_char_if)
+   );
+
+   font_rom u_font_rom (
+      .clk(clk65MHz),
+      .addr({7'(char_code), 4'(char_line)}),
+      .char_line_pixels(char_line_pixels)
+   );
+
+   char_rom u_char_rom (
+      .clk(clk65MHz),
+      .rst,
+      .char_xy(char_xy),
+      .char_code(char_code)
+   );
+
    animation_ladder u_animation_ladder (
         .clk(clk65MHz),
         .rst,
@@ -305,7 +334,7 @@
       .pixel_addr(pixel_addr_ladder),
       .rgb_pixel(rgb_pixel_ladder),
 
-      .in(draw_menu_if),
+      .in(draw_rect_char_if),
       .out(draw_ladder_if)
    );
 

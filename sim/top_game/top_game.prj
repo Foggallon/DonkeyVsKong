@@ -10,20 +10,20 @@
 # https://docs.xilinx.com/r/en-US/ug900-vivado-logic-simulation/Project-File-.prj-Syntax
 
 
-sv work ../../rtl/vga_pkg.sv \
-        ../../rtl/vga_timing.sv \
-        ../../rtl/vga_if.sv \
+sv work ../../rtl/Packages/vga_pkg.sv \
+        ../../rtl/VGA/vga_timing.sv \
+        ../../rtl/VGA/vga_if.sv \
         ../../rtl/delay.sv \
         ../../rtl/top_game.sv \
-        ../../rtl/draw_donkey.sv \
+        ../../rtl/draw_character.sv \
         ../../rtl/ROM/image_rom.sv \
         ../../rtl/MainMenu/draw_menu.sv \
-        ../../rtl/movement.sv \
-        ../../rtl/Keyboard/keyboard_pkg.sv \
-        ../../rtl/character_pkg.sv \
+        ../../rtl/donkey_movement.sv \
+        ../../rtl/Packages/keyboard_pkg.sv \
+        ../../rtl/Packages/donkey_pkg.sv \
         ../common/tiff_writer.sv \
         top_game_tb.sv
         
-verilog work ../../rtl/Keyboard/PS2Receiver.v \
+verilog work ../../rtl/Keyboard/ps2_receiver.v \
              ../../rtl/Keyboard/debouncer.v \
              ../../rtl/Keyboard/bin2ascii.v \

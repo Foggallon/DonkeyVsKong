@@ -24,6 +24,7 @@ module drawMenu_tb;
      */
 
     vga_if vga_timing_if();
+    vga_if draw_menu_if();
     vga_if dut_if();
 
     logic clk, rst;
@@ -31,6 +32,11 @@ module drawMenu_tb;
     logic [11:0] rgb_pixel;
     logic [13:0] pixel_addr;
     assign {r,g,b} = dut_if.rgb;
+
+    wire [7:0] char_line_pixels;
+    wire [7:0] char_xy;
+    wire [3:0] char_line;
+    wire [7:0] char_code;
 
     /**
      * Clock generation
@@ -74,7 +80,7 @@ module drawMenu_tb;
 
    );
 
-    draw_menu dut (
+    draw_menu u_draw_menu (
         .clk,
         .rst,
         .rgb_pixel,
@@ -82,8 +88,32 @@ module drawMenu_tb;
         .start_game('0),
 
         .in(vga_timing_if),
+        .out(draw_menu_if)
+    );
+
+    draw_rect_char dut (
+        .clk,
+        .rst,
+        .char_line_pixels(char_line_pixels),
+        .char_xy(char_xy),
+        .char_line(char_line),
+
+        .in(draw_menu_if),
         .out(dut_if)
     );
+
+    font_rom u_font_rom (
+      .clk,
+      .addr({7'(char_code), 4'(char_line)}),
+      .char_line_pixels(char_line_pixels)
+   );
+
+   char_rom u_char_rom (
+      .clk,
+      .rst,
+      .char_xy(char_xy),
+      .char_code(char_code)
+   );
 
     tiff_writer #(
         .XDIM(16'd1344),

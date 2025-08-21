@@ -56,9 +56,11 @@ set sv_files {
     ../rtl/barrel_ctl.sv
     ../rtl/ver_barrel.sv
     ../rtl/kong_movement.sv
-    ../rtl/UART/uart_tx_ctl.sv
+    ../rtl/Text/char_rom.sv
+    ../rtl/Text/font_rom.sv
+    ../rtl/Text/draw_rect_char.sv
     ../rtl/UART/uart_rx_ctl.sv
-
+    ../rtl/UART/uart_rt_ctl.sv
 }
 
 # Specify Verilog design files location
