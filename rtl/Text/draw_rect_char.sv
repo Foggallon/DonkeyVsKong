@@ -150,15 +150,12 @@ always_comb begin : rect_comb_blk
         rgb_nxt = 12'h0_0_0;
     end else begin
         if(hcount2 >= TEXT_POS_X && vcount2 >= TEXT_POS_Y && hcount2 < (TEXT_POS_X + TEXT_WIDTH) && vcount2 < (TEXT_POS_Y + TEXT_HEIGHT)) begin
-            if (char_line_pixels[(7-3'((hcount2 - TEXT_POS_X)>>SCALE))]) begin
+            if ((char_line_pixels[(7-3'((hcount2 - TEXT_POS_X)>>SCALE))]) && !start_game) begin
                 rgb_nxt = 12'hf_f_f;
             end else begin
                 rgb_nxt = rgb_h2;
             end
-        end else if(start_game) begin
-            rgb_nxt = BLACK;
-        end
-        else begin
+        end else begin
             rgb_nxt = rgb_h2;
         end
     end
