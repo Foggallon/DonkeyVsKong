@@ -12,6 +12,7 @@ module hor_barrel (
     input  logic        clk,
     input  logic        rst,
     input  logic        barrel,
+    input  logic [10:0] xpos_kong,
     output logic        done,
     output logic [10:0] xpos,
     output logic [10:0] ypos
@@ -60,7 +61,7 @@ module hor_barrel (
     always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
             done <= '0;
-            xpos <= 2 * PLATFORM_WIDTH;
+            xpos <= xpos_kong;
             ypos <= 175;
             fall_ctl <= '0;
             velocity <= '0;
@@ -109,7 +110,7 @@ module hor_barrel (
         case (state) 
             ST_IDLE: begin
                 done_nxt = '0;
-                xpos_nxt = 2 * PLATFORM_WIDTH;
+                xpos_nxt = xpos_kong;
                 ypos_nxt = 175;
                 fall_ctl_nxt = '0;
                 velocity_nxt = '0;

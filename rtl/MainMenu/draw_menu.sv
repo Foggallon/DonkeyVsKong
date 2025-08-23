@@ -39,7 +39,7 @@ module draw_menu (
     logic vblnk_buf;
     logic vsync_buf;
 
-    localparam BLACK = 12'h0_0_0;
+    localparam GAME_BACKGROUND = 12'h2_2_2;
  
     /**
      * Signals buffer
@@ -82,10 +82,10 @@ module draw_menu (
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS ) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
+            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
                 rgb_nxt = rgb_pixel;
             else if (start_game)
-                rgb_nxt = BLACK;
+                rgb_nxt = GAME_BACKGROUND;
             else
                 rgb_nxt = rgb_buf;
         end

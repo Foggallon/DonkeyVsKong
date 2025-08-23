@@ -103,24 +103,24 @@ module kong_movement (
             end
 
             ST_GO_LEFT: begin
+                ypos_nxt = ypos;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
-                    ypos_nxt = ypos;
                 end
             end
 
             ST_GO_RIGHT: begin
+                ypos_nxt = ypos;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == KONG_XPOS_LIMIT ? xpos : (xpos + 1));
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     xpos_nxt = xpos;
-                    ypos_nxt = ypos;
                 end
             end
 

@@ -10,7 +10,7 @@
  * The project top module.
  */
 
- module top_game (
+module top_game (
    input  logic       clk65MHz,
    input  logic       rst,
    input  logic       ps2_clk,
@@ -31,52 +31,84 @@
     * Interface definitions
     */
 
-   vga_if draw_menu_if();
    vga_if vga_timing_if();
-   vga_if draw_donkey_if();
+   vga_if draw_menu_if();
    vga_if draw_ladder_if();
-   vga_if platform_if();
-   vga_if animation_ladder_if();
+   vga_if incline_platform_if();
    vga_if animation_platform_if();
-   vga_if draw_kong_if();
+   vga_if animation_ladder_if();
+   vga_if draw_animation_kong_if();
    vga_if draw_barrel_if();
-   vga_if draw_rect_char_if();
+   vga_if draw_kong_if();
+   vga_if draw_donkey_if();
 
    /**
     * Local variables and signals
     */
 
-   logic animation;
-   logic [3:0] counter, ctl;
-   logic [11:0] rgb_pixel, rgb_pixel_menu, rgb_pixel_ladder, rgb_pixel_ramp, rgb_pixel_Aladder, rgb_pixel_Aramp, rgb_pixel_kong, rgb_pixel_barrel;
-   logic [10:0] pixel_addr_ramp, pixel_addr_Aramp;
-   logic [9:0] pixel_addr_ladder, pixel_addr_Aladder;
-   logic [11:0] pixel_addr, pixel_addr_kong,  pixel_addr_barrel;
-   logic [13:0] pixel_addr_menu;
-   logic [10:0] xpos, ypos, xpos_kong, ypos_kong;
+   // Keyboard
+   logic oflag, right, left, jump, down, up, start_game, rotate;
+   logic [15:0] keycode;
+   logic [31:0] ascii_code;
 
-   logic [4:0] barrel;
-   logic [4:0] barrel_v;
+   // UART
+   logic rd_uart, wr_uart, tx_full, rx_empty;
+   logic [7:0] r_data, w_data;
+
+   // Keyboard - UART
+   logic right_uart, left_uart, down_uart, up_uart;
+   logic [15:0] keycode_uart;
+   logic [31:0] ascii_code_uart;
+   
+   // Start game menu
+   logic [11:0] rgb_pixel_menu;
+   logic [13:0] pixel_addr_menu;
+
+   // Ladders
+   logic [9:0] pixel_addr_ladder;
+   logic [11:0] rgb_pixel_ladder;
+
+   // Incline platforms
+   logic [10:0] pixel_addr_platform;
+   logic [11:0] rgb_pixel_platform;
+
+   // Animation
+   logic animation;
+   logic [3:0] counter, ctl_animation;
+   logic [10:0] xpos_animation, ypos_animation;
+
+   // Animation - ladder
+   logic [9:0] pixel_addr_animation_ladder;
+   logic [11:0] rgb_pixel_animation_ladder;
+
+   // Animation - platform
+   logic [10:0] pixel_addr_animation_platform;
+   logic [11:0] rgb_pixel_animation_platform;
+
+   // Animation - kong
+   logic [11:0] pixel_addr_animation_kong, rgb_pixel_animation_kong;
+
+   // Barrels
+   logic [4:0] barrel_hor, barrel_ver;
+   logic [11:0] pixel_addr_barrel, rgb_pixel_barrel;
+   logic [9:0][10:0] xpos_barrel, ypos_barrel;
+
+   // Barrels - horizontal / vertical
    logic done_1, done_2, done_3, done_4, done_5;
    logic done_ver_1, done_ver_2, done_ver_3, done_ver_4, done_ver_5;
-   logic [9:0][10:0] xpos_barrel, ypos_barrel;
    logic [10:0] xpos_barrel_1, ypos_barrel_1, xpos_barrel_1_v, ypos_barrel_1_v;
    logic [10:0] xpos_barrel_2, ypos_barrel_2, xpos_barrel_2_v, ypos_barrel_2_v;
    logic [10:0] xpos_barrel_3, ypos_barrel_3, xpos_barrel_3_v, ypos_barrel_3_v;
    logic [10:0] xpos_barrel_4, ypos_barrel_4, xpos_barrel_4_v, ypos_barrel_4_v;
    logic [10:0] xpos_barrel_5, ypos_barrel_5, xpos_barrel_5_v, ypos_barrel_5_v;
 
-   wire [7:0] char_xy, char_line_pixels;
-   wire [6:0] char_code;
-   wire [3:0] char_line;
+   // Kong - player 2
+   logic [10:0] xpos_kong, ypos_kong;
+   logic [11:0] pixel_addr_kong, rgb_pixel_kong;
 
-   logic [15:0] keycode;
-   logic [31:0] ascii_code, ascii_code_uart;
-   logic left, right, jump, rotate, start_game, up, down;
-
-   logic [7:0] r_data, w_data;
-   logic [15:0] keycode_uart;
-   logic rd_uart, wr_uart, tx_full, rx_empty, oflag, uart_en, up_uart, down_uart;
+   // Donkey - player 1
+   logic [10:0] xpos_donkey, ypos_donkey;
+   logic [11:0] pixel_addr_donkey, rgb_pixel_donkey;
 
    /**
     * Signals assignments
@@ -108,7 +140,37 @@
    assign {r,g,b} = draw_donkey_if.rgb;
    
    /**
-    * Submodules instances
+    * Keyboard
+    */
+  
+   ps2_receiver u_ps2_receiver (
+      .clk(clk65MHz),
+      .kclk(ps2_clk),
+      .kdata(ps2_data),
+      .keycode(keycode),
+      .oflag(oflag)
+   );       
+
+   bin2ascii u_bin2ascii (
+      .I(keycode),
+      .O(ascii_code)
+   );
+
+   key_decoder u_key_decoder (
+      .clk(clk65MHz),
+      .rst,
+      .left(left),
+      .right(right),
+      .jump(jump),
+      .start_game(start_game),
+      .up(up),
+      .down(down),
+      .keyCode(ascii_code),
+      .rotate(rotate)
+   );
+
+   /**
+    * UART
     */
 
    uart #(.DBIT(8), .SB_TICK(16), .DVSR(33), .DVSR_BIT(7), .FIFO_W(1)) u_uart (
@@ -125,64 +187,39 @@
       .r_data(r_data)
   );
 
-  uart_rx_ctl u_uart_rx_ctl(
-   .clk(clk65MHz),
-   .rst(rst),
-   .rx_empty,
-   .r_data,
-   .rd_uart,
-   .uart_data(keycode_uart),
-   .uart_en(uart_en)
-  );
-
-  uart_tx_ctl u_uart_tx_ctl(
-   .clk(clk65MHz),
-   .rst(rst),
-   .keycode,
-   .oflag,
-   .tx_full,
-   .w_data,
-   .wr_uart
-  );
-  
-   ps2_receiver u_ps2_receiver (
+   uart_rx_ctl u_uart_rx_ctl(
       .clk(clk65MHz),
-      .kclk(ps2_clk),
-      .kdata(ps2_data),
-      .keycode(keycode),
-      .oflag(oflag)
-   );       
+      .rst(rst),
+      .rx_empty,
+      .r_data,
+      .rd_uart,
+      .uart_data(keycode_uart)
+   );
 
-   bin2ascii u_bin2ascii (
-      .I(keycode),
-      .O(ascii_code)
-  );
+   uart_tx_ctl u_uart_tx_ctl(
+      .clk(clk65MHz),
+      .rst(rst),
+      .keycode,
+      .oflag,
+      .tx_full,
+      .w_data,
+      .wr_uart
+   );
 
-  bin2ascii u_bin2ascii_uart (
+  /**
+   * Keyboard - UART
+   */
+
+   bin2ascii u_bin2ascii_uart (
       .I(keycode_uart),
       .O(ascii_code_uart)
-  );
-
-  key_decoder u_key_decoder (
-      .clk(clk65MHz),
-      .rst,
-      .en('1),
-      .left,
-      .right,
-      .jump,
-      .start_game(start_game),
-      .up,
-      .down,
-      .keyCode(ascii_code),
-      .rotate
    );
 
    key_decoder u_key_decoder_uart (
       .clk(clk65MHz),
       .rst,
-      .en(uart_en),
-      .left(),
-      .right(),
+      .left(left_uart),
+      .right(right_uart),
       .jump(),
       .start_game(),
       .up(up_uart),
@@ -191,6 +228,10 @@
       .rotate()
    );
 
+   /**
+    * VGA
+    */
+
    vga_timing u_vga_timing (
       .clk(clk65MHz),
       .rst,
@@ -198,108 +239,340 @@
       .out(vga_timing_if)
   );
 
-  image_rom  #(
-      .BITS(14),
-      .PIXELS(12292),
-      .ROM_FILE("../../rtl/MainMenu/DonkeyVsKong_small.dat")
-   ) u_image_Rom_menu (
-      .clk(clk65MHz),
-      .address(pixel_addr_menu),
-      .rgb(rgb_pixel_menu)
-   );
+   /**
+    * Start game menu
+    */
 
    draw_menu u_draw_menu (
       .clk(clk65MHz),
       .rst,
       .start_game,
-      .pixel_addr(pixel_addr_menu),
       .rgb_pixel(rgb_pixel_menu),
+      .pixel_addr(pixel_addr_menu),
 
       .in(vga_timing_if),
       .out(draw_menu_if)
    );
 
-   draw_rect_char#(
-      .SCALE(2),
-      .TEXT_POS_X(190),
-      .TEXT_POS_Y(320),
-      .TEXT_WIDTH(256),
-      .TEXT_HEIGHT(128)
-   ) u_draw_rect_char (
+   image_rom  #(
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/DonkeyVsKong_small.dat")
+   ) u_image_rom_menu (
+      .clk(clk65MHz),
+      .address(pixel_addr_menu),
+      .rgb(rgb_pixel_menu)
+   );
+
+   /**
+    * Ladders 
+    */
+
+   draw_ladder u_draw_ladder (
       .clk(clk65MHz),
       .rst,
       .start_game,
-      .char_line_pixels(char_line_pixels),
-      .char_xy(char_xy),
-      .char_line(char_line),
+      .animation,
+      .pixel_addr(pixel_addr_ladder),
+      .rgb_pixel(rgb_pixel_ladder),
 
       .in(draw_menu_if),
-      .out(draw_rect_char_if)
-   );
-
-   font_rom u_font_rom (
-      .clk(clk65MHz),
-      .addr({7'(char_code), 4'(char_line)}),
-      .char_line_pixels(char_line_pixels)
-   );
-
-   char_rom u_char_rom (
-      .clk(clk65MHz),
-      .rst,
-      .char_xy(char_xy),
-      .char_code(char_code)
-   );
-
-   animation_ladder u_animation_ladder (
-        .clk(clk65MHz),
-        .rst,
-        .pixel_addr(pixel_addr_Aladder),
-        .rgb_pixel(rgb_pixel_Aladder),
-        .start_game,
-        .animation,
-        .counter(counter),
-        .in(animation_platform_if),
-        .out(animation_ladder_if)
+      .out(draw_ladder_if)
    );
 
    image_rom  #(
         .BITS(10),
         .PIXELS(1028),
         .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
-    ) u_image_rom_Aladder (
+   ) u_image_rom_ladder (
       .clk(clk65MHz),
-      .address(pixel_addr_Aladder),
-      .rgb(rgb_pixel_Aladder)
+      
+      .address(pixel_addr_ladder),
+      .rgb(rgb_pixel_ladder)
    );
 
-   animation_platform u_animation_platform (
-        .clk(clk65MHz),
-        .rst,
-        .pixel_addr(pixel_addr_Aramp),
-        .rgb_pixel(rgb_pixel_Aramp),
-        .start_game,
-        .ctl(ctl),
-        .in(platform_if),
-        .out(animation_platform_if)
-    );
+   /**
+    * Incline platforms
+    */
 
-    image_rom  #(
-        .BITS(11),
-        .PIXELS(2052),
-        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_image_rom_Aplatform (
+   incline_platform u_incline_platform (
       .clk(clk65MHz),
-      .address(pixel_addr_Aramp),
-      .rgb(rgb_pixel_Aramp)
+      .rst,
+      .pixel_addr(pixel_addr_platform),
+      .rgb_pixel(rgb_pixel_platform),
+      .start_game,
+      .ctl(ctl_animation),
+
+      .in(draw_ladder_if),
+      .out(incline_platform_if)
    );
+
+   image_rom  #(
+      .BITS(11),
+      .PIXELS(2052),
+      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_image_rom_incline_platform (
+      .clk(clk65MHz),
+      .address(pixel_addr_platform),
+      .rgb(rgb_pixel_platform)
+   );
+
+   /**
+    * Animation
+    */
 
    start_animation u_start_animation (
       .clk(clk65MHz),
       .rst,
       .start_game,
       .animation(animation),
+      .counter(counter),
+      .ctl(ctl_animation),
+      .xpos(xpos_animation),
+      .ypos(ypos_animation)
+   );
+
+   animation_platform u_animation_platform (
+        .clk(clk65MHz),
+        .rst,
+        .pixel_addr(pixel_addr_animation_platform),
+        .rgb_pixel(rgb_pixel_animation_platform),
+        .start_game,
+        .ctl(ctl_animation),
+        .in(incline_platform_if),
+        .out(animation_platform_if)
+   );
+
+   image_rom  #(
+        .BITS(11),
+        .PIXELS(2052),
+        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+   ) u_image_rom_animation_platform (
+      .clk(clk65MHz),
+      .address(pixel_addr_animation_platform),
+      .rgb(rgb_pixel_animation_platform)
+   );
+
+   animation_ladder u_animation_ladder (
+      .clk(clk65MHz),
+      .rst,
+      .start_game,
+      .animation,
       .counter,
-      .ctl,
+      .rgb_pixel(rgb_pixel_animation_ladder),
+      .pixel_addr(pixel_addr_animation_ladder),
+
+      .in(animation_platform_if),
+      .out(animation_ladder_if)
+   );
+
+   image_rom  #(
+        .BITS(10),
+        .PIXELS(1028),
+        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
+   ) u_image_rom_animation_ladder (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_animation_ladder),
+      .rgb(rgb_pixel_animation_ladder)
+   );
+
+   draw_character #(
+      .CHARACTER_HEIGHT(64),
+      .CHARACTER_WIDTH(64)
+   ) u_draw_character_animation_kong (
+      .clk(clk65MHz),
+      .rst,
+      .rotate('0),
+      .start_game,
+      .pixel_addr(pixel_addr_animation_kong),
+      .rgb_pixel(rgb_pixel_animation_kong),
+      .xpos(xpos_animation),
+      .ypos(ypos_animation),
+      .en(animation),
+
+      .in(animation_ladder_if),
+      .out(draw_animation_kong_if)
+   );
+   
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/Kong/Kong.dat")
+   
+   ) u_image_rom_kong (
+      .clk(clk65MHz),
+      .address(pixel_addr_animation_kong),
+      .rgb(rgb_pixel_animation_kong)
+   );
+
+   /**
+    * Barrels
+    */
+   
+   draw_barrel #(.BARRELS(10)) u_draw_barrel (
+      .clk(clk65MHz),
+      .rst(rst),
+      .start_game,
+      .animation,
+      .barrel({barrel_ver, barrel_hor}),
+      .xpos(xpos_barrel),
+      .ypos(ypos_barrel),
+      .rgb_pixel(rgb_pixel_barrel),
+      .pixel_addr(pixel_addr_barrel),
+
+      .in(draw_animation_kong_if),
+      .out(draw_barrel_if)
+   );
+
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
+   ) u_image_rom_barrel (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_barrel),
+      .rgb(rgb_pixel_barrel)
+   );
+
+   hor_barrel u_ver_barrel_1 (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_hor[0]),
+      .done(done_1),
+      .xpos(xpos_barrel_1),
+      .ypos(ypos_barrel_1)
+   );
+
+   hor_barrel u_ver_barrel_2 (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_hor[1]),
+      .done(done_2),
+      .xpos(xpos_barrel_2),
+      .ypos(ypos_barrel_2)
+   );
+
+   hor_barrel u_ver_barrel_3 (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_hor[2]),
+      .done(done_3),
+      .xpos(xpos_barrel_3),
+      .ypos(ypos_barrel_3)
+   );
+
+   hor_barrel u_ver_barrel_4 (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_hor[3]),
+      .done(done_4),
+      .xpos(xpos_barrel_4),
+      .ypos(ypos_barrel_4)
+   );
+
+   hor_barrel u_ver_barrel_5 (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_hor[4]),
+      .done(done_5),
+      .xpos(xpos_barrel_5),
+      .ypos(ypos_barrel_5)
+   );
+
+   ver_barrel u_ver_barrel_1_v (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_ver[0]),
+      .done(done_ver_1),
+      .xpos(xpos_barrel_1_v),
+      .ypos(ypos_barrel_1_v)
+   );
+
+   ver_barrel u_ver_barrel_2_v (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_ver[1]),
+      .done(done_ver_2),
+      .xpos(xpos_barrel_2_v),
+      .ypos(ypos_barrel_2_v)
+   );
+
+   ver_barrel u_ver_barrel_3_v (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_ver[2]),
+      .done(done_ver_3),
+      .xpos(xpos_barrel_3_v),
+      .ypos(ypos_barrel_3_v)
+   );
+
+   ver_barrel u_ver_barrel_4_v (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_ver[3]),
+      .done(done_ver_4),
+      .xpos(xpos_barrel_4_v),
+      .ypos(ypos_barrel_4_v)
+   );
+
+   ver_barrel u_ver_barrel_5_v (
+      .clk(clk65MHz),
+      .rst(rst),
+      .xpos_kong,
+      .barrel(barrel_ver[4]),
+      .done(done_ver_5),
+      .xpos(xpos_barrel_5_v),
+      .ypos(ypos_barrel_5_v)
+   );
+
+   barrel_ctl #(
+      .BARRELS(5),
+      .DELAY_TIME(162_500_000)
+   ) u_barrel_ctl_hor (
+      .clk(clk65MHz),
+      .rst(rst),
+      .start_game,
+      .animation,
+      .key(up_uart),
+      .done({done_5, done_4, done_3, done_2, done_1}),
+      .barrel(barrel_hor)
+   );
+   
+   barrel_ctl #(
+      .BARRELS(5), 
+      .DELAY_TIME(20_500_000)
+   ) u_barrel_ctl_ver (
+      .clk(clk65MHz),
+      .rst(rst),
+      .start_game,
+      .animation,
+      .key(down_uart),
+      .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
+      .barrel(barrel_ver)
+   );
+
+   /**
+    * Kong - player 2
+    */
+
+   kong_movement u_kong_movement (
+      .clk(clk65MHz),
+      .rst,
+      .start_game,
+      .animation,
+      .left(left_uart),
+      .right(right_uart),
       .xpos(xpos_kong),
       .ypos(ypos_kong)
    );
@@ -316,9 +589,9 @@
       .rgb_pixel(rgb_pixel_kong),
       .xpos(xpos_kong),
       .ypos(ypos_kong),
-      .en(animation),
+      .en(!animation),
 
-      .in(animation_ladder_if),
+      .in(draw_barrel_if),
       .out(draw_kong_if)
    );
    
@@ -327,58 +600,32 @@
       .PIXELS(4096),
       .ROM_FILE("../../rtl/Kong/Kong.dat")
    
-   ) u_image_rom_kong (
+   ) u_image_rom_kong_2 (
       .clk(clk65MHz),
       .address(pixel_addr_kong),
       .rgb(rgb_pixel_kong)
    );
 
-   draw_ladder u_draw_ladder (
+   /**
+    * Donkey - player 1
+    */
+
+   donkey_movement u_donkey_movement (
       .clk(clk65MHz),
-      .rst,
+      .rst(rst),
+      .xpos(xpos_donkey),
+      .ypos(ypos_donkey),
+      
       .start_game,
       .animation,
-      .pixel_addr(pixel_addr_ladder),
-      .rgb_pixel(rgb_pixel_ladder),
-
-      .in(draw_rect_char_if),
-      .out(draw_ladder_if)
+      .left,
+      .right,
+      .jump,
+      .down,
+      .up
    );
 
-   image_rom  #(
-        .BITS(10),
-        .PIXELS(1028),
-        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
-   ) u_image_rom_ladder (
-      .clk(clk65MHz),
-      
-      .address(pixel_addr_ladder),
-      .rgb(rgb_pixel_ladder)
-   );
-
-   incline_platform u_incline_platform (
-      .clk(clk65MHz),
-      .rst,
-      .pixel_addr(pixel_addr_ramp),
-      .rgb_pixel(rgb_pixel_ramp),
-      .start_game,
-      .ctl,
-
-      .in(draw_ladder_if),
-      .out(platform_if)
-   );
-
-   image_rom  #(
-      .BITS(11),
-      .PIXELS(2052),
-      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_image_rom_platform (
-      .clk(clk65MHz),
-      .address(pixel_addr_ramp),
-      .rgb(rgb_pixel_ramp)
-   );
-
-   draw_character #(
+    draw_character #(
       .CHARACTER_HEIGHT(64),
       .CHARACTER_WIDTH(48)
    ) u_draw_character_donkey (
@@ -386,13 +633,13 @@
       .rst,
       .rotate,
       .start_game,
-      .pixel_addr,
-      .rgb_pixel,
-      .xpos(xpos),
-      .ypos(ypos),
+      .pixel_addr(pixel_addr_donkey),
+      .rgb_pixel(rgb_pixel_donkey),
+      .xpos(xpos_donkey),
+      .ypos(ypos_donkey),
       .en(!animation),
 
-      .in(draw_barrel_if),
+      .in(draw_kong_if),
       .out(draw_donkey_if)
    );
    
@@ -404,164 +651,8 @@
    ) u_image_rom_donkey (
       .clk(clk65MHz),
       
-      .address(pixel_addr),
-      .rgb(rgb_pixel)
-   );
-
-   donkey_movement u_donkey_movement (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos(xpos),
-      .ypos(ypos),
-      
-      .start_game,
-      .animation,
-      .left,
-      .right,
-      .jump,
-      .down,
-      .up
-   );
-
-   hor_barrel u_ver_barrel_1 (
-      .clk(clk65MHz),
-      .rst(rst),
-      .barrel(barrel[0]),
-      .done(done_1),
-      .xpos(xpos_barrel_1),
-      .ypos(ypos_barrel_1)
-   );
-
-   hor_barrel u_ver_barrel_2 (
-      .clk(clk65MHz),
-      .rst(rst),
-      .barrel(barrel[1]),
-      .done(done_2),
-      .xpos(xpos_barrel_2),
-      .ypos(ypos_barrel_2)
-   );
-
-   hor_barrel u_ver_barrel_3 (
-      .clk(clk65MHz),
-      .rst(rst),
-      .barrel(barrel[2]),
-      .done(done_3),
-      .xpos(xpos_barrel_3),
-      .ypos(ypos_barrel_3)
-   );
-
-   hor_barrel u_ver_barrel_4 (
-      .clk(clk65MHz),
-      .rst(rst),
-      .barrel(barrel[3]),
-      .done(done_4),
-      .xpos(xpos_barrel_4),
-      .ypos(ypos_barrel_4)
-   );
-
-   hor_barrel u_ver_barrel_5 (
-      .clk(clk65MHz),
-      .rst(rst),
-      .barrel(barrel[4]),
-      .done(done_5),
-      .xpos(xpos_barrel_5),
-      .ypos(ypos_barrel_5)
-   );
-
-   ver_barrel u_ver_barrel_1_v (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos_kong(xpos_kong),
-      .barrel(barrel_v[0]),
-      .done(done_ver_1),
-      .xpos(xpos_barrel_1_v),
-      .ypos(ypos_barrel_1_v)
-   );
-
-   ver_barrel u_ver_barrel_2_v (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos_kong(xpos_kong),
-      .barrel(barrel_v[1]),
-      .done(done_ver_2),
-      .xpos(xpos_barrel_2_v),
-      .ypos(ypos_barrel_2_v)
-   );
-
-   ver_barrel u_ver_barrel_3_v (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos_kong(xpos_kong),
-      .barrel(barrel_v[2]),
-      .done(done_ver_3),
-      .xpos(xpos_barrel_3_v),
-      .ypos(ypos_barrel_3_v)
-   );
-
-   ver_barrel u_ver_barrel_4_v (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos_kong(xpos_kong),
-      .barrel(barrel_v[3]),
-      .done(done_ver_4),
-      .xpos(xpos_barrel_4_v),
-      .ypos(ypos_barrel_4_v)
-   );
-
-   ver_barrel u_ver_barrel_5_v (
-      .clk(clk65MHz),
-      .rst(rst),
-      .xpos_kong(xpos_kong),
-      .barrel(barrel_v[4]),
-      .done(done_ver_5),
-      .xpos(xpos_barrel_5_v),
-      .ypos(ypos_barrel_5_v)
-   );
-
-   barrel_ctl #(.BARRELS(5), .DELAY_TIME(162_500_000)) u_barrel_ctl_hor (
-      .clk(clk65MHz),
-      .rst(rst),
-      .start_game,
-      .animation,
-      .key(down_uart),
-      .done({done_5, done_4, done_3, done_2, done_1}),
-      .barrel(barrel)
-   );
-   
-   barrel_ctl #(.BARRELS(5), .DELAY_TIME(20_500_000)) u_barrel_ctl_ver (
-      .clk(clk65MHz),
-      .rst(rst),
-      .start_game,
-      .animation,
-      .key(up_uart),
-      .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
-      .barrel(barrel_v)
-   );
-
-   draw_barrel #(.BARRELS(10)) u_draw_barrel (
-      .clk(clk65MHz),
-      .rst(rst),
-      .start_game,
-      .animation,
-      .barrel({barrel_v, barrel}),
-      .xpos(xpos_barrel),
-      .ypos(ypos_barrel),
-      .rgb_pixel(rgb_pixel_barrel),
-      .pixel_addr(pixel_addr_barrel),
-
-      .in(draw_kong_if),
-      .out(draw_barrel_if)
-   );
-
-   image_rom  #(
-      .BITS(12),
-      .PIXELS(4096),
-      .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
-   ) u_image_rom_barrel (
-      .clk(clk65MHz),
-      
-      .address(pixel_addr_barrel),
-      .rgb(rgb_pixel_barrel)
+      .address(pixel_addr_donkey),
+      .rgb(rgb_pixel_donkey)
    );
 
 endmodule

@@ -12,7 +12,6 @@
 module key_decoder (
     input  logic        clk,
     input  logic        rst,
-    input  logic        en,
     input  logic [31:0] keyCode,
     output logic        left,
     output logic        right,
@@ -56,25 +55,25 @@ module key_decoder (
         up_nxt = '0;
         down_nxt = '0;
 
-        if (keyCode[15:0] == A & keyCode[31:16] != RELEASED && en) begin
+        if (keyCode[15:0] == A & keyCode[31:16] != RELEASED) begin
             left_nxt = '1;
             rotate_nxt = '1;
-        end else if (keyCode[15:0] == D & keyCode[31:16] != RELEASED && en) begin
+        end else if (keyCode[15:0] == D & keyCode[31:16] != RELEASED) begin
             right_nxt = '1;
             rotate_nxt = '0;
-        end else if (keyCode[15:0] == SPACE & keyCode[31:16] != RELEASED && en) begin
+        end else if (keyCode[15:0] == SPACE & keyCode[31:16] != RELEASED) begin
             jump_nxt = '1;
             rotate_nxt = rotate;
-        end else if (keyCode[15:0] == A & keyCode[31:16] != RELEASED && en) 
+        end else if (keyCode[15:0] == A & keyCode[31:16] != RELEASED) 
             rotate_nxt = '1;
-        else if (keyCode[15:0] == W & keyCode[31:16] != RELEASED && en) begin
+        else if (keyCode[15:0] == W & keyCode[31:16] != RELEASED) begin
             up_nxt = '1;
             rotate_nxt = rotate;
-        end else if (keyCode[15:0] == S & keyCode[31:16] != RELEASED && en) begin
+        end else if (keyCode[15:0] == S & keyCode[31:16] != RELEASED) begin
             down_nxt = '1;
             rotate_nxt = rotate;
         // temp
-        end else if (keyCode[15:0] == ENTER & keyCode[31:16] != RELEASED && en) begin
+        end else if (keyCode[15:0] == ENTER & keyCode[31:16] != RELEASED) begin
             start_game_nxt = '1;
             rotate_nxt = rotate;
         end else begin

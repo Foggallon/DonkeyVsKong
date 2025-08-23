@@ -15,7 +15,6 @@ module uart_rx_ctl (
     input  logic        rx_empty,   // RX FIFO empty flag.
     input  logic [7:0]  r_data,     // 8-bit data read from the UART FIFO.
     output logic        rd_uart,    // Signal to read next 8-bit data from FIFO.
-    output logic        uart_en,    // Signal when the data is valid.
     output logic [15:0] uart_data   // Output combining two received UART bytes {MSB, LSB}.
 );
 
@@ -28,7 +27,7 @@ module uart_rx_ctl (
     typedef enum logic [0:0] {ST_READ_MSB, ST_READ_LSB} STATE_T;
     STATE_T state, state_nxt;
 
-    logic rd_uart_nxt, uart_en_nxt;
+    logic rd_uart_nxt;
     logic [7:0] msb, msb_nxt;
     logic [15:0] uart_data_nxt;
 
@@ -44,12 +43,10 @@ module uart_rx_ctl (
         if (rst) begin
             uart_data <= 0;
             rd_uart <= '0;
-            uart_en <= '0;
             msb <= 0;
         end else begin
             uart_data <= uart_data_nxt;
             rd_uart <= rd_uart_nxt;
-            uart_en <= uart_en_nxt;
             msb <= msb_nxt;
         end
     end
@@ -77,11 +74,9 @@ module uart_rx_ctl (
                     msb_nxt = r_data;
                     uart_data_nxt = '0;
                     rd_uart_nxt = '1;
-                    uart_en_nxt = '0;
                 end else begin
                     msb_nxt = msb;
                     uart_data_nxt = uart_data;
-                    uart_en_nxt = '0;
                     rd_uart_nxt = '0;
                 end
             end
@@ -91,12 +86,10 @@ module uart_rx_ctl (
                     uart_data_nxt = {msb, r_data};
                     msb_nxt = msb;
                     rd_uart_nxt = '1;
-                    uart_en_nxt = '1;
                 end else begin
                     msb_nxt = msb;
                     uart_data_nxt = uart_data;
                     rd_uart_nxt = '0;
-                    uart_en_nxt = '0;
                 end
             end
 
@@ -104,7 +97,6 @@ module uart_rx_ctl (
                 msb_nxt = msb;
                 uart_data_nxt = uart_data;
                 rd_uart_nxt = '0;
-                uart_en_nxt = '0;
             end
         endcase
     end
