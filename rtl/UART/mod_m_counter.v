@@ -1,4 +1,16 @@
-// Listing 4.11
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Pong P. Chu
+ * Book: FPGA PROTOTYPING BY VERILOG EXAMPLES
+ * Listing 4.11
+ *
+ * Description from the book:
+ * A mod-m counter counts from 0 to m - 1 and wraps around. It has two parameters: M, which
+ * specifies the limit m and N, which specifies the number of bits needed and should be equal
+ * to log2 M.
+ */
+
 module mod_m_counter
    #(
     parameter N=4, // number of bits in counter
@@ -16,7 +28,7 @@ module mod_m_counter
 
    // body
    // register
-   always @(posedge clk, posedge reset)
+   always @(posedge clk)
       if (reset)
          r_reg <= 0;
       else

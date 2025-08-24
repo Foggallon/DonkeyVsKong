@@ -1,4 +1,21 @@
-// Listing 4.20
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Pong P. Chu
+ * Book: FPGA PROTOTYPING BY VERILOG EXAMPLES
+ * Listing 4.20
+ *
+ * Description from the book:
+ * The code is divided into a register file and a FIFO controller. The controller consists of
+ * two pointers and two status FFs. Its next-state logic examines the wr and rd signals and takes
+ * actions accordingly. For example, let us consider the " 10" case, which implies that only a
+ * write operation occurs. The status FF is checked first to ensure that the buffer is not full.
+ * If this condition is met, we advance the write pointer by one position and clear the empty
+ * status FF. Storing one extra word to the buffer may make it full. This happens if the new
+ * write pointer "catches" the read pointer, which is expressed by the w-_tr_succ==r_ptr_reg
+ * expression.
+ */
+
 module fifo
    #(
     parameter B=8, // number of bits in a word
@@ -31,7 +48,7 @@ module fifo
 
    // fifo control logic
    // register for read and write pointers
-   always @(posedge clk, posedge reset)
+   always @(posedge clk)
       if (reset)
          begin
             w_ptr_reg <= 0;

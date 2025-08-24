@@ -5,14 +5,15 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module for making ladders on game map
+ * Module for drawing ladders on game map.
  */
 
 module draw_ladder (
     input  logic        clk,
     input  logic        rst,
     input  logic        start_game,
-    input  logic        animation,
+    input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
+                                    // and switches to 0 once the animation has completed.
     input  logic [11:0] rgb_pixel,
     output logic [9:0]  pixel_addr,
 
@@ -107,6 +108,7 @@ module draw_ladder (
                              (hcount_buf >= DECORATION_2_HSTART) && (hcount_buf < DECORATION_2_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
+                // Draw always (during animation and game).
                 end else if ((vcount_buf >= LADDER_5_VSTART) && (vcount_buf <= LADDER_5_VSTOP) &&
                              (hcount_buf >= LADDER_5_HSTART) && (hcount_buf < LADDER_5_HSTART + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;

@@ -283,7 +283,7 @@ module top_game (
    image_rom  #(
         .BITS(10),
         .PIXELS(1028),
-        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
+        .ROM_FILE("../../rtl/ROM/drabinka.dat")
    ) u_image_rom_ladder (
       .clk(clk65MHz),
       
@@ -310,7 +310,7 @@ module top_game (
    image_rom  #(
       .BITS(11),
       .PIXELS(2052),
-      .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+      .ROM_FILE("../../rtl/ROM/platforma.dat")
    ) u_image_rom_incline_platform (
       .clk(clk65MHz),
       .address(pixel_addr_platform),
@@ -346,7 +346,7 @@ module top_game (
    image_rom  #(
         .BITS(11),
         .PIXELS(2052),
-        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
+        .ROM_FILE("../../rtl/ROM/platforma.dat")
    ) u_image_rom_animation_platform (
       .clk(clk65MHz),
       .address(pixel_addr_animation_platform),
@@ -369,7 +369,7 @@ module top_game (
    image_rom  #(
         .BITS(10),
         .PIXELS(1028),
-        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
+        .ROM_FILE("../../rtl/ROM/drabinka.dat")
    ) u_image_rom_animation_ladder (
       .clk(clk65MHz),
       
@@ -398,7 +398,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/Kong/Kong.dat")
+      .ROM_FILE("../../rtl/ROM/Kong.dat")
    
    ) u_image_rom_kong (
       .clk(clk65MHz),
@@ -428,7 +428,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
+      .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
    ) u_image_rom_barrel (
       .clk(clk65MHz),
       
@@ -598,7 +598,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/Kong/Kong.dat")
+      .ROM_FILE("../../rtl/ROM/Kong.dat")
    
    ) u_image_rom_kong_2 (
       .clk(clk65MHz),
@@ -646,7 +646,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
+      .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
    
    ) u_image_rom_donkey (
       .clk(clk65MHz),

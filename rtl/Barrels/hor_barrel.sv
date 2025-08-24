@@ -5,15 +5,15 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module horizontal barrel movement
+ * Module for horizontal barrel movement.
  */
 
 module hor_barrel (
     input  logic        clk,
     input  logic        rst,
-    input  logic        barrel,
-    input  logic [10:0] xpos_kong,
-    output logic        done,
+    input  logic        barrel,     // Enable movement of a barrel.
+    input  logic [10:0] xpos_kong,  // Update starting xpos with kong position.
+    output logic        done,       // Set to 1 for one clock cycle when barrel stopped rolling.
     output logic [10:0] xpos,
     output logic [10:0] ypos
 );
@@ -124,7 +124,7 @@ module hor_barrel (
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = (platform == 2'b01 || (ypos <= 450 - 96 && ypos >= 292)) ? xpos - 1 : xpos + 1;
-                    if ((platform == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0)) begin
+                    if ((platform == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0)) begin    // when on incline platform
                         ypos_nxt = ypos + PLATFORM_OFFSET;
                     end else if ((platform == 2'b10) & (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;

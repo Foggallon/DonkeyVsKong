@@ -6,7 +6,7 @@
  * Author: Jakub Bukowski && Dawid Bodzek
  * 
  * Description:
- * Key decoder for keyboard
+ * Key decoder for keyboard.
  */
 
 module key_decoder (
@@ -19,13 +19,12 @@ module key_decoder (
     output logic        rotate,
     output logic        up,
     output logic        down,
-    output logic        start_game // temporary
+    output logic        start_game
 );
-
     import keyboard_pkg::*;
 
     logic left_nxt, right_nxt, jump_nxt, rotate_nxt, down_nxt, up_nxt;
-    logic start_game_nxt; // temporary
+    logic start_game_nxt;
 
     always_ff @(posedge clk) begin : out_seg_blk
         if (rst) begin
@@ -33,7 +32,7 @@ module key_decoder (
             right <= '0;
             jump <= '0; 
             rotate <= '0;
-            start_game <= '0; // temp
+            start_game <= '0;
             up <= '0;
             down <= '0;
         end else begin
@@ -41,7 +40,7 @@ module key_decoder (
             right <= right_nxt;
             jump <= jump_nxt;
             rotate <= rotate_nxt;
-            start_game <= start_game_nxt; // temp
+            start_game <= start_game_nxt;
             up <= up_nxt;
             down <= down_nxt;
         end
@@ -51,7 +50,7 @@ module key_decoder (
         left_nxt = '0;
         right_nxt = '0;
         jump_nxt = '0;
-        start_game_nxt = start_game; // temp
+        start_game_nxt = start_game;
         up_nxt = '0;
         down_nxt = '0;
 
@@ -72,7 +71,6 @@ module key_decoder (
         end else if (keyCode[15:0] == S & keyCode[31:16] != RELEASED) begin
             down_nxt = '1;
             rotate_nxt = rotate;
-        // temp
         end else if (keyCode[15:0] == ENTER & keyCode[31:16] != RELEASED) begin
             start_game_nxt = '1;
             rotate_nxt = rotate;
@@ -81,7 +79,7 @@ module key_decoder (
             right_nxt = '0;
             jump_nxt = '0;
             rotate_nxt = rotate;
-            start_game_nxt = start_game; // temp
+            start_game_nxt = start_game;
         end
     end
 endmodule

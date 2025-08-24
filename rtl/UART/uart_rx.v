@@ -1,4 +1,14 @@
-//Listing 8.1
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Pong P. Chu
+ * Book: FPGA PROTOTYPING BY VERILOG EXAMPLES
+ * Listing 8.1
+ *
+ * Description from the book:
+ * 
+ */
+
 module uart_rx
    #(
      parameter DBIT = 8,     // # data bits
@@ -26,7 +36,7 @@ module uart_rx
 
    // body
    // FSMD state & data registers
-   always @(posedge clk, posedge reset)
+   always @(posedge clk)
       if (reset)
          begin
             state_reg <= idle;

@@ -31,12 +31,12 @@ set sv_files {
     ../rtl/Packages/vga_pkg.sv
     ../rtl/ROM/image_rom.sv
     ../rtl/MainMenu/draw_menu.sv
-    ../rtl/delay.sv
+    ../rtl/Common/delay.sv
     ../rtl/top_game.sv
     ../rtl/VGA/vga_timing.sv
     ../rtl/VGA/vga_if.sv
-    ../rtl/donkey_movement.sv
-    ../rtl/draw_character.sv
+    ../rtl/Movement/donkey_movement.sv
+    ../rtl/Common/draw_character.sv
     rtl/top_game_basys3.sv
     ../rtl/Packages/keyboard_pkg.sv
     ../rtl/Packages/donkey_pkg.sv
@@ -44,18 +44,18 @@ set sv_files {
     ../rtl/Packages/platform_pkg.sv
     ../rtl/Packages/ladder_pkg.sv
     ../rtl/Packages/animation_pkg.sv
-    ../rtl/draw_ladder.sv
-    ../rtl/map_control.sv
-    ../rtl/incline_platform.sv
+    ../rtl/Map/draw_ladder.sv
+    ../rtl/Common/map_control.sv
+    ../rtl/Map/incline_platform.sv
     ../rtl/Keyboard/key_decoder.sv
-    ../rtl/start_animation.sv
-    ../rtl/animation_ladder.sv
-    ../rtl/animation_platform.sv
-    ../rtl/hor_barrel.sv
-    ../rtl/draw_barrel.sv
-    ../rtl/barrel_ctl.sv
-    ../rtl/ver_barrel.sv
-    ../rtl/kong_movement.sv
+    ../rtl/Animation/start_animation.sv
+    ../rtl/Animation/animation_ladder.sv
+    ../rtl/Animation/animation_platform.sv
+    ../rtl/Barrels/hor_barrel.sv
+    ../rtl/Barrels/draw_barrel.sv
+    ../rtl/Barrels/barrel_ctl.sv
+    ../rtl/Barrels/ver_barrel.sv
+    ../rtl/Movement/kong_movement.sv
     ../rtl/Text/char_rom.sv
     ../rtl/Text/font_rom.sv
     ../rtl/Text/draw_rect_char.sv

@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module for main menu.
+ * Module for drawing menu that waits for players to begin the game.
  */
 
 module draw_menu (

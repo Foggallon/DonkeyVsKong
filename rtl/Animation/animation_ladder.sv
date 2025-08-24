@@ -3,26 +3,20 @@
  * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Dawid Bodzek
- * 
- * Modified: Jakub Bukowski
  *
  * Description:
- * Draw character module.
+ * This module is responsible for rendering the ladders during game startup.
  */
 
-module draw_character #(parameter
-    CHARACTER_HEIGHT = 64,
-    CHARACTER_WIDTH = 64
-    )(
+module animation_ladder (
     input  logic        clk,
     input  logic        rst,
-    input  logic        rotate,
     input  logic        start_game,
-    input  logic        en,
-    input  logic [10:0] xpos,
-    input  logic [10:0] ypos,
+    input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
+                                    // and switches to 0 once the animation has completed.
+    input  logic [3:0]  counter,    // Counter reduces the displayed image by one ladder (32 pixels) with each increment.
     input  logic [11:0] rgb_pixel,
-    output logic [11:0] pixel_addr,
+    output logic [9:0]  pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -30,6 +24,10 @@ module draw_character #(parameter
 
     timeunit 1ns;
     timeprecision 1ps;
+
+    import ladder_pkg::*;
+    import animation_pkg::*;
+    import vga_pkg::*;
 
     /**
      * Local variables and signals
@@ -46,9 +44,7 @@ module draw_character #(parameter
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [11:0] pixel_addr_nxt;
-
-    localparam BLACK = 12'h0_0_0;
+    logic [9:0] pixel_addr_nxt;
 
     /**
      * Signals buffer
@@ -57,14 +53,9 @@ module draw_character #(parameter
     delay #(.WIDTH(38), .CLK_DEL(2)) u_delay (
         .clk,
         .rst,
-
         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
-
-    /**
-     * Internal logic
-     */
 
     always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
@@ -91,24 +82,26 @@ module draw_character #(parameter
     always_comb begin : out_comb_blk
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
+            pixel_addr_nxt = pixel_addr;
         end else begin
-            if (en && start_game) begin
-                if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH)) begin
-                    rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
+            if (start_game && animation) begin
+                if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
+                    (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
+                end else if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
+                             (hcount_buf >= LADDER_HSTART_2) && (hcount_buf < LADDER_HSTART_2 + LADDER_WIDTH)) begin
+                    rgb_nxt = rgb_pixel;
+                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
                 end else begin
                     rgb_nxt = rgb_buf;
+                    pixel_addr_nxt = pixel_addr;
                 end
             end else begin
                 rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
             end
         end
     end
 
-    always_comb begin : out_comb_rotate_blk
-        if (rotate) begin
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'((CHARACTER_WIDTH - 1) - (in.hcount - xpos))};
-        end else begin
-            pixel_addr_nxt = {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
-        end
-    end
 endmodule

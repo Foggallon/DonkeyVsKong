@@ -1,6 +1,10 @@
 /** 
  * Copyright (C) 2025  AGH University of Science and Technology
  * 2025  AGH University of Science and Technology
+ * 
+ * Author: Unknown
+ * UEC2 lab 5
+ * 
  * Description: 
  * The module delays the input data 'din' by the number of clock cycles
  * set by CLK_DEL input parameter

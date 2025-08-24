@@ -5,14 +5,17 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * 
+ * The module renders horizontal platforms during the startup animation and selectively during gameplay. 
+ * Platform visibility is controlled by the ctl signal, which can disable specific platforms making place for platforms from
+ * incline platform module.
  */
 
 module animation_platform (
     input  logic        clk,
     input  logic        rst,
     input  logic        start_game,
-    input  logic [3:0]  ctl,
+    input  logic [3:0]  ctl,        // This signal is responsible for disabling platforms. A bit set to 1 at a given position 
+                                    // indicates that the corresponding platform is deactivated.
     input  logic [11:0] rgb_pixel,
     output logic [10:0] pixel_addr,
 
@@ -83,6 +86,7 @@ module animation_platform (
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (start_game) begin
+                // Draw always (during animation and game).
                 if ((vcount_buf >= PLATFORM_1_VSTART) && (vcount_buf <= PLATFORM_1_VSTART + PLATFORM_HEIGHT) && 
                     (hcount_buf >= PLATFORM_1_HSTART) && (hcount_buf < PLATFORM_1_HSTOP)) begin
                     rgb_nxt = rgb_pixel;
@@ -99,6 +103,7 @@ module animation_platform (
                              (hcount_buf >= 2 * PLATFORM_WIDTH) && (hcount_buf < HOR_PIXELS) && ctl[1] == 0) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount + 52), 6'(in.hcount)};
+                // Draw always (during animation and game).
                 end else if ((vcount_buf >= PLATFORM_2_VSTART) && (vcount_buf <= PLATFORM_2_VSTART + PLATFORM_HEIGHT) && 
                              (hcount_buf >= PLATFORM_2_HSTART) && (hcount_buf < PLATFORM_2_HSTOP)) begin
                     rgb_nxt = rgb_pixel;
@@ -107,6 +112,7 @@ module animation_platform (
                              (hcount_buf >= PLATFORM_2_HSTOP) && (hcount_buf < PLATFORM_2_HSTOP + (4 * PLATFORM_WIDTH)) && ctl[0] == 0) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount + 16), 6'(in.hcount)};
+                // Draw always (during animation and game).
                 end else if ((vcount_buf >= PLATFORM_3_VSTART) && (vcount_buf <= PLATFORM_3_VSTART + PLATFORM_HEIGHT) && 
                              (hcount_buf >= PLATFORM_3_HSTART) && (hcount_buf < PLATFORM_3_HSTOP)) begin
                     rgb_nxt = rgb_pixel;

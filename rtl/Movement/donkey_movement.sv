@@ -6,7 +6,7 @@
  * Modified: Dawid Bodzek
  *
  * Description:
- * 
+ * This module manages the movement of the character donkey.
  */
 
 module donkey_movement (
@@ -18,7 +18,8 @@ module donkey_movement (
     input  logic        start_game,
     input  logic        up,
     input  logic        down,
-    input  logic        animation,
+    input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
+                                    // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
     output logic [10:0] ypos
 );
@@ -185,7 +186,7 @@ module donkey_movement (
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
-                    if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin
+                    if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin   // when on incline platform
                         ypos_nxt = ypos + PLATFORM_OFFSET;
                     end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos - PLATFORM_OFFSET;
@@ -206,7 +207,7 @@ module donkey_movement (
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                    if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin
+                    if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin   // when on incline platform
                         ypos_nxt = ypos - PLATFORM_OFFSET;
                     end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;
@@ -223,18 +224,18 @@ module donkey_movement (
             ST_JUMP: begin
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left or right when jumping
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
-                    if (left) begin
+                    if (left) begin    
                         xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
                     end else if (right) begin
                         xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
                     end else begin
                         xpos_nxt = xpos;
                     end
-                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin    // update ypos
                     xpos_nxt = xpos;
                     mov_counter_nxt = '0;
                     if (ypos - velocity <= save_ypos - DONKEY_JUMP_HEIGHT) begin
@@ -253,15 +254,15 @@ module donkey_movement (
             end
 
             ST_FALL_DOWN: begin
-                done_nxt = done;
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
+                done_nxt = done;    
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin      // move left or right when falling down
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
                     if (left) begin
                         xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos - 1));
-                            if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin
-                                save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
+                            if ((platform == 2'b01) && ((xpos - 16) % PLATFORM_WIDTH == 0)) begin   // when on incline platform
+                                save_ypos_nxt = save_ypos + PLATFORM_OFFSET;                        // update landing position
                             end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
                             end else begin
@@ -269,8 +270,8 @@ module donkey_movement (
                             end
                     end else if (right) begin
                         xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
-                            if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin
-                                save_ypos_nxt = save_ypos - PLATFORM_OFFSET;
+                            if ((platform == 2'b01) && ((xpos + 52) % PLATFORM_WIDTH == 0)) begin   // when on incline platform
+                                save_ypos_nxt = save_ypos - PLATFORM_OFFSET;                        // update landing position
                             end else if ((platform == 2'b10) && (xpos % PLATFORM_WIDTH == 0)) begin
                                 save_ypos_nxt = save_ypos + PLATFORM_OFFSET;
                             end else begin
@@ -280,7 +281,7 @@ module donkey_movement (
                         save_ypos_nxt = save_ypos;
                         xpos_nxt = xpos;
                     end
-                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin    // update ypos
                     save_ypos_nxt = save_ypos;
                     xpos_nxt = xpos;
                     mov_counter_nxt = '0;
@@ -295,7 +296,7 @@ module donkey_movement (
                 end
             end
 
-            ST_GO_UP: begin
+            ST_GO_UP: begin     // only on ladders
                 xpos_nxt = xpos;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
@@ -310,7 +311,7 @@ module donkey_movement (
                 end
             end
 
-            ST_GO_DOWN: begin
+            ST_GO_DOWN: begin   // only on ladders
                 xpos_nxt = xpos;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;

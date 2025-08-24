@@ -1,4 +1,14 @@
-//Listing 8.4
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Pong P. Chu
+ * Book: FPGA PROTOTYPING BY VERILOG EXAMPLES
+ * Listing 8.4
+ *
+ * Description from the book:
+ * 
+ */
+
 module uart
    #( // Default setting:
       // 19,200 baud, 8 data bits, 1 stop bit, 2^2 FIFO

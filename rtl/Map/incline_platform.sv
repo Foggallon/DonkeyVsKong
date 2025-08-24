@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module for sloped ramp
+ * Module for rendering inclined ramps. A bit set to 1 in the ctl signal activates the drawing of the corresponding ramp.
  */
 
 module incline_platform (

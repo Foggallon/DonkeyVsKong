@@ -5,20 +5,23 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module horizontal barrel movement
+ * Control module for managing barrel rendering. After pressing the corresponding button a new barrel becomes available, 
+ * after specified delay implemented via the DELAY_TIME parameter.
+ * Once the barrel counter reaches BARRELS - 1, the drawing sequence begins from barrel 0.
  */
 
 module barrel_ctl #(parameter
     DELAY_TIME = 162_500_000,
-    BARRELS = 5         // Max barrels count = 7
+    BARRELS = 5                 // Max barrels count = 7
     )(
     input  logic               clk,
     input  logic               rst,
     input  logic               start_game,
-    input  logic               animation,
-    input  logic               key,
-    input  logic [BARRELS-1:0] done,
-    output logic [BARRELS-1:0] barrel
+    input  logic               animation,   // The signal remains at 1 while the animation is in progress, 
+                                            // and switches to 0 once the animation has completed.
+    input  logic               key,         // Input signal for "launching" barrel.
+    input  logic [BARRELS-1:0] done,        // Input signal indicating that # barrel has stopped rolling or falling.
+    output logic [BARRELS-1:0] barrel       // This signal controls the activation of # barrel drawing.
 );
 
     typedef enum logic [0:0] {
@@ -79,12 +82,12 @@ module barrel_ctl #(parameter
             ST_IDLE: begin
                 done_prev_nxt = done;
                 delay_counter_nxt = '0;
-                if (key && (barrel_counter < BARRELS)) begin
+                if (key && (barrel_counter < BARRELS)) begin    // when key pressed and a slot is enable for drawing
                     barrel_nxt = (barrel ^ done) | (1'b1 << barrel_counter);
                     barrel_counter_nxt = (barrel_counter == BARRELS - 1) || (barrel == '1) ? (barrel_counter % (BARRELS - 1)) : barrel_counter + 1;
-                end else if (done != '0 && (done != done_prev)) begin
-                    barrel_nxt = (barrel ^ done);
-                    barrel_counter_nxt = barrel_counter % (BARRELS - 1);
+                end else if (done != '0 && (done != done_prev)) begin   // # barrel has stopped rolling or falling.
+                    barrel_nxt = (barrel ^ done);   // deactivate # barrel drawing
+                    barrel_counter_nxt = barrel_counter % (BARRELS - 1);    
                 end else begin
                     barrel_nxt = barrel;
                     barrel_counter_nxt = barrel_counter;
@@ -94,9 +97,9 @@ module barrel_ctl #(parameter
             ST_DELAY: begin
                 done_prev_nxt = done;
                 delay_counter_nxt = ((delay_counter == DELAY_TIME) ? '0 : delay_counter + 1);
-                if (done != '0 && (done != done_prev)) begin
+                if (done != '0 && (done != done_prev)) begin    // # barrel has stopped rolling or falling.
                     barrel_counter_nxt = barrel_counter % (BARRELS - 1);
-                    barrel_nxt = (barrel ^ done);
+                    barrel_nxt = (barrel ^ done);   // deactivate # barrel drawing
                 end else begin
                     barrel_counter_nxt = barrel_counter;
                     barrel_nxt = barrel;

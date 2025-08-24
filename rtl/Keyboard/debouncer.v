@@ -3,7 +3,7 @@
  * Copyright (C) 2025  AGH University of Science and Technology
  * 2025  AGH University of Science and Technology
  * MTM UEC2
- * Author: Dawid Bodzek & Jakub Bukowski
+ * Author: Unknown
  *
  * Description:
  * Debouncer for keyboard

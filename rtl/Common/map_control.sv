@@ -5,7 +5,9 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module for contoling movement with ladders on the map
+ * Module for controlling the movement of characters or barrels across the game map. 
+ * It outputs signals enabling ladder climbing, falling from ramps, movement along inclined ramps, 
+ * and landing positions from ramps.
  */
 
 module map_control (
@@ -14,7 +16,7 @@ module map_control (
     input  logic [10:0] xpos,
     input  logic [10:0] ypos,
     output logic        ladder,
-    output logic [1:0]  platform,
+    output logic [1:0]  platform,       
     output logic [10:0] limit_ypos_min,
     output logic [10:0] limit_ypos_max,
     output logic        end_of_platform,

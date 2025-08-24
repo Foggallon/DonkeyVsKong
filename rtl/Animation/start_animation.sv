@@ -5,14 +5,17 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * 
+ * The main module responsible for animation, resets the animation signal 
+ * and sets the ctl signal, which controls the deactivation of horizontal platforms and the activation of inclined ones.
+ * Increments counter signal every 32 pixels to reduce the displayed image by one ladder in animation_ladder module.
  */
 
 module start_animation (
     input  logic        clk,
     input  logic        rst,
     input  logic        start_game,
-    output logic        animation,
+    output logic        animation, // The signal remains at 1 while the animation is in progress, 
+                                   // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
     output logic [10:0] ypos,
     output logic [3:0]  counter,
@@ -110,7 +113,7 @@ module start_animation (
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
                     if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0) begin
-                        counter_nxt = counter < 16 ? counter + 1 : counter;
+                        counter_nxt = counter < 16 ? counter + 1 : counter;     // increment every 32 pixels (ladder height)
                     end else begin
                         counter_nxt = counter;
                     end
@@ -126,12 +129,12 @@ module start_animation (
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left when jumping
                     xpos_nxt = xpos - 1;
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
-                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin    // change ypos
                     mov_counter_nxt = '0;
                     xpos_nxt = xpos;
                     if (ypos - velocity <= KONG_PLATFORM_YPOS - KONG_JUMP_HEIGHT) begin
@@ -152,20 +155,20 @@ module start_animation (
             ST_FALL_DOWN: begin
                 counter_nxt = counter;
                 animation_nxt = animation;
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin
+                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left when falling down
                     xpos_nxt = xpos - 1;
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
                     ctl_nxt = ctl;
                     jump_ctl_nxt = jump_ctl;
-                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin
+                end else if (mov_counter == JUMP_TAKI_W_MIARE) begin    // update ypos
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity +1;
                     xpos_nxt = xpos;
-                    if (ypos + velocity >= 175) begin
+                    if (ypos + velocity >= KONG_PLATFORM_YPOS) begin   // when on kong platform
                         ypos_nxt = KONG_PLATFORM_YPOS;
-                        ctl_nxt = (ctl | (1'b1 << jump_ctl));
+                        ctl_nxt = (ctl | (1'b1 << jump_ctl));   // the bit is set upon landing
                         jump_ctl_nxt = jump_ctl + 1;
                     end else begin
                         ypos_nxt = ypos + velocity;

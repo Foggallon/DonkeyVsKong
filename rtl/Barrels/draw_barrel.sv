@@ -5,17 +5,22 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * 
+ * Module for drawing barrels.
  */
 
-module animation_ladder (
-    input  logic        clk,
-    input  logic        rst,
-    input  logic        start_game,
-    input  logic        animation,
-    input  logic [3:0]  counter,
-    input  logic [11:0] rgb_pixel,
-    output logic [9:0]  pixel_addr,
+module draw_barrel #(parameter 
+    BARRELS = 5             // Max barrels count = 16
+    )(
+    input  logic                      clk,
+    input  logic                      rst,
+    input  logic                      start_game,
+    input  logic                      animation,    // The signal remains at 1 while the animation is in progress, 
+                                                    // and switches to 0 once the animation has completed.
+    input  logic        [BARRELS-1:0] barrel,       // Enable # barrel drawing.
+    input  logic  [BARRELS-1:0][10:0] xpos,         // Xpos position for EACH barrel to draw
+    input  logic  [BARRELS-1:0][10:0] ypos,         // Ypos position for EACH barrel to draw
+    input  logic               [11:0] rgb_pixel,
+    output logic               [11:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -24,9 +29,7 @@ module animation_ladder (
     timeunit 1ns;
     timeprecision 1ps;
 
-    import ladder_pkg::*;
-    import animation_pkg::*;
-    import vga_pkg::*;
+    import donkey_pkg::*;
 
     /**
      * Local variables and signals
@@ -43,7 +46,10 @@ module animation_ladder (
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [9:0] pixel_addr_nxt;
+    logic [11:0] pixel_addr_nxt;
+    reg [3:0] i;    // change for more BARRELS to draw.
+
+    localparam BLACK = 12'h0_0_0;
 
     /**
      * Signals buffer
@@ -52,9 +58,14 @@ module animation_ladder (
     delay #(.WIDTH(38), .CLK_DEL(2)) u_delay (
         .clk,
         .rst,
+
         .din({in.hcount, in.hsync, in.hblnk, in.vcount, in.vsync, in.vblnk, in.rgb}),
         .dout({hcount_buf, hsync_buf, hblnk_buf, vcount_buf, vsync_buf, vblnk_buf, rgb_buf})
     );
+
+    /**
+     * Internal logic
+     */
 
     always_ff @(posedge clk) begin : out_reg_blk
         if (rst) begin
@@ -83,18 +94,15 @@ module animation_ladder (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game && animation) begin
-                if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
-                    (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                end else if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
-                             (hcount_buf >= LADDER_HSTART_2) && (hcount_buf < LADDER_HSTART_2 + LADDER_WIDTH)) begin
-                    rgb_nxt = rgb_pixel;
-                    pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
-                end else begin
-                    rgb_nxt = rgb_buf;
-                    pixel_addr_nxt = pixel_addr;
+            if (start_game && !animation) begin
+                rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
+                for (i = 0; i < BARRELS; i++) begin
+                    if ((vcount_buf >= ypos[i]) && (vcount_buf < ypos[i] + CHARACTER_HEIGHT) && 
+                        (hcount_buf >=  xpos[i]) && (hcount_buf < xpos[i] + CHARACTER_WIDTH) && barrel[i]) begin
+                        rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
+                        pixel_addr_nxt = {6'(in.vcount - ypos[i]), 6'(in.hcount - xpos[i])};
+                    end
                 end
             end else begin
                 rgb_nxt = rgb_buf;
@@ -102,5 +110,4 @@ module animation_ladder (
             end
         end
     end
-
 endmodule
