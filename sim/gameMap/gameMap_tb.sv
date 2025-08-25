@@ -23,18 +23,13 @@
      * Local variables and signals
      */
 
-    import vgaPkg::*;
-
     vga_if vga_timing_if();
     vga_if dut_if();
-    vga_if platform_if();
-    vga_if ladder_if();
 
     logic clk, rst;
     logic [3:0] r, g, b;
-    logic [11:0] rgb_pixel, rgb_pixel_2, rgb_pixel_3;
-    logic [10:0] pixel_addr, pixel_addr_2;
-    logic [9:0] pixel_addr_3;
+    logic [11:0] rgb_pixel_2;
+    logic [10:0] pixel_addr_2;
     assign {r,g,b} = dut_if.rgb;
 
     /**
@@ -60,79 +55,35 @@
      * Submodules instances
      */
 
-    vgaTiming u_vgaTiming (
+    vga_timing u_vga_timing (
         .clk,
         .rst,
         .out(vga_timing_if)
 
     );
 
-    drawLadder u_drawLadder (
-        .clk,
-        .rst,
-        .pixel_addr(pixel_addr_3),
-        .rgb_pixel(rgb_pixel_3),
-        .start_game('1),
-        .in(vga_timing_if),
-        .out(ladder_if)
-    );
 
-    imageRom  #(
-        .BITS(10),
-        .PIXELS(1028),
-        .ROM_FILE("../../rtl/LevelElements/drabinka.dat")
-   ) u_imageRom_3 (
-      .clk,
-      
-      .address(pixel_addr_3),
-      .rgb(rgb_pixel_3)
-
-   );
-
-
-    slopedRamp u_slopedRamp (
+    incline_platform dut (
         .clk,
         .rst,
         .pixel_addr(pixel_addr_2),
         .rgb_pixel(rgb_pixel_2),
+        .ctl('1),
         .start_game('1),
-        .in(ladder_if),
-        .out(platform_if)
+        .in(vga_timing_if),
+        .out(dut_if)
     );
 
-    imageRom  #(
+    image_rom  #(
         .BITS(11),
         .PIXELS(2052),
-        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_imageRom_2 (
+        .ROM_FILE("../../rtl/ROM/platforma.dat")
+   ) u_image_rom_platform (
       .clk,
       
       .address(pixel_addr_2),
       .rgb(rgb_pixel_2)
    );
-
-    imageRom  #(
-        .BITS(11),
-        .PIXELS(2052),
-        .ROM_FILE("../../rtl/LevelElements/platforma.dat")
-   ) u_imageRom (
-      .clk,
-      
-      .address(pixel_addr),
-      .rgb(rgb_pixel)
-
-   );
-
-    gameMap dut (
-        .clk,
-        .rst,
-        .rgb_pixel,
-        .pixel_addr,
-        .start_game('1),
-
-        .in(platform_if),
-        .out(dut_if)
-    );
 
     tiff_writer #(
         .XDIM(16'd1344),

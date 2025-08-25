@@ -17,7 +17,7 @@ package kong_pkg;
     localparam KONG_ANIMATION_INITIAL_XPOS = 484;
     localparam KONG_ANIMATION_INITIAL_YPOS = 672;
     localparam KONG_PLATFORM_YPOS = 175;
-    localparam KONG_PLATFORM_XPOS = 128;
+    localparam KONG_PLATFORM_XPOS = 192;
 
     localparam CHARACTER_WIDTH = 64;
     localparam CHARACTER_HEIGHT = 64;

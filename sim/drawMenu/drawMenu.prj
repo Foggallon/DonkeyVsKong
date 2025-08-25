@@ -12,7 +12,7 @@
 sv work ../../rtl/Packages/vga_pkg.sv \
         ../../rtl/VGA/vga_if.sv \
         ../../rtl/VGA/vga_timing.sv \
-        ../../rtl/delay.sv \
+        ../../rtl/Common/delay.sv \
         ../common/tiff_writer.sv \
         ../../rtl/ROM/image_rom.sv \
         ../../rtl/MainMenu/draw_menu.sv \

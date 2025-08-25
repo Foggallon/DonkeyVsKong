@@ -13,6 +13,9 @@ module hor_barrel (
     input  logic        rst,
     input  logic        barrel,     // Enable movement of a barrel.
     input  logic [10:0] xpos_kong,  // Update starting xpos with kong position.
+    input  logic [10:0] xpos_donkey,
+    input  logic [10:0] ypos_donkey,
+    output logic        hit,
     output logic        done,       // Set to 1 for one clock cycle when barrel stopped rolling.
     output logic [10:0] xpos,
     output logic [10:0] ypos
@@ -24,7 +27,7 @@ module hor_barrel (
     import donkey_pkg::*;
     import platform_pkg::*;
 
-    logic done_nxt, end_of_platform;
+    logic done_nxt, end_of_platform, hit_nxt;
     logic [1:0] platform, fall_ctl, fall_ctl_nxt;
     logic [10:0] xpos_nxt, ypos_nxt, landing_ypos, velocity, velocity_nxt;
     logic [20:0] mov_counter, mov_counter_nxt;
@@ -66,6 +69,7 @@ module hor_barrel (
             fall_ctl <= '0;
             velocity <= '0;
             mov_counter <= '0;
+            hit <= '0;
         end else begin
             done <= done_nxt;
             xpos <= xpos_nxt;
@@ -73,6 +77,7 @@ module hor_barrel (
             fall_ctl <= fall_ctl_nxt;
             velocity <= velocity_nxt;
             mov_counter <= mov_counter_nxt;
+            hit <= hit_nxt;
         end
     end
 
@@ -110,6 +115,7 @@ module hor_barrel (
         case (state) 
             ST_IDLE: begin
                 done_nxt = '0;
+                hit_nxt = '0;
                 xpos_nxt = xpos_kong;
                 ypos_nxt = 175;
                 fall_ctl_nxt = '0;
@@ -120,7 +126,16 @@ module hor_barrel (
             ST_GO_HOR: begin
                 velocity_nxt = '0;
                 fall_ctl_nxt = fall_ctl;
-                done_nxt = '0;
+                if ((platform == 2'b01) && (xpos_donkey + 48 >= xpos) && (ypos_donkey >= ypos) && (ypos_donkey <= ypos + 48)) begin
+                    done_nxt = '1;
+                    hit_nxt = '1;
+                end else if ((platform == 2'b10) && (xpos_donkey <= xpos + 48) && (ypos_donkey >= ypos) && (ypos_donkey <= ypos + 48)) begin
+                    done_nxt = '1;
+                    hit_nxt = '1;
+                end else begin
+                    done_nxt = '0;
+                    hit_nxt = '0;
+                end
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = (platform == 2'b01 || (ypos <= 450 - 96 && ypos >= 292)) ? xpos - 1 : xpos + 1;
@@ -139,8 +154,14 @@ module hor_barrel (
             end
 
             ST_FALL_DOWN: begin
-                done_nxt = (fall_ctl == 3) ? '1 : done;
                 xpos_nxt = xpos;
+                if ((xpos + 40 >= xpos_donkey) && (xpos <= xpos_donkey + 40) && (ypos_donkey >= ypos + 32) && (ypos + 64 <= ypos_donkey)) begin
+                    done_nxt = '1;
+                    hit_nxt = '1;
+                end else begin
+                    done_nxt = (fall_ctl == 3) ? '1 : done;
+                    hit_nxt = '0;
+                end
                 if (mov_counter == JUMP_TAKI_W_MIARE) begin
                     mov_counter_nxt = '0;
                     velocity_nxt = velocity + 1;
@@ -161,6 +182,7 @@ module hor_barrel (
 
             default: begin
                 done_nxt = '0;
+                hit_nxt = '0;
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
                 fall_ctl_nxt = '0;

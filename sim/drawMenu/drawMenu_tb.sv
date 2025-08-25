@@ -85,7 +85,7 @@ module drawMenu_tb;
         .rst,
         .rgb_pixel,
         .pixel_addr,
-        .start_game('0),
+        .start_game('1),
 
         .in(vga_timing_if),
         .out(draw_menu_if)

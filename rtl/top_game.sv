@@ -94,6 +94,7 @@ module top_game (
    logic [9:0][10:0] xpos_barrel, ypos_barrel;
 
    // Barrels - horizontal / vertical
+   logic hit_1, hit_2, hit_3, hit_4, hit_5;
    logic done_1, done_2, done_3, done_4, done_5;
    logic done_ver_1, done_ver_2, done_ver_3, done_ver_4, done_ver_5;
    logic [10:0] xpos_barrel_1, ypos_barrel_1, xpos_barrel_1_v, ypos_barrel_1_v;
@@ -440,6 +441,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_1),
       .barrel(barrel_hor[0]),
       .done(done_1),
       .xpos(xpos_barrel_1),
@@ -450,6 +454,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_2),
       .barrel(barrel_hor[1]),
       .done(done_2),
       .xpos(xpos_barrel_2),
@@ -460,6 +467,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_3),
       .barrel(barrel_hor[2]),
       .done(done_3),
       .xpos(xpos_barrel_3),
@@ -470,6 +480,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_4),
       .barrel(barrel_hor[3]),
       .done(done_4),
       .xpos(xpos_barrel_4),
@@ -480,6 +493,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_5),
       .barrel(barrel_hor[4]),
       .done(done_5),
       .xpos(xpos_barrel_5),
@@ -615,7 +631,7 @@ module top_game (
       .rst(rst),
       .xpos(xpos_donkey),
       .ypos(ypos_donkey),
-      
+      .hit({hit_5, hit_4, hit_3, hit_2, hit_1}),
       .start_game,
       .animation,
       .left,

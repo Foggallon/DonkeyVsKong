@@ -18,6 +18,7 @@ module donkey_movement (
     input  logic        start_game,
     input  logic        up,
     input  logic        down,
+    input  logic  [4:0] hit,
     input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
                                     // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
@@ -41,9 +42,10 @@ module donkey_movement (
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [10:0] xpos_nxt, ypos_nxt, save_ypos, save_ypos_nxt, velocity, velocity_nxt;
 
-    typedef enum logic [2:0] {
+    typedef enum logic [3:0] {
         ST_IDLE,
         ST_IDLE_LADDER,
+        ST_RESET,
         ST_GO_LEFT,
         ST_GO_RIGHT,
         ST_JUMP,
@@ -100,7 +102,9 @@ module donkey_movement (
     always_comb begin : state_comb_blk
         case (state)
             ST_IDLE: begin
-                if (end_of_platform && !animation) begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else if (end_of_platform && !animation) begin
                     state_nxt = ST_FALL_DOWN;
                 end else if (left && start_game && !animation) begin
                     state_nxt = ST_GO_LEFT;
@@ -118,7 +122,9 @@ module donkey_movement (
             end
 
             ST_IDLE_LADDER: begin
-                if (done) begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else if (done) begin
                     state_nxt = ST_IDLE;
                 end else if (up) begin
                     state_nxt = ST_GO_UP;
@@ -130,27 +136,55 @@ module donkey_movement (
             end
 
             ST_GO_UP: begin
-                state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_UP);
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin
+                    state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_UP);
+                end
             end
 
             ST_GO_DOWN: begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin 
                 state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_DOWN);
+                end
             end
 
             ST_GO_LEFT: begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin
                 state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_LEFT);
+                end
             end
 
             ST_GO_RIGHT: begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin
                 state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_RIGHT);
+                end
             end
 
             ST_JUMP: begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin
                 state_nxt = (ypos <= (save_ypos - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
+                end
             end
 
             ST_FALL_DOWN: begin
+                if (hit) begin
+                    state_nxt = ST_RESET;
+                end else begin
                 state_nxt = (ypos >= save_ypos ? ST_IDLE : ST_FALL_DOWN);
+                end
+            end
+
+            ST_RESET: begin
+                state_nxt = ST_IDLE;
             end
 
             default:
@@ -324,6 +358,15 @@ module donkey_movement (
                     ypos_nxt = ypos;
                     done_nxt = done;
                 end
+            end
+
+            ST_RESET: begin
+                xpos_nxt = DONKEY_INITIAL_XPOS;
+                ypos_nxt = DONKEY_INITIAL_YPOS;
+                mov_counter_nxt = mov_counter;
+                save_ypos_nxt = save_ypos;
+                velocity_nxt = velocity;
+                done_nxt = done;
             end
 
             default: begin

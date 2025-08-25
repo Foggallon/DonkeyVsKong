@@ -147,7 +147,7 @@ end
 
 always_comb begin : rect_comb_blk
     if (vblnk2 || hblnk2) begin 
-        rgb_nxt = 12'h0_0_0;
+        rgb_nxt = 12'h7_7_7;
     end else begin
         if(hcount2 >= TEXT_POS_X && vcount2 >= TEXT_POS_Y && hcount2 < (TEXT_POS_X + TEXT_WIDTH) && vcount2 < (TEXT_POS_Y + TEXT_HEIGHT)) begin
             if ((char_line_pixels[(7-3'((hcount2 - TEXT_POS_X)>>SCALE))]) && !start_game) begin

@@ -39,7 +39,7 @@ module draw_menu (
     logic vblnk_buf;
     logic vsync_buf;
 
-    localparam GAME_BACKGROUND = 12'h2_2_2;
+    localparam GAME_BACKGROUND = 12'h0_0_0;
  
     /**
      * Signals buffer
