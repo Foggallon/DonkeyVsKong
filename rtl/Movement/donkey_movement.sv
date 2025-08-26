@@ -18,11 +18,12 @@ module donkey_movement (
     input  logic        start_game,
     input  logic        up,
     input  logic        down,
-    input  logic  [4:0] hit,
+    input  logic  [9:0] hit,
     input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
                                     // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
-    output logic [10:0] ypos
+    output logic [10:0] ypos,
+    output logic        is_on_ladder
 );
 
     timeunit 1ns;
@@ -30,6 +31,7 @@ module donkey_movement (
 
     import donkey_pkg::*;
     import vga_pkg::*;
+    import ladder_pkg::*;
     import platform_pkg::*;
 
     /**
@@ -380,4 +382,26 @@ module donkey_movement (
         endcase
     end
 
+    always_comb begin : ladder_check_comb_blk
+        if (start_game) begin
+            is_on_ladder = '0;
+            if ((ypos >= LADDER_1_VSTART) && (ypos <= LADDER_1_VSTOP) && 
+                (xpos >= LADDER_1_HSTART) && (xpos < LADDER_1_HSTART + LADDER_WIDTH) && !animation) begin
+                        is_on_ladder = '1;
+            end else if ((ypos >= LADDER_2_VSTART) && (ypos <= LADDER_2_VSTOP) &&
+                         (xpos >= LADDER_2_HSTART) && (xpos < LADDER_2_HSTART + LADDER_WIDTH) && !animation) begin
+                        is_on_ladder = '1;
+            end else if ((ypos >= LADDER_3_VSTART) && (ypos <= LADDER_3_VSTOP) &&
+                         (xpos >= LADDER_3_HSTART) && (xpos < LADDER_3_HSTART + LADDER_WIDTH) && !animation) begin
+                        is_on_ladder = '1;
+            end else if ((ypos >= LADDER_4_VSTART) && (ypos <= LADDER_4_VSTOP) &&
+                         (xpos >= LADDER_4_HSTART) && (xpos < LADDER_4_HSTART + LADDER_WIDTH) && !animation) begin
+                        is_on_ladder = '1;
+            end else begin
+                is_on_ladder = '0;
+            end
+        end else begin
+            is_on_ladder = '0;
+        end
+    end
 endmodule

@@ -12,7 +12,10 @@ module ver_barrel(
     input logic rst,
     input logic barrel,
     input logic [10:0] xpos_kong,
+    input logic [10:0] ypos_donkey,
+    input logic [10:0] xpos_donkey,
     output logic done,
+    output logic hit,
     output logic [10:0] xpos,
     output logic [10:0] ypos
 );
@@ -26,7 +29,7 @@ typedef enum logic [0:0] {
 
 STATE_T state, state_nxt;
 
-logic done_nxt;
+logic done_nxt, hit_nxt;
 logic [10:0] xpos_nxt, ypos_nxt;
 logic [20:0] mov_counter, mov_counter_nxt;
 logic [10:0] velocity, velocity_nxt;
@@ -39,6 +42,7 @@ always_ff @(posedge clk) begin : state_seq_blk
         velocity <= '0;
         xpos <= '0;
         ypos <= '0;
+        hit <= '0;
     end else begin
         state <= state_nxt;
         done <= done_nxt;
@@ -46,6 +50,7 @@ always_ff @(posedge clk) begin : state_seq_blk
         velocity <= velocity_nxt;
         xpos <= xpos_nxt;
         ypos <= ypos_nxt;
+        hit <= hit_nxt;
     end
 end
 
@@ -78,6 +83,7 @@ always_comb begin : out_comb_blk
     case (state)
         ST_IDLE: begin
             done_nxt = '0;
+            hit_nxt = '0;
             xpos_nxt = xpos_kong + 12;
             ypos_nxt = KONG_PLATFORM_YPOS + 64;
             mov_counter_nxt = '0;
@@ -86,6 +92,13 @@ always_comb begin : out_comb_blk
 
         ST_FALL_DOWN: begin
             xpos_nxt = xpos;
+            if ((ypos + 40 >= ypos_donkey) && (ypos <= xpos_donkey + 40) && (xpos_donkey >= xpos + 32) && (xpos + 64 <= xpos_donkey)) begin
+                done_nxt = '1;
+                hit_nxt = '1;
+            end else begin
+                done_nxt = '0;
+                hit_nxt = '0;
+            end
             if (mov_counter == JUMP_TAKI_W_MIARE) begin
                 mov_counter_nxt = '0;
                 velocity_nxt = velocity + 1;
@@ -97,7 +110,7 @@ always_comb begin : out_comb_blk
                     done_nxt = '0;
                 end
             end else begin
-                mov_counter_nxt = mov_counter +1;
+                mov_counter_nxt = mov_counter + 1;
                 velocity_nxt = velocity;
                 ypos_nxt = ypos;
                 done_nxt = '0;
@@ -110,6 +123,7 @@ always_comb begin : out_comb_blk
             mov_counter_nxt = '0;
             velocity_nxt = '0;
             done_nxt = '0;
+            hit_nxt = '0;
         end
     endcase
 end

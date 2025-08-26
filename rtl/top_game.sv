@@ -80,13 +80,14 @@ module top_game (
    // Animation - ladder
    logic [9:0] pixel_addr_animation_ladder;
    logic [11:0] rgb_pixel_animation_ladder;
+   logic is_on_ladder, is_on_ladder_donkey;
 
    // Animation - platform
    logic [10:0] pixel_addr_animation_platform;
    logic [11:0] rgb_pixel_animation_platform;
 
    // Animation - kong
-   logic [11:0] pixel_addr_animation_kong, rgb_pixel_animation_kong;
+   logic [11:0] pixel_addr_animation_kong, rgb_pixel_animation_kong, rgb_pixel_animation_kong_back;
 
    // Barrels
    logic [4:0] barrel_hor, barrel_ver;
@@ -94,7 +95,7 @@ module top_game (
    logic [9:0][10:0] xpos_barrel, ypos_barrel;
 
    // Barrels - horizontal / vertical
-   logic hit_1, hit_2, hit_3, hit_4, hit_5;
+   logic hit_1, hit_2, hit_3, hit_4, hit_5, hit_6, hit_7, hit_8, hit_9, hit_10;
    logic done_1, done_2, done_3, done_4, done_5;
    logic done_ver_1, done_ver_2, done_ver_3, done_ver_4, done_ver_5;
    logic [10:0] xpos_barrel_1, ypos_barrel_1, xpos_barrel_1_v, ypos_barrel_1_v;
@@ -109,7 +110,7 @@ module top_game (
 
    // Donkey - player 1
    logic [10:0] xpos_donkey, ypos_donkey;
-   logic [11:0] pixel_addr_donkey, rgb_pixel_donkey;
+   logic [11:0] pixel_addr_donkey, rgb_pixel_donkey, rgb_pixel_donkey_back;
 
    /**
     * Signals assignments
@@ -362,6 +363,7 @@ module top_game (
       .counter,
       .rgb_pixel(rgb_pixel_animation_ladder),
       .pixel_addr(pixel_addr_animation_ladder),
+      .is_on_ladder,
 
       .in(animation_platform_if),
       .out(animation_ladder_if)
@@ -388,9 +390,11 @@ module top_game (
       .start_game,
       .pixel_addr(pixel_addr_animation_kong),
       .rgb_pixel(rgb_pixel_animation_kong),
+      .rgb_pixel_back(rgb_pixel_animation_kong_back),
       .xpos(xpos_animation),
       .ypos(ypos_animation),
       .en(animation),
+      .is_on_ladder,
 
       .in(animation_ladder_if),
       .out(draw_animation_kong_if)
@@ -405,6 +409,17 @@ module top_game (
       .clk(clk65MHz),
       .address(pixel_addr_animation_kong),
       .rgb(rgb_pixel_animation_kong)
+   );
+
+   image_rom #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Kong_Back.dat")
+   )
+   u_image_rom_kong_back (
+      .clk(clk65MHz),
+      .address(pixel_addr_animation_kong),
+      .rgb(rgb_pixel_animation_kong_back)
    );
 
    /**
@@ -429,7 +444,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
+      .ROM_FILE("../../rtl/ROM/Barrel.dat")
    ) u_image_rom_barrel (
       .clk(clk65MHz),
       
@@ -506,6 +521,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_6),
       .barrel(barrel_ver[0]),
       .done(done_ver_1),
       .xpos(xpos_barrel_1_v),
@@ -516,6 +534,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_7),
       .barrel(barrel_ver[1]),
       .done(done_ver_2),
       .xpos(xpos_barrel_2_v),
@@ -526,6 +547,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_8),
       .barrel(barrel_ver[2]),
       .done(done_ver_3),
       .xpos(xpos_barrel_3_v),
@@ -536,6 +560,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_9),
       .barrel(barrel_ver[3]),
       .done(done_ver_4),
       .xpos(xpos_barrel_4_v),
@@ -546,6 +573,9 @@ module top_game (
       .clk(clk65MHz),
       .rst(rst),
       .xpos_kong,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(hit_10),
       .barrel(barrel_ver[4]),
       .done(done_ver_5),
       .xpos(xpos_barrel_5_v),
@@ -601,6 +631,8 @@ module top_game (
       .rst,
       .rotate('0),
       .start_game,
+      .is_on_ladder('0),
+      .rgb_pixel_back('0),
       .pixel_addr(pixel_addr_kong),
       .rgb_pixel(rgb_pixel_kong),
       .xpos(xpos_kong),
@@ -631,9 +663,10 @@ module top_game (
       .rst(rst),
       .xpos(xpos_donkey),
       .ypos(ypos_donkey),
-      .hit({hit_5, hit_4, hit_3, hit_2, hit_1}),
+      .hit({hit_10, hit_9, hit_8, hit_7, hit_6, hit_5, hit_4, hit_3, hit_2, hit_1}),
       .start_game,
       .animation,
+      .is_on_ladder(is_on_ladder_donkey),
       .left,
       .right,
       .jump,
@@ -649,8 +682,10 @@ module top_game (
       .rst,
       .rotate,
       .start_game,
+      .is_on_ladder(is_on_ladder_donkey),
       .pixel_addr(pixel_addr_donkey),
       .rgb_pixel(rgb_pixel_donkey),
+      .rgb_pixel_back(rgb_pixel_donkey_back),
       .xpos(xpos_donkey),
       .ypos(ypos_donkey),
       .en(!animation),
@@ -671,4 +706,15 @@ module top_game (
       .rgb(rgb_pixel_donkey)
    );
 
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Barrel.dat")
+   
+   ) u_image_rom_donkey_back (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_donkey),
+      .rgb(rgb_pixel_donkey_back)
+   );
 endmodule

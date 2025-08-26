@@ -22,6 +22,8 @@ module draw_character #(parameter
     input  logic [10:0] xpos,
     input  logic [10:0] ypos,
     input  logic [11:0] rgb_pixel,
+    input logic  [11:0] rgb_pixel_back,
+    input logic         is_on_ladder,
     output logic [11:0] pixel_addr,
 
     vga_if.in in,
@@ -94,7 +96,7 @@ module draw_character #(parameter
         end else begin
             if (en && start_game) begin
                 if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH)) begin
-                    rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);   // remove background
+                    rgb_nxt = is_on_ladder ? (rgb_pixel_back == BLACK ? rgb_buf : rgb_pixel_back) : (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);   // remove background
                 end else begin
                     rgb_nxt = rgb_buf;
                 end
