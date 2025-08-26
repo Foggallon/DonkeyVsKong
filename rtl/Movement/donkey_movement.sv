@@ -38,7 +38,7 @@ module donkey_movement (
      * Local variables and signals
      */
 
-    logic ladder, done, done_nxt, end_of_platform;
+    logic ladder, done, done_nxt, end_of_platform, is_on_ladder_nxt;
     logic [1:0] platform;
     logic [10:0] limit_ypos, limit_ypos_max, landing_ypos;
     logic [20:0] mov_counter, mov_counter_nxt;
@@ -91,6 +91,7 @@ module donkey_movement (
             save_ypos <= '0;
             velocity <= '0;
             done <= '0;
+            is_on_ladder <= '0;
         end else begin
             xpos <= xpos_nxt;
             ypos <= ypos_nxt;
@@ -98,6 +99,7 @@ module donkey_movement (
             save_ypos <= save_ypos_nxt;
             velocity <= velocity_nxt;
             done <= done_nxt;
+            is_on_ladder <= is_on_ladder_nxt;
         end
     end
 
@@ -384,24 +386,24 @@ module donkey_movement (
 
     always_comb begin : ladder_check_comb_blk
         if (start_game) begin
-            is_on_ladder = '0;
+            is_on_ladder_nxt = '0;
             if ((ypos >= LADDER_1_VSTART) && (ypos <= LADDER_1_VSTOP) && 
                 (xpos >= LADDER_1_HSTART) && (xpos < LADDER_1_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder = '1;
+                        is_on_ladder_nxt = '1;
             end else if ((ypos >= LADDER_2_VSTART) && (ypos <= LADDER_2_VSTOP) &&
                          (xpos >= LADDER_2_HSTART) && (xpos < LADDER_2_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder = '1;
+                        is_on_ladder_nxt = '1;
             end else if ((ypos >= LADDER_3_VSTART) && (ypos <= LADDER_3_VSTOP) &&
                          (xpos >= LADDER_3_HSTART) && (xpos < LADDER_3_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder = '1;
+                        is_on_ladder_nxt = '1;
             end else if ((ypos >= LADDER_4_VSTART) && (ypos <= LADDER_4_VSTOP) &&
                          (xpos >= LADDER_4_HSTART) && (xpos < LADDER_4_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder = '1;
+                        is_on_ladder_nxt = '1;
             end else begin
-                is_on_ladder = '0;
+                is_on_ladder_nxt = '0;
             end
         end else begin
-            is_on_ladder = '0;
+            is_on_ladder_nxt = '0;
         end
     end
 endmodule

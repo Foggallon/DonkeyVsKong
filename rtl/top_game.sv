@@ -80,7 +80,7 @@ module top_game (
    // Animation - ladder
    logic [9:0] pixel_addr_animation_ladder;
    logic [11:0] rgb_pixel_animation_ladder;
-   logic is_on_ladder, is_on_ladder_donkey;
+   logic is_on_ladder_kong, is_on_ladder_donkey;
 
    // Animation - platform
    logic [10:0] pixel_addr_animation_platform;
@@ -327,6 +327,7 @@ module top_game (
       .clk(clk65MHz),
       .rst,
       .start_game,
+      .is_on_ladder(is_on_ladder_kong),
       .animation(animation),
       .counter(counter),
       .ctl(ctl_animation),
@@ -363,7 +364,6 @@ module top_game (
       .counter,
       .rgb_pixel(rgb_pixel_animation_ladder),
       .pixel_addr(pixel_addr_animation_ladder),
-      .is_on_ladder,
 
       .in(animation_platform_if),
       .out(animation_ladder_if)
@@ -394,7 +394,7 @@ module top_game (
       .xpos(xpos_animation),
       .ypos(ypos_animation),
       .en(animation),
-      .is_on_ladder,
+      .is_on_ladder(is_on_ladder_kong),
 
       .in(animation_ladder_if),
       .out(draw_animation_kong_if)

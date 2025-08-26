@@ -17,7 +17,6 @@ module animation_ladder (
     input  logic [3:0]  counter,    // Counter reduces the displayed image by one ladder (32 pixels) with each increment.
     input  logic [11:0] rgb_pixel,
     output logic [9:0]  pixel_addr,
-    output logic        is_on_ladder,
 
     vga_if.in in,
     vga_if.out out
@@ -84,29 +83,23 @@ module animation_ladder (
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
-            is_on_ladder = '0;
         end else begin
             if (start_game && animation) begin
-                is_on_ladder = '0;
                 if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
                     (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount)};
-                    is_on_ladder = '1;
                 end else if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
                              (hcount_buf >= LADDER_HSTART_2) && (hcount_buf < LADDER_HSTART_2 + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;
                     pixel_addr_nxt = {5'(in.vcount), 5'(in.hcount - 4)};
-                    is_on_ladder = '1;
                 end else begin
                     rgb_nxt = rgb_buf;
                     pixel_addr_nxt = pixel_addr;
-                    is_on_ladder = '0;
                 end
             end else begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
-                is_on_ladder = '0;
             end
         end
     end

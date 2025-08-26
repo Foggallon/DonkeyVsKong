@@ -19,7 +19,8 @@ module start_animation (
     output logic [10:0] xpos,
     output logic [10:0] ypos,
     output logic [3:0]  counter,
-    output logic [3:0]  ctl
+    output logic [3:0]  ctl,
+    output logic is_on_ladder
 );
 
     import kong_pkg::*;
@@ -36,7 +37,7 @@ module start_animation (
 
     logic [2:0] jump_ctl, jump_ctl_nxt;
     logic [3:0] counter_nxt, ctl_nxt;
-    logic animation_nxt;
+    logic animation_nxt, is_on_ladder_nxt;
     logic [20:0] mov_counter, mov_counter_nxt;
     logic [10:0] xpos_nxt, ypos_nxt, velocity, velocity_nxt;
 
@@ -65,6 +66,7 @@ module start_animation (
             counter <= '0;
             ctl <= '0;
             jump_ctl <= '0;
+            is_on_ladder <= '0;
         end else begin
             xpos <= xpos_nxt;
             ypos <= ypos_nxt;
@@ -74,6 +76,7 @@ module start_animation (
             counter <= counter_nxt;
             ctl <= ctl_nxt;
             jump_ctl <= jump_ctl_nxt;
+            is_on_ladder <= is_on_ladder_nxt;
         end
     end
 
@@ -111,21 +114,26 @@ module start_animation (
                 ctl_nxt = ctl;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
+                    is_on_ladder_nxt = '0;
                     ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
                     if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0) begin
                         counter_nxt = counter < 16 ? counter + 1 : counter;     // increment every 32 pixels (ladder height)
+                        is_on_ladder_nxt = '1;
                     end else begin
                         counter_nxt = counter;
+                        is_on_ladder_nxt = '0;
                     end
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     ypos_nxt = ypos;
                     counter_nxt = counter;
+                    is_on_ladder_nxt = '0;
                 end
             end
 
             ST_JUMP: begin
                 animation_nxt = animation;
+                is_on_ladder_nxt = '0;
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
@@ -155,6 +163,7 @@ module start_animation (
             ST_FALL_DOWN: begin
                 counter_nxt = counter;
                 animation_nxt = animation;
+                is_on_ladder_nxt = '0;
                 if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left when falling down
                     xpos_nxt = xpos - 1;
                     mov_counter_nxt = mov_counter + 1;
@@ -194,6 +203,7 @@ module start_animation (
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
+                is_on_ladder_nxt = '0;
             end
 
             default: begin
@@ -205,6 +215,7 @@ module start_animation (
                 counter_nxt = counter;
                 ctl_nxt = ctl;
                 jump_ctl_nxt = jump_ctl;
+                is_on_ladder_nxt = '0;
             end
         endcase
     end
