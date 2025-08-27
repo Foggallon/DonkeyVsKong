@@ -41,6 +41,7 @@ module top_game (
    vga_if draw_barrel_if();
    vga_if draw_kong_if();
    vga_if draw_donkey_if();
+   vga_if draw_health_if();
 
    /**
     * Local variables and signals
@@ -112,6 +113,10 @@ module top_game (
    logic [10:0] xpos_donkey, ypos_donkey;
    logic [11:0] pixel_addr_donkey, rgb_pixel_donkey, rgb_pixel_donkey_back;
 
+   // Health
+   logic [2:0] health_en;
+   logic [11:0] rgb_pixel_health, pixel_addr_health;
+
    /**
     * Signals assignments
     */
@@ -137,9 +142,9 @@ module top_game (
    assign xpos_barrel[9] = xpos_barrel_5_v;
    assign ypos_barrel[9] = ypos_barrel_5_v;
 
-   assign vs = draw_donkey_if.vsync;
-   assign hs = draw_donkey_if.hsync;
-   assign {r,g,b} = draw_donkey_if.rgb;
+   assign vs = draw_health_if.vsync;
+   assign hs = draw_health_if.hsync;
+   assign {r,g,b} = draw_health_if.rgb;
    
    /**
     * Keyboard
@@ -717,4 +722,38 @@ module top_game (
       .address(pixel_addr_donkey),
       .rgb(rgb_pixel_donkey_back)
    );
+   
+   /**
+    * Health
+    */
+
+   draw_health #(
+      .XPOS(800),
+      .YPOS(64)
+   )
+   u_draw_health (
+      .clk(clk65MHz),
+      .rst(rst),
+      .start_game(start_game),
+      .en(!animation),
+      .health_en('1),
+      .rgb_pixel(rgb_pixel_health),
+      .pixel_addr(pixel_addr_health),
+      
+      .in(draw_donkey_if),
+      .out(draw_health_if)
+   );
+
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Donkey_v1.dat")
+   
+   ) u_image_rom_health (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_health),
+      .rgb(rgb_pixel_health)
+   );
+
 endmodule

@@ -110,5 +110,4 @@ module game_fsm (
         endcase
     end
 
-
-endmodule;
+endmodule
