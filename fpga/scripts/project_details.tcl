@@ -62,6 +62,8 @@ set sv_files {
     ../rtl/Text/draw_rect_char.sv
     ../rtl/UART/uart_rx_ctl.sv
     ../rtl/UART/uart_tx_ctl.sv
+    ../rtl/draw_health.sv
+    ../rtl/game_fsm.sv
 }
 
 # Specify Verilog design files location
