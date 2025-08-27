@@ -20,7 +20,7 @@ module start_animation (
     output logic [10:0] ypos,
     output logic [3:0]  counter,
     output logic [3:0]  ctl,
-    output logic is_on_ladder
+    output logic        is_on_ladder
 );
 
     import kong_pkg::*;
@@ -112,22 +112,19 @@ module start_animation (
                 velocity_nxt = velocity;
                 jump_ctl_nxt = jump_ctl;
                 ctl_nxt = ctl;
+                is_on_ladder_nxt =  start_game ? '1 : '0;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
                     mov_counter_nxt = '0;
-                    is_on_ladder_nxt = '0;
                     ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
                     if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0) begin
                         counter_nxt = counter < 16 ? counter + 1 : counter;     // increment every 32 pixels (ladder height)
-                        is_on_ladder_nxt = '1;
                     end else begin
                         counter_nxt = counter;
-                        is_on_ladder_nxt = '0;
                     end
                 end else begin
                     mov_counter_nxt = mov_counter + 1;
                     ypos_nxt = ypos;
                     counter_nxt = counter;
-                    is_on_ladder_nxt = '0;
                 end
             end
 

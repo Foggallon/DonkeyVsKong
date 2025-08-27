@@ -15,7 +15,7 @@ module hor_barrel (
     input  logic [10:0] xpos_kong,  // Update starting xpos with kong position.
     input  logic [10:0] xpos_donkey,
     input  logic [10:0] ypos_donkey,
-    output logic        hit,
+    output logic        hit,        // Set to when when the barrel "hit" Donkey on platform.
     output logic        done,       // Set to 1 for one clock cycle when barrel stopped rolling.
     output logic [10:0] xpos,
     output logic [10:0] ypos

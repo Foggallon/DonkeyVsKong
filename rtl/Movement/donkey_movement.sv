@@ -206,6 +206,7 @@ module donkey_movement (
                 save_ypos_nxt = (end_of_platform ? landing_ypos : ypos);
                 velocity_nxt = (end_of_platform ? velocity : '0);
                 done_nxt = '0;
+                is_on_ladder_nxt = '0;
             end
 
             ST_IDLE_LADDER: begin
@@ -215,12 +216,14 @@ module donkey_movement (
                 save_ypos_nxt = save_ypos;
                 velocity_nxt = '0;
                 done_nxt = done;
+                is_on_ladder_nxt = '1;
             end
 
             ST_GO_LEFT: begin
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
+                is_on_ladder_nxt = '0;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos - 1) <= 0 ? xpos : (xpos -1));
@@ -242,6 +245,7 @@ module donkey_movement (
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
+                is_on_ladder_nxt = '0;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = ((xpos + CHARACTER_WIDTH) == HOR_PIXELS ? xpos : (xpos + 1));
@@ -262,6 +266,7 @@ module donkey_movement (
             ST_JUMP: begin
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
+                is_on_ladder_nxt = '0;
                 if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left or right when jumping
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
@@ -276,7 +281,7 @@ module donkey_movement (
                 end else if (mov_counter == JUMP_TAKI_W_MIARE) begin    // update ypos
                     xpos_nxt = xpos;
                     mov_counter_nxt = '0;
-                    if (ypos - velocity <= save_ypos - DONKEY_JUMP_HEIGHT) begin
+                    if (ypos - velocity <= (save_ypos - DONKEY_JUMP_HEIGHT) || (ypos - velocity) >= VER_PIXELS) begin
                         ypos_nxt = (save_ypos - DONKEY_JUMP_HEIGHT);
                         velocity_nxt = '0;
                     end else begin
@@ -292,7 +297,8 @@ module donkey_movement (
             end
 
             ST_FALL_DOWN: begin
-                done_nxt = done;    
+                done_nxt = done;   
+                is_on_ladder_nxt = '0; 
                 if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin      // move left or right when falling down
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
@@ -336,6 +342,7 @@ module donkey_movement (
 
             ST_GO_UP: begin     // only on ladders
                 xpos_nxt = xpos;
+                is_on_ladder_nxt = '1;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
@@ -351,6 +358,7 @@ module donkey_movement (
 
             ST_GO_DOWN: begin   // only on ladders
                 xpos_nxt = xpos;
+                is_on_ladder_nxt = '1;
                 velocity_nxt = velocity;
                 save_ypos_nxt = save_ypos;
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
@@ -371,11 +379,13 @@ module donkey_movement (
                 save_ypos_nxt = save_ypos;
                 velocity_nxt = velocity;
                 done_nxt = done;
+                is_on_ladder_nxt = '0;
             end
 
             default: begin
                 xpos_nxt = xpos;
                 ypos_nxt = ypos;
+                is_on_ladder_nxt = '0;
                 mov_counter_nxt = mov_counter;
                 save_ypos_nxt = save_ypos;
                 velocity_nxt = velocity;
@@ -384,26 +394,4 @@ module donkey_movement (
         endcase
     end
 
-    always_comb begin : ladder_check_comb_blk
-        if (start_game) begin
-            is_on_ladder_nxt = '0;
-            if ((ypos >= LADDER_1_VSTART) && (ypos <= LADDER_1_VSTOP) && 
-                (xpos >= LADDER_1_HSTART) && (xpos < LADDER_1_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder_nxt = '1;
-            end else if ((ypos >= LADDER_2_VSTART) && (ypos <= LADDER_2_VSTOP) &&
-                         (xpos >= LADDER_2_HSTART) && (xpos < LADDER_2_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder_nxt = '1;
-            end else if ((ypos >= LADDER_3_VSTART) && (ypos <= LADDER_3_VSTOP) &&
-                         (xpos >= LADDER_3_HSTART) && (xpos < LADDER_3_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder_nxt = '1;
-            end else if ((ypos >= LADDER_4_VSTART) && (ypos <= LADDER_4_VSTOP) &&
-                         (xpos >= LADDER_4_HSTART) && (xpos < LADDER_4_HSTART + LADDER_WIDTH) && !animation) begin
-                        is_on_ladder_nxt = '1;
-            end else begin
-                is_on_ladder_nxt = '0;
-            end
-        end else begin
-            is_on_ladder_nxt = '0;
-        end
-    end
 endmodule
