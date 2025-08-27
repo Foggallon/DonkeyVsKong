@@ -10,22 +10,22 @@
 
  package platform_pkg;
 
-    localparam EO_PLATFORM_1_VSTART = 465;
-    localparam EO_PLATFORM_1_VSTOP = 531;
+    localparam EO_PLATFORM_1_VSTART = 529;
+    localparam EO_PLATFORM_1_VSTOP = 595;
 
-    localparam EO_PLATFORM_2_VSTART = 292;
-    localparam EO_PLATFORM_2_VSTOP = 354;
+    localparam EO_PLATFORM_2_VSTART = 356;
+    localparam EO_PLATFORM_2_VSTOP = 418;
 
-    localparam EO_PLATFORM_3_VSTART = 129;
-    localparam EO_PLATFORM_3_VSTOP = 191;
+    localparam EO_PLATFORM_3_VSTART = 193;
+    localparam EO_PLATFORM_3_VSTOP = 255;
 
-    localparam EO_PLATFORM_4_VSTART = 4;
-    localparam EO_PLATFORM_4_VSTOP = 68;
+    localparam EO_PLATFORM_4_VSTART = 68;
+    localparam EO_PLATFORM_4_VSTOP = 132;
 
-    localparam LANDING_POS_1 = 644;
-    localparam LANDING_POS_2 = 479;
-    localparam LANDING_POS_3 = 302;
-    localparam LANDING_POS_4 = 175;
+    localparam LANDING_POS_1 = 708;
+    localparam LANDING_POS_2 = 543;
+    localparam LANDING_POS_3 = 366;
+    localparam LANDING_POS_4 = 239;
 
     localparam IP_VSTART_1 = 732;
     localparam IP_HSTART_1 = 510;

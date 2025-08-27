@@ -20,7 +20,7 @@ module draw_barrel #(parameter
     input  logic  [BARRELS-1:0][10:0] xpos,         // Xpos position for EACH barrel to draw
     input  logic  [BARRELS-1:0][10:0] ypos,         // Ypos position for EACH barrel to draw
     input  logic               [11:0] rgb_pixel,
-    output logic               [11:0] pixel_addr,
+    output logic               [9:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -29,7 +29,7 @@ module draw_barrel #(parameter
     timeunit 1ns;
     timeprecision 1ps;
 
-    import donkey_pkg::*;
+    import barrel_pkg::*;
 
     /**
      * Local variables and signals
@@ -46,7 +46,7 @@ module draw_barrel #(parameter
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [11:0] pixel_addr_nxt;
+    logic [9:0] pixel_addr_nxt;
     reg [3:0] i;    // change for more BARRELS to draw.
 
     localparam BLACK = 12'h0_0_0;
@@ -98,10 +98,10 @@ module draw_barrel #(parameter
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
                 for (i = 0; i < BARRELS; i++) begin
-                    if ((vcount_buf >= ypos[i]) && (vcount_buf < ypos[i] + CHARACTER_HEIGHT) && 
-                        (hcount_buf >=  xpos[i]) && (hcount_buf < xpos[i] + CHARACTER_WIDTH) && barrel[i]) begin
+                    if ((vcount_buf >= ypos[i]) && (vcount_buf < ypos[i] + BARREL_HEIGHT) && 
+                        (hcount_buf >=  xpos[i]) && (hcount_buf < xpos[i] + BARREL_WIDTH) && barrel[i]) begin
                         rgb_nxt = (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);
-                        pixel_addr_nxt = {6'(in.vcount - ypos[i]), 6'(in.hcount - xpos[i])};
+                        pixel_addr_nxt = {5'(in.vcount - ypos[i]), 5'(in.hcount - xpos[i])};
                     end
                 end
             end else begin

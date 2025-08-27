@@ -10,7 +10,10 @@
  * and landing positions from ramps.
  */
 
-module map_control (
+module map_control #(parameter
+    CHARACTER_WIDTH = 64,
+    CHARACTER_HEIGHT = 64
+    )(
     input  logic        clk,
     input  logic        rst,
     input  logic [10:0] xpos,
@@ -29,7 +32,6 @@ module map_control (
     import vga_pkg::*;
     import ladder_pkg::*;
     import platform_pkg::*;
-    import donkey_pkg::*;
 
     /**
      * Local variables and signals
@@ -91,17 +93,17 @@ module map_control (
     end
 
     always_comb begin : out_comb_platform_blk
-        if ((ypos >= VER_PIXELS - 128 - 58) && (ypos <= VER_PIXELS - 96) &&
-            (xpos >= HOR_PIXELS/2 - 64) && (xpos <= HOR_PIXELS)) begin
+        if ((ypos >= VER_PIXELS - 2 * PLATFORM_WIDTH - (CHARACTER_HEIGHT + PLATFORM_OFFSET)) && (ypos <= VER_PIXELS - (CHARACTER_HEIGHT + PLATFORM_HEIGHT)) &&
+            (xpos >= HOR_PIXELS/2 - PLATFORM_WIDTH) && (xpos <= HOR_PIXELS)) begin
             platform_nxt = 2'b01;
-        end else if ((ypos >= 450 - 156 - 58) && (ypos <= 450 - 96) && 
-                     (xpos >= 128) && (xpos <= HOR_PIXELS)) begin
+        end else if ((ypos >= 450 - 156 - (CHARACTER_HEIGHT + PLATFORM_OFFSET)) && (ypos <= 450 - (CHARACTER_HEIGHT + PLATFORM_HEIGHT)) && 
+                     (xpos >= 2 * PLATFORM_WIDTH) && (xpos <= HOR_PIXELS)) begin
             platform_nxt = 2'b01;
-        end else if ((ypos >= 475 - 58) && (ypos <= 623 - 64) && 
-                     (xpos >= 0) && (xpos <= HOR_PIXELS - 192)) begin
+        end else if ((ypos >= 475 - (CHARACTER_HEIGHT + PLATFORM_OFFSET)) && (ypos <= 623 - CHARACTER_HEIGHT) && 
+                     (xpos >= 0) && (xpos <= HOR_PIXELS - 3 * PLATFORM_WIDTH)) begin
             platform_nxt = 2'b10;
-        end else if ((ypos >= 175 - 58) && (ypos <= 191) && 
-                     (xpos >= HOR_PIXELS - 320) && (xpos <= HOR_PIXELS - 192)) begin
+        end else if ((ypos >= 175 - (CHARACTER_HEIGHT + PLATFORM_OFFSET)) && (ypos <= 255 - CHARACTER_HEIGHT) && 
+                     (xpos >= HOR_PIXELS - 5 * PLATFORM_WIDTH) && (xpos <= HOR_PIXELS - 3 * PLATFORM_WIDTH)) begin
             platform_nxt = 2'b10;
         end else begin
             platform_nxt = '0;
@@ -109,22 +111,22 @@ module map_control (
     end
     
     always_comb begin : out_comb_end_of_platform_blk
-        if ((ypos >= EO_PLATFORM_1_VSTART) && (ypos <= EO_PLATFORM_1_VSTOP) &&
+        if ((ypos >= EO_PLATFORM_1_VSTART - CHARACTER_HEIGHT) && (ypos <= EO_PLATFORM_1_VSTOP - CHARACTER_HEIGHT) &&
             (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
             end_of_platform_nxt = '1;
-            landing_ypos_nxt = LANDING_POS_1;
-        end else if ((ypos >= EO_PLATFORM_2_VSTART) && (ypos <= EO_PLATFORM_2_VSTOP) &&
+            landing_ypos_nxt = LANDING_POS_1 - CHARACTER_HEIGHT;
+        end else if ((ypos >= EO_PLATFORM_2_VSTART - CHARACTER_HEIGHT) && (ypos <= EO_PLATFORM_2_VSTOP - CHARACTER_HEIGHT) &&
                      (xpos <= (2 * PLATFORM_WIDTH) - CHARACTER_WIDTH)) begin
             end_of_platform_nxt = '1;
-            landing_ypos_nxt = LANDING_POS_2;
-        end else if ((ypos >= EO_PLATFORM_3_VSTART) && (ypos <= EO_PLATFORM_3_VSTOP) &&
+            landing_ypos_nxt = LANDING_POS_2 - CHARACTER_HEIGHT;
+        end else if ((ypos >= EO_PLATFORM_3_VSTART - CHARACTER_HEIGHT) && (ypos <= EO_PLATFORM_3_VSTOP - CHARACTER_HEIGHT) &&
                      (xpos >= HOR_PIXELS - (2 * PLATFORM_WIDTH))) begin
             end_of_platform_nxt = '1;
-            landing_ypos_nxt = LANDING_POS_3;
-        end else if ((ypos >= EO_PLATFORM_4_VSTART) && (ypos <= EO_PLATFORM_4_VSTOP) &&
+            landing_ypos_nxt = LANDING_POS_3 - CHARACTER_HEIGHT;
+        end else if ((ypos >= EO_PLATFORM_4_VSTART - CHARACTER_HEIGHT) && (ypos <= EO_PLATFORM_4_VSTOP - CHARACTER_HEIGHT) &&
                      (xpos >= PLATFORM_3_HSTOP)) begin
             end_of_platform_nxt = '1;
-            landing_ypos_nxt = LANDING_POS_4;
+            landing_ypos_nxt = LANDING_POS_4 - CHARACTER_HEIGHT;
         end else begin
             end_of_platform_nxt = '0;
             landing_ypos_nxt = landing_ypos;

@@ -28,7 +28,7 @@ module hor_barrel (
     import platform_pkg::*;
 
     logic done_nxt, end_of_platform, hit_nxt;
-    logic [1:0] platform, fall_ctl, fall_ctl_nxt;
+    logic [1:0] platform, fall_ctl, fall_ctl_nxt, platform_donkey;
     logic [10:0] xpos_nxt, ypos_nxt, landing_ypos, velocity, velocity_nxt;
     logic [20:0] mov_counter, mov_counter_nxt;
 
@@ -40,7 +40,7 @@ module hor_barrel (
 
     STATE_T state, state_nxt;
 
-    map_control u_map_control (
+    map_control #(.CHARACTER_HEIGHT(32), .CHARACTER_WIDTH(32)) u_map_control_barrel (
         .clk,
         .rst,
         .xpos,
@@ -51,6 +51,19 @@ module hor_barrel (
         .limit_ypos_max(),
         .end_of_platform(end_of_platform),
         .landing_ypos(landing_ypos)
+    );
+
+    map_control #(.CHARACTER_HEIGHT(32), .CHARACTER_WIDTH(32)) u_map_control_donkey (
+        .clk,
+        .rst,
+        .xpos,
+        .ypos,
+        .ladder(),
+        .platform(platform_donkey),
+        .limit_ypos_min(),
+        .limit_ypos_max(),
+        .end_of_platform(),
+        .landing_ypos()
     );
 
     always_ff @(posedge clk) begin : state_seq_blk
@@ -65,7 +78,7 @@ module hor_barrel (
         if (rst) begin
             done <= '0;
             xpos <= xpos_kong;
-            ypos <= 175;
+            ypos <= 208;
             fall_ctl <= '0;
             velocity <= '0;
             mov_counter <= '0;
@@ -92,11 +105,17 @@ module hor_barrel (
             end
 
             ST_GO_HOR: begin
-                state_nxt = end_of_platform ? ST_FALL_DOWN : ST_GO_HOR;
+                if (hit) begin
+                    state_nxt = ST_IDLE;
+                end else begin
+                    state_nxt = end_of_platform ? ST_FALL_DOWN : ST_GO_HOR;
+                end
             end
 
             ST_FALL_DOWN: begin
-                if (ypos >= landing_ypos && fall_ctl != 3) begin
+                if (hit) begin
+                    state_nxt = ST_IDLE;
+                end else if (ypos >= landing_ypos && fall_ctl != 3) begin
                     state_nxt = ST_GO_HOR;
                 end else if (fall_ctl == 3) begin
                     state_nxt = ST_IDLE;
@@ -117,7 +136,7 @@ module hor_barrel (
                 done_nxt = '0;
                 hit_nxt = '0;
                 xpos_nxt = xpos_kong;
-                ypos_nxt = 175;
+                ypos_nxt = 208;
                 fall_ctl_nxt = '0;
                 velocity_nxt = '0;
                 mov_counter_nxt = '0;
@@ -126,10 +145,13 @@ module hor_barrel (
             ST_GO_HOR: begin
                 velocity_nxt = '0;
                 fall_ctl_nxt = fall_ctl;
-                if ((platform == 2'b01) && (xpos_donkey + 48 >= xpos) && (ypos_donkey >= ypos) && (ypos_donkey <= ypos + 48)) begin
+                if ((platform_donkey == 2'b01) && (xpos <= xpos_donkey + 48) && (xpos + 32 >= xpos_donkey) && (ypos_donkey + 60 >= ypos) && (ypos_donkey <= ypos + 32)) begin
                     done_nxt = '1;
                     hit_nxt = '1;
-                end else if ((platform == 2'b10) && (xpos_donkey <= xpos + 48) && (ypos_donkey >= ypos) && (ypos_donkey <= ypos + 48)) begin
+                end else if ((platform_donkey == 2'b10) && (xpos_donkey <= xpos + 32) && (xpos_donkey + 48 >= xpos) && (ypos_donkey + 60 >= ypos) && (ypos_donkey <= ypos + 32)) begin
+                    done_nxt = '1;
+                    hit_nxt = '1;
+                end else if ((xpos_donkey <= xpos + 32) && (xpos_donkey + 48 >= xpos) && (ypos_donkey + 60 >= ypos) && (ypos == 208) && (ypos_donkey <= 175)) begin
                     done_nxt = '1;
                     hit_nxt = '1;
                 end else begin
@@ -138,8 +160,8 @@ module hor_barrel (
                 end
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
-                    xpos_nxt = (platform == 2'b01 || (ypos <= 450 - 96 && ypos >= 292)) ? xpos - 1 : xpos + 1;
-                    if ((platform == 2'b01) & ((xpos - 16) % PLATFORM_WIDTH == 0)) begin    // when on incline platform
+                    xpos_nxt = (platform == 2'b01 || (ypos <= 450 - 32 && ypos >= 324)) ? xpos - 1 : xpos + 1;
+                    if ((platform == 2'b01) & ((xpos - 32) % PLATFORM_WIDTH == 0)) begin    // when on incline platform
                         ypos_nxt = ypos + PLATFORM_OFFSET;
                     end else if ((platform == 2'b10) & (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;
@@ -155,7 +177,7 @@ module hor_barrel (
 
             ST_FALL_DOWN: begin
                 xpos_nxt = xpos;
-                if ((xpos + 40 >= xpos_donkey) && (xpos <= xpos_donkey + 40) && (ypos_donkey >= ypos + 32) && (ypos + 64 <= ypos_donkey)) begin
+                if ((xpos + 24 >= xpos_donkey) && (xpos <= xpos_donkey + 24) && (ypos_donkey >= ypos + 32) && (ypos + 32 <= ypos_donkey)) begin
                     done_nxt = '1;
                     hit_nxt = '1;
                 end else begin

@@ -58,7 +58,7 @@ module donkey_movement (
 
     STATE_T state, state_nxt;
 
-    map_control u_map_control (
+    map_control #(.CHARACTER_HEIGHT(64), .CHARACTER_WIDTH(48)) u_map_control (
         .clk,
         .rst,
         .xpos,
@@ -267,7 +267,7 @@ module donkey_movement (
                 save_ypos_nxt = save_ypos;
                 done_nxt = done;
                 is_on_ladder_nxt = '0;
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin  // move left or right when jumping
+                if (mov_counter % MOVE_TAKI_NIE_MACQUEEN == 0) begin  // move left or right when jumping
                     mov_counter_nxt = mov_counter + 1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;
@@ -299,7 +299,7 @@ module donkey_movement (
             ST_FALL_DOWN: begin
                 done_nxt = done;   
                 is_on_ladder_nxt = '0; 
-                if (mov_counter % (2 * MOVE_TAKI_NIE_MACQUEEN) == 0) begin      // move left or right when falling down
+                if (mov_counter %  MOVE_TAKI_NIE_MACQUEEN == 0) begin      // move left or right when falling down
                     mov_counter_nxt = mov_counter +1;
                     velocity_nxt = velocity;
                     ypos_nxt = ypos;

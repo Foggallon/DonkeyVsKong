@@ -91,7 +91,8 @@ module top_game (
 
    // Barrels
    logic [4:0] barrel_hor, barrel_ver;
-   logic [11:0] pixel_addr_barrel, rgb_pixel_barrel;
+   logic [9:0] pixel_addr_barrel;
+   logic [11:0] rgb_pixel_barrel;
    logic [9:0][10:0] xpos_barrel, ypos_barrel;
 
    // Barrels - horizontal / vertical
@@ -442,8 +443,8 @@ module top_game (
    );
 
    image_rom  #(
-      .BITS(12),
-      .PIXELS(4096),
+      .BITS(10),
+      .PIXELS(1028),
       .ROM_FILE("../../rtl/ROM/Barrel.dat")
    ) u_image_rom_barrel (
       .clk(clk65MHz),

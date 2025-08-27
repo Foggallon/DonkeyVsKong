@@ -42,6 +42,7 @@ set sv_files {
     ../rtl/Packages/donkey_pkg.sv
     ../rtl/Packages/kong_pkg.sv
     ../rtl/Packages/platform_pkg.sv
+    ../rtl/Packages/barrel_pkg.sv
     ../rtl/Packages/ladder_pkg.sv
     ../rtl/Packages/animation_pkg.sv
     ../rtl/Map/draw_ladder.sv

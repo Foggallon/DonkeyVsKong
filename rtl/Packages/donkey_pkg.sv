@@ -10,7 +10,7 @@
 
  package donkey_pkg;
 
-    localparam DONKEY_JUMP_HEIGHT = 58;
+    localparam DONKEY_JUMP_HEIGHT = 61;
     localparam JUMP_TAKI_W_MIARE = 1_400_000;
     localparam MOVE_TAKI_NIE_MACQUEEN = 250_000;
 
