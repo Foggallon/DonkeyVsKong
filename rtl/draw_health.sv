@@ -10,7 +10,7 @@
 
  module draw_health#(parameter
     XPOS = 800,
-    YPOS = 64
+    YPOS = 16
     ) (
     input  logic        clk,
     input  logic        rst,
@@ -44,8 +44,11 @@
 
     logic [11:0] pixel_addr_nxt;
 
+    reg [3:0] i; 
+
 
     localparam BLACK = 12'h0_0_0;
+    localparam OFFSET = 64;
 
     /**
      * Signals buffer
@@ -91,18 +94,11 @@
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (en && start_game) begin
-                if((vcount_buf >= YPOS) && (vcount_buf < YPOS + 64) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + 64) && health_en[0]==1) begin
-                    rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
-                    pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS)};
-                end else if ((vcount_buf >= YPOS) && (vcount_buf < YPOS + 64) && (hcount_buf >= XPOS + 69) && (hcount_buf < XPOS + 133) && health_en[1]==1) begin
-                    rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;
-                    pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + 64)};
-                end else if ((vcount_buf >= YPOS) && (vcount_buf < YPOS + 64) && (hcount_buf >= XPOS + 133) && (hcount_buf < XPOS + 197) && health_en[2]==1) begin
-                    rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;
-                    pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + 128)};
-                end else begin
-                    rgb_nxt = rgb_buf;
-                    pixel_addr_nxt = pixel_addr;
+                for(i = 0; i < 3; i++) begin
+                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
+                        rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
+                        pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (i*OFFSET))};
+                    end
                 end
             end else begin
                 rgb_nxt = rgb_buf;

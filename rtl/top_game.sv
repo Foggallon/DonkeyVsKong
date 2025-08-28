@@ -729,8 +729,8 @@ module top_game (
     */
 
    draw_health #(
-      .XPOS(800),
-      .YPOS(64)
+      .XPOS(832),
+      .YPOS(16)
    )
    u_draw_health (
       .clk(clk65MHz),
