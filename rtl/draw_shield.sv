@@ -5,19 +5,20 @@
  * Author: Jakub Bukowski
  *
  * Description:
- * This module handles drawing a health bar with given X and Y position.
+ * This module handles drawing a protective element with given X and Y position.
  */
 
- module draw_health#(parameter
-    XPOS = 800,
-    YPOS = 16
+ module draw_shield#(parameter
+    XPOS = 300,
+    YPOS = 200,
+    OFFSET = 64
     ) (
     input  logic        clk,
     input  logic        rst,
     input  logic        start_game,
     input  logic        en,
+    input  logic        is_shielded,
     input  logic [11:0] rgb_pixel,
-    input  logic [2:0]  health_en,
     output logic [11:0] pixel_addr,
 
     vga_if.in in,
@@ -44,11 +45,7 @@
 
     logic [11:0] pixel_addr_nxt;
 
-    reg [3:0] i; 
-
-
     localparam BLACK = 12'h0_0_0;
-    localparam OFFSET = 64;
 
     /**
      * Signals buffer
@@ -94,17 +91,18 @@
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (en && start_game) begin
-                for(i = 0; i < 3; i++) begin
-                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
+                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + OFFSET) && is_shielded==0) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
-                        pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (i*OFFSET))};
+                        pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (OFFSET))};
+                    end else begin
+                        rgb_nxt = rgb_buf;
+                        pixel_addr_nxt = pixel_addr;
                     end
+                end else begin
+                    rgb_nxt = rgb_buf;
+                    pixel_addr_nxt = pixel_addr;
                 end
-            end else begin
-                rgb_nxt = rgb_buf;
-                pixel_addr_nxt = pixel_addr;
-            end
-        end
+          end
     end
 
 endmodule
