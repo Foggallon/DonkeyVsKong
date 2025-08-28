@@ -177,7 +177,7 @@ module hor_barrel (
 
             ST_FALL_DOWN: begin
                 xpos_nxt = xpos;
-                if ((xpos + 24 >= xpos_donkey) && (xpos <= xpos_donkey + 24) && (ypos_donkey >= ypos + 32) && (ypos + 32 <= ypos_donkey)) begin
+                if ((xpos + 28 >= xpos_donkey) && (xpos <= xpos_donkey + 44) && (ypos + 32 >= ypos_donkey) && (ypos <= ypos_donkey + 32)) begin
                     done_nxt = '1;
                     hit_nxt = '1;
                 end else begin

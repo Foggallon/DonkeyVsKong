@@ -65,7 +65,7 @@ always_comb begin : state_comb_blk
         end
 
         ST_FALL_DOWN: begin
-            if(ypos == 736) begin
+            if(ypos == 736 || hit) begin
                 state_nxt = ST_IDLE;
             end else begin
                 state_nxt = ST_FALL_DOWN;
@@ -92,11 +92,11 @@ always_comb begin : out_comb_blk
 
         ST_FALL_DOWN: begin
             xpos_nxt = xpos;
-            if ((ypos + 40 >= ypos_donkey) && (ypos <= xpos_donkey + 40) && (xpos_donkey >= xpos + 32) && (xpos + 64 <= xpos_donkey)) begin
+            if ((xpos + 28 >= xpos_donkey) && (xpos <= xpos_donkey + 44) && (ypos + 32 >= ypos_donkey) && (ypos <= ypos_donkey + 32)) begin
                 done_nxt = '1;
                 hit_nxt = '1;
             end else begin
-                done_nxt = '0;
+                done_nxt = (ypos + velocity >= 736) ? '1 : '0 ;
                 hit_nxt = '0;
             end
             if (mov_counter == JUMP_TAKI_W_MIARE) begin
@@ -104,16 +104,13 @@ always_comb begin : out_comb_blk
                 velocity_nxt = velocity + 1;
                 if (ypos + velocity >= 736) begin
                     ypos_nxt = 736;
-                    done_nxt = '1;
                 end else begin
                     ypos_nxt = ypos + velocity;
-                    done_nxt = '0;
                 end
             end else begin
                 mov_counter_nxt = mov_counter + 1;
                 velocity_nxt = velocity;
                 ypos_nxt = ypos;
-                done_nxt = '0;
             end
         end
 
