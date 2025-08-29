@@ -17,7 +17,7 @@
         input  logic        clk,
         input  logic        rst,
         input  logic        game_en,
-        input  logic        hit,
+        input  logic [9:0]  hit,
         input  logic [10:0] xpos_donkey,
         input  logic [10:0] ypos_donkey,
         output logic        is_shielded,

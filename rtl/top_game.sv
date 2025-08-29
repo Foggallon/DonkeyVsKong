@@ -794,7 +794,8 @@ module top_game (
       .game_en,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(donkey_hit),
+      .hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
+         barrel_hit_5, barrel_hit_4, barrel_hit_3, barrel_hit_2, barrel_hit_1}),
       .is_shielded,
       .was_shield_picked_up
     );
