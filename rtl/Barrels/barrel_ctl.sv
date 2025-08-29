@@ -16,7 +16,7 @@ module barrel_ctl #(parameter
     )(
     input  logic               clk,
     input  logic               rst,
-    input  logic               start_game,
+    input  logic               game_en,
     input  logic               animation,   // The signal remains at 1 while the animation is in progress, 
                                             // and switches to 0 once the animation has completed.
     input  logic               key,         // Input signal for "launching" barrel.
@@ -60,7 +60,7 @@ module barrel_ctl #(parameter
     always_comb begin : state_comb_blk
         case (state) 
             ST_IDLE: begin
-                if (key && start_game && !animation) begin
+                if (key && game_en && !animation) begin
                     state_nxt = ST_DELAY;
                 end else begin
                     state_nxt = ST_IDLE;

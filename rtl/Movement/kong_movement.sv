@@ -14,7 +14,7 @@ module kong_movement (
     input  logic        rst,
     input  logic        left,
     input  logic        right,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        animation,
     output logic [10:0] xpos,
     output logic [10:0] ypos
@@ -71,9 +71,9 @@ module kong_movement (
     always_comb begin : state_comb_blk
         case (state)
             ST_IDLE: begin
-                if (left && start_game && !animation) begin
+                if (left && game_en && !animation) begin
                     state_nxt = ST_GO_LEFT;
-                end else if (right && start_game && !animation) begin
+                end else if (right && game_en && !animation) begin
                     state_nxt = ST_GO_RIGHT;
                 end else begin
                     state_nxt = ST_IDLE;

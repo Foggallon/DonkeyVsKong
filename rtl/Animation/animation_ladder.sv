@@ -11,7 +11,7 @@
 module animation_ladder (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
                                     // and switches to 0 once the animation has completed.
     input  logic [3:0]  counter,    // Counter reduces the displayed image by one ladder (32 pixels) with each increment.
@@ -84,7 +84,7 @@ module animation_ladder (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game && animation) begin
+            if (game_en && animation) begin
                 if ((vcount_buf >= LADDER_VSTART) && (vcount_buf <= (VER_PIXELS - (LADDER_HEIGHT * counter))) &&
                     (hcount_buf >= LADDER_HSTART) && (hcount_buf < LADDER_HSTART + LADDER_WIDTH)) begin
                     rgb_nxt = rgb_pixel;

@@ -5,10 +5,10 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Testbench for gameMap module.
+ * Testbench for map generated for animation at the start of the game
  */
 
- module gameMap_tb;
+ module animation_map_tb;
 
     timeunit 1ns;
     timeprecision 1ps;
@@ -24,12 +24,15 @@
      */
 
     vga_if vga_timing_if();
+    vga_if animation_platform_if();
+    vga_if incline_platform_if();
     vga_if dut_if();
 
     logic clk, rst;
     logic [3:0] r, g, b;
-    logic [11:0] rgb_pixel_2;
-    logic [10:0] pixel_addr_2;
+    logic [11:0] rgb_pixel, rgb_pixel_2, rgb_pixel_3;
+    logic [10:0] pixel_addr, pixel_addr_2;
+    logic [9:0] pixel_addr_3;
     assign {r,g,b} = dut_if.rgb;
 
     /**
@@ -62,27 +65,71 @@
 
     );
 
-
-    incline_platform dut (
+    incline_platform u_incline_platform (
         .clk,
         .rst,
         .pixel_addr(pixel_addr_2),
         .rgb_pixel(rgb_pixel_2),
-        .ctl('1),
-        .start_game('1),
+        .game_en('1),
+        .ctl(4'b0001),
         .in(vga_timing_if),
-        .out(dut_if)
+        .out(incline_platform_if)
     );
 
     image_rom  #(
         .BITS(11),
         .PIXELS(2052),
         .ROM_FILE("../../rtl/ROM/platforma.dat")
-   ) u_image_rom_platform (
+   ) u_image_rom_2 (
       .clk,
       
       .address(pixel_addr_2),
       .rgb(rgb_pixel_2)
+   );
+
+    animation_platform u_animation_platform (
+        .clk,
+        .rst,
+        .pixel_addr(pixel_addr),
+        .rgb_pixel(rgb_pixel),
+        .game_en('1),
+        .ctl(4'b0001),
+        .in(incline_platform_if),
+        .out(animation_platform_if)
+    );
+
+    image_rom  #(
+        .BITS(11),
+        .PIXELS(2052),
+        .ROM_FILE("../../rtl/ROM/platforma.dat")
+   ) u_image_rom (
+      .clk,
+      
+      .address(pixel_addr),
+      .rgb(rgb_pixel)
+   );
+
+    animation_ladder dut (
+        .clk,
+        .rst,
+        .pixel_addr(pixel_addr_3),
+        .rgb_pixel(rgb_pixel_3),
+        .game_en('1),
+        .animation('1),
+        .counter('0),
+        .in(animation_platform_if),
+        .out(dut_if)
+    );
+
+    image_rom  #(
+        .BITS(10),
+        .PIXELS(1028),
+        .ROM_FILE("../../rtl/ROM/drabinka.dat")
+   ) u_image_rom_3 (
+      .clk,
+      
+      .address(pixel_addr_3),
+      .rgb(rgb_pixel_3)
    );
 
     tiff_writer #(

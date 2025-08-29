@@ -11,7 +11,7 @@
 module incline_platform (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic [3:0]  ctl,
     input  logic [11:0] rgb_pixel,
     output logic [10:0] pixel_addr,
@@ -81,7 +81,7 @@ module incline_platform (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game) begin
+            if (game_en) begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
                 for (i = 0; i < 8; i++) begin

@@ -15,10 +15,10 @@ module donkey_movement (
     input  logic        left,
     input  logic        right,
     input  logic        jump,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        up,
     input  logic        down,
-    input  logic  [9:0] hit,
+    input  logic        donkey_hit,
     input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
                                     // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
@@ -106,19 +106,19 @@ module donkey_movement (
     always_comb begin : state_comb_blk
         case (state)
             ST_IDLE: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else if (end_of_platform && !animation) begin
                     state_nxt = ST_FALL_DOWN;
-                end else if (left && start_game && !animation) begin
+                end else if (left && game_en && !animation) begin
                     state_nxt = ST_GO_LEFT;
-                end else if (right && start_game && !animation) begin
+                end else if (right && game_en && !animation) begin
                     state_nxt = ST_GO_RIGHT;
-                end else if (jump && start_game && !animation) begin
+                end else if (jump && game_en && !animation) begin
                     state_nxt = ST_JUMP;
-                end else if (up && start_game & ladder && !animation) begin
+                end else if (up && game_en & ladder && !animation) begin
                     state_nxt = ST_GO_UP;
-                end else if (down && start_game & ladder && !animation) begin
+                end else if (down && game_en & ladder && !animation) begin
                     state_nxt = ST_GO_DOWN;
                 end else begin
                     state_nxt = ST_IDLE;
@@ -126,7 +126,7 @@ module donkey_movement (
             end
 
             ST_IDLE_LADDER: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else if (done) begin
                     state_nxt = ST_IDLE;
@@ -140,7 +140,7 @@ module donkey_movement (
             end
 
             ST_GO_UP: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin
                     state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_UP);
@@ -148,42 +148,42 @@ module donkey_movement (
             end
 
             ST_GO_DOWN: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin 
-                state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_DOWN);
+                    state_nxt = ((mov_counter == MOVE_TAKI_NIE_MACQUEEN) ? ST_IDLE_LADDER : ST_GO_DOWN);
                 end
             end
 
             ST_GO_LEFT: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin
-                state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_LEFT);
+                    state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_LEFT);
                 end
             end
 
             ST_GO_RIGHT: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin
-                state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_RIGHT);
+                    state_nxt = (mov_counter == MOVE_TAKI_NIE_MACQUEEN ? ST_IDLE : ST_GO_RIGHT);
                 end
             end
 
             ST_JUMP: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin
-                state_nxt = (ypos <= (save_ypos - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
+                    state_nxt = (ypos <= (save_ypos - DONKEY_JUMP_HEIGHT) ? ST_FALL_DOWN : ST_JUMP);
                 end
             end
 
             ST_FALL_DOWN: begin
-                if (hit) begin
+                if (donkey_hit) begin
                     state_nxt = ST_RESET;
                 end else begin
-                state_nxt = (ypos >= save_ypos ? ST_IDLE : ST_FALL_DOWN);
+                    state_nxt = (ypos >= save_ypos ? ST_IDLE : ST_FALL_DOWN);
                 end
             end
 

@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Testbench for map generated for animation at the start of the game
+ * Testbench for draw_barrel module
  */
 
  module draw_barrel_tb;
@@ -29,7 +29,7 @@
     logic clk, rst;
     logic [3:0] r, g, b;
     logic [11:0] rgb_pixel;
-    logic [11:0] pixel_addr;
+    logic [9:0] pixel_addr;
     assign {r,g,b} = dut_if.rgb;
 
     /**
@@ -55,7 +55,7 @@
      * Submodules instances
      */
 
-    vgaTiming u_vgaTiming (
+    vga_timing u_vga_timing (
         .clk,
         .rst,
         .out(vga_timing_if)
@@ -65,10 +65,10 @@
     draw_barrel #(.BARRELS(5)) dut (
         .clk,
         .rst,
-        .start_game('1),
+        .game_en('1),
         .animation('0),
-        .xpos({12'd100, 12'd400, 12'd300, 12'd700, 12'd900}),
-        .ypos({12'd100, 12'd400, 12'd300, 12'd700, 12'd50}),
+        .xpos({11'd100, 11'd400, 11'd300, 11'd700, 11'd900}),
+        .ypos({11'd100, 11'd400, 11'd300, 11'd700, 11'd50}),
         .barrel('1),
         .pixel_addr(pixel_addr),
         .rgb_pixel(rgb_pixel),
@@ -77,16 +77,16 @@
         .out(dut_if)
     );
 
-    imageRom  #(
-        .BITS(12),
-        .PIXELS(4096),
-        .ROM_FILE("../../rtl/Donkey/Donkey_v1.dat")
-     ) u_imageRom_4 (
-        .clk,
-        
-        .address(pixel_addr),
-        .rgb(rgb_pixel)
-     );
+    image_rom  #(
+      .BITS(10),
+      .PIXELS(1028),
+      .ROM_FILE("../../rtl/ROM/Barrel.dat")
+    ) u_image_rom_barrel (
+      .clk,
+      
+      .address(pixel_addr),
+      .rgb(rgb_pixel)
+    );
 
     tiff_writer #(
         .XDIM(16'd1344),

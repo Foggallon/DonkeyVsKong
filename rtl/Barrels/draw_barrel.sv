@@ -13,14 +13,14 @@ module draw_barrel #(parameter
     )(
     input  logic                      clk,
     input  logic                      rst,
-    input  logic                      start_game,
+    input  logic                      game_en,
     input  logic                      animation,    // The signal remains at 1 while the animation is in progress, 
                                                     // and switches to 0 once the animation has completed.
     input  logic        [BARRELS-1:0] barrel,       // Enable # barrel drawing.
     input  logic  [BARRELS-1:0][10:0] xpos,         // Xpos position for EACH barrel to draw
     input  logic  [BARRELS-1:0][10:0] ypos,         // Ypos position for EACH barrel to draw
     input  logic               [11:0] rgb_pixel,
-    output logic               [9:0] pixel_addr,
+    output logic               [9:0]  pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -94,7 +94,7 @@ module draw_barrel #(parameter
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game && !animation) begin
+            if (game_en && !animation) begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
                 for (i = 0; i < BARRELS; i++) begin

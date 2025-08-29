@@ -30,7 +30,7 @@ module draw_health_tb;
     logic clk, rst;
     logic [3:0] r, g, b;
     logic [11:0] rgb_pixel_health;
-    logic [13:0] pixel_addr_health;
+    logic [11:0] pixel_addr_health;
     assign {r,g,b} = dut_if.rgb;
 
 
@@ -72,7 +72,7 @@ module draw_health_tb;
    u_draw_health (
       .clk,
       .rst,
-      .start_game('1),
+      .game_en('1),
       .en('1),
       .health_en('1),
       .rgb_pixel(rgb_pixel_health),

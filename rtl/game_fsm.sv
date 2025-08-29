@@ -14,9 +14,11 @@ module game_fsm (
     input  logic       start_game,
     input  logic       start_game_uart,
     input  logic       animation,
-    input  logic       touch,
-    input  logic [9:0] hit,
+    input  logic       touch_lady,
+    input  logic       is_shielded,
+    input  logic [9:0] barrel_hit,
     output logic       game_en,
+    output logic       donkey_hit,
     output logic [2:0] health_en
 );
 
@@ -29,8 +31,8 @@ module game_fsm (
 
     STATE_T state, state_nxt;
 
-    logic game_en_nxt;
-    logic [1:0] health_counter, health_counter_nxt;
+    logic game_en_nxt, donkey_hit_nxt;
+    logic [2:0] health_counter, health_counter_nxt;
     logic [2:0] health_en_nxt;
 
     always_ff @(posedge clk) begin : state_seg_blk
@@ -46,21 +48,23 @@ module game_fsm (
             game_en <= '0;
             health_en <= '0;
             health_counter <= '0;
+            donkey_hit <= '0;
         end else begin
             game_en <= game_en_nxt;
             health_en <= health_en_nxt;
             health_counter <= health_counter_nxt;
+            donkey_hit <= donkey_hit_nxt;
         end
     end
 
     always_comb begin : state_comb_blk
         case (state)
             ST_WAIT_FOR_PLAYERS: begin
-                state_nxt = (start_game && start_game_uart && !animation) ? ST_GAME: ST_WAIT_FOR_PLAYERS;
+                state_nxt = (start_game && start_game_uart && !animation) ? ST_GAME : ST_WAIT_FOR_PLAYERS;
             end
 
             ST_GAME: begin
-                if (touch) begin
+                if (touch_lady) begin
                     state_nxt = ST_DONKEY_WIN;
                 end else if (health_en == '0) begin
                     state_nxt = ST_KONG_WIN;
@@ -74,7 +78,11 @@ module game_fsm (
             end
 
             ST_KONG_WIN: begin
-                state_nxt = ST_DONKEY_WIN;
+                state_nxt = ST_KONG_WIN;
+            end
+
+            default: begin
+                state_nxt = ST_WAIT_FOR_PLAYERS;
             end
 
         endcase
@@ -85,26 +93,42 @@ module game_fsm (
             ST_WAIT_FOR_PLAYERS: begin
                 game_en_nxt = (start_game && start_game_uart) ? '1 : '0;
                 health_en_nxt = (!animation) ? '1 : '0;
-                health_counter_nxt = health_counter;
+                health_counter_nxt = '0;
+                donkey_hit_nxt = '0;
             end
 
             ST_GAME: begin
                 game_en_nxt = game_en;
-                if (hit) begin
-                    health_counter_nxt = health_counter + 1;
-                    health_en_nxt = (health_en | 1'b0 << health_counter);
+                if (barrel_hit) begin
+                    health_counter_nxt = is_shielded ? health_counter : health_counter + 1;
+                    health_en_nxt = is_shielded ? health_en : (health_en & ~(1'b1 << health_counter));
+                    donkey_hit_nxt = is_shielded ? '0 : '1;
                 end else begin
                     health_en_nxt = health_en;
                     health_counter_nxt = health_counter;
+                    donkey_hit_nxt = '0;
                 end
             end
 
             ST_DONKEY_WIN: begin
-               
+                game_en_nxt = game_en;
+                health_en_nxt = health_en;
+                health_counter_nxt = health_counter;
+                donkey_hit_nxt = '0;
             end
 
             ST_KONG_WIN: begin
-                
+                game_en_nxt = game_en;
+                health_en_nxt = health_en;
+                health_counter_nxt = health_counter;
+                donkey_hit_nxt = '0;
+            end
+
+            default: begin
+                game_en_nxt = game_en;
+                health_en_nxt = health_en;
+                health_counter_nxt = health_counter;
+                donkey_hit_nxt = '0;
             end
 
         endcase

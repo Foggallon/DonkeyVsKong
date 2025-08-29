@@ -17,7 +17,7 @@ module draw_character #(parameter
     input  logic        clk,
     input  logic        rst,
     input  logic        rotate,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        en,
     input  logic [10:0] xpos,
     input  logic [10:0] ypos,
@@ -94,7 +94,7 @@ module draw_character #(parameter
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if (en && start_game) begin
+            if (en && game_en) begin
                 if((vcount_buf >= ypos) && (vcount_buf < ypos + CHARACTER_HEIGHT) && (hcount_buf >=  xpos) && (hcount_buf < xpos + CHARACTER_WIDTH)) begin
                     rgb_nxt = is_on_ladder ? (rgb_pixel_back == BLACK ? rgb_buf : rgb_pixel_back) : (rgb_pixel == BLACK ? rgb_buf : rgb_pixel);   // remove background
                 end else begin

@@ -25,7 +25,7 @@
      */
 
     logic clk, rst, jump, left, right;
-    wire  [11:0] xpos, ypos;
+    wire  [10:0] xpos, ypos;
     
 
     /**
@@ -51,23 +51,25 @@
      * Submodules instances
      */
 
-    movement dut (
+    donkey_movement dut (
         .clk,
         .rst,
 
         .jump,
         .left,
         .right,
-        .start_game('1),
+        .game_en('1),
         .animation('0),
         .down('0),
         .up('0),
+        .donkey_hit('0),
+        .is_on_ladder(),
 
         .xpos,
         .ypos
     );
 
-    movementProg u_movementProg (
+    movement_prog u_movement_prog (
         .clk,
         .rst,
 

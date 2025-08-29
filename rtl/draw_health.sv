@@ -14,7 +14,7 @@
     ) (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        en,
     input  logic [11:0] rgb_pixel,
     input  logic [2:0]  health_en,
@@ -93,7 +93,9 @@
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (en && start_game) begin
+            if (en && game_en) begin
+                rgb_nxt = rgb_buf;
+                pixel_addr_nxt = pixel_addr;
                 for(i = 0; i < 3; i++) begin
                     if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background

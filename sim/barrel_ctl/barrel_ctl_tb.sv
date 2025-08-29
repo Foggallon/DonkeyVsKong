@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Module vertical barrel movement
+ * Testbench for barrel_ctl module
  */
 
 module barrel_ctl_tb;
@@ -50,12 +50,12 @@ module barrel_ctl_tb;
      * Submodules instances
      */
 
-    barrel_ctl #(.BARRELS(5)) dut (     // For use set delay_counter to 5
+    barrel_ctl #(.BARRELS(5), .DELAY_TIME(5)) dut (
         .clk,
         .rst,
         .animation('0),
         .key(key),
-        .start_game('1),
+        .game_en('1),
         .barrel(barrel),
         .done(done)
     );    

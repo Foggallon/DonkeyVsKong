@@ -11,10 +11,14 @@
 
 sv work ../../rtl/Packages/vga_pkg.sv \
         ../../rtl/Packages/platform_pkg.sv \
+        ../../rtl/Packages/ladder_pkg.sv \
+        ../../rtl/Packages/animation_pkg.sv \
+        ../../rtl/Map/incline_platform.sv \
         ../../rtl/VGA/vga_if.sv \
         ../../rtl/VGA/vga_timing.sv \
         ../../rtl/Common/delay.sv \
         ../common/tiff_writer.sv \
         ../../rtl/ROM/image_rom.sv \
-        ../../rtl/Map/incline_platform.sv \
-        gameMap_tb.sv
+        ../../rtl/Animation/animation_platform.sv \
+        ../../rtl/Animation/animation_ladder.sv \
+        animation_map_tb.sv

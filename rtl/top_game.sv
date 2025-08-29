@@ -60,7 +60,11 @@ module top_game (
    logic right_uart, left_uart, down_uart, up_uart;
    logic [15:0] keycode_uart;
    logic [31:0] ascii_code_uart;
-   
+
+   // Game FSM
+   logic donkey_hit, is_shielded, game_en;
+   logic [2:0] health_en;
+
    // Start game menu
    logic [11:0] rgb_pixel_menu;
    logic [13:0] pixel_addr_menu;
@@ -97,9 +101,10 @@ module top_game (
    logic [9:0][10:0] xpos_barrel, ypos_barrel;
 
    // Barrels - horizontal / vertical
-   logic hit_1, hit_2, hit_3, hit_4, hit_5, hit_6, hit_7, hit_8, hit_9, hit_10;
    logic done_1, done_2, done_3, done_4, done_5;
    logic done_ver_1, done_ver_2, done_ver_3, done_ver_4, done_ver_5;
+   logic barrel_hit_1, barrel_hit_2, barrel_hit_3, barrel_hit_4, barrel_hit_5;
+   logic barrel_hit_6, barrel_hit_7, barrel_hit_8, barrel_hit_9, barrel_hit_10;
    logic [10:0] xpos_barrel_1, ypos_barrel_1, xpos_barrel_1_v, ypos_barrel_1_v;
    logic [10:0] xpos_barrel_2, ypos_barrel_2, xpos_barrel_2_v, ypos_barrel_2_v;
    logic [10:0] xpos_barrel_3, ypos_barrel_3, xpos_barrel_3_v, ypos_barrel_3_v;
@@ -115,7 +120,6 @@ module top_game (
    logic [11:0] pixel_addr_donkey, rgb_pixel_donkey, rgb_pixel_donkey_back;
 
    // Health
-   logic [2:0] health_en;
    logic [11:0] rgb_pixel_health, pixel_addr_health;
 
    /**
@@ -237,6 +241,25 @@ module top_game (
    );
 
    /**
+    * Game FSM
+    */
+
+   game_fsm u_game_fsm (
+      .clk(clk65MHz),
+      .rst,
+      .animation,
+      .start_game(start_game),
+      .start_game_uart(start_game), // change
+      .touch_lady('0),              // change
+      .is_shielded('0),
+      .barrel_hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
+                   barrel_hit_5, barrel_hit_4, barrel_hit_3, barrel_hit_2, barrel_hit_1}),
+      .donkey_hit(donkey_hit),
+      .game_en(game_en),
+      .health_en(health_en)
+   );
+
+   /**
     * VGA
     */
 
@@ -254,7 +277,7 @@ module top_game (
    draw_menu u_draw_menu (
       .clk(clk65MHz),
       .rst,
-      .start_game,
+      .game_en,
       .rgb_pixel(rgb_pixel_menu),
       .pixel_addr(pixel_addr_menu),
 
@@ -279,7 +302,7 @@ module top_game (
    draw_ladder u_draw_ladder (
       .clk(clk65MHz),
       .rst,
-      .start_game,
+      .game_en,
       .animation,
       .pixel_addr(pixel_addr_ladder),
       .rgb_pixel(rgb_pixel_ladder),
@@ -308,7 +331,7 @@ module top_game (
       .rst,
       .pixel_addr(pixel_addr_platform),
       .rgb_pixel(rgb_pixel_platform),
-      .start_game,
+      .game_en,
       .ctl(ctl_animation),
 
       .in(draw_ladder_if),
@@ -332,7 +355,7 @@ module top_game (
    start_animation u_start_animation (
       .clk(clk65MHz),
       .rst,
-      .start_game,
+      .game_en,
       .is_on_ladder(is_on_ladder_kong),
       .animation(animation),
       .counter(counter),
@@ -346,7 +369,7 @@ module top_game (
         .rst,
         .pixel_addr(pixel_addr_animation_platform),
         .rgb_pixel(rgb_pixel_animation_platform),
-        .start_game,
+        .game_en,
         .ctl(ctl_animation),
         .in(incline_platform_if),
         .out(animation_platform_if)
@@ -365,7 +388,7 @@ module top_game (
    animation_ladder u_animation_ladder (
       .clk(clk65MHz),
       .rst,
-      .start_game,
+      .game_en,
       .animation,
       .counter,
       .rgb_pixel(rgb_pixel_animation_ladder),
@@ -393,7 +416,7 @@ module top_game (
       .clk(clk65MHz),
       .rst,
       .rotate('0),
-      .start_game,
+      .game_en,
       .pixel_addr(pixel_addr_animation_kong),
       .rgb_pixel(rgb_pixel_animation_kong),
       .rgb_pixel_back(rgb_pixel_animation_kong_back),
@@ -435,7 +458,7 @@ module top_game (
    draw_barrel #(.BARRELS(10)) u_draw_barrel (
       .clk(clk65MHz),
       .rst(rst),
-      .start_game,
+      .game_en,
       .animation,
       .barrel({barrel_ver, barrel_hor}),
       .xpos(xpos_barrel),
@@ -464,7 +487,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_1),
+      .barrel_hit(barrel_hit_1),
       .barrel(barrel_hor[0]),
       .done(done_1),
       .xpos(xpos_barrel_1),
@@ -477,7 +500,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_2),
+      .barrel_hit(barrel_hit_2),
       .barrel(barrel_hor[1]),
       .done(done_2),
       .xpos(xpos_barrel_2),
@@ -490,7 +513,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_3),
+      .barrel_hit(barrel_hit_3),
       .barrel(barrel_hor[2]),
       .done(done_3),
       .xpos(xpos_barrel_3),
@@ -503,7 +526,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_4),
+      .barrel_hit(barrel_hit_4),
       .barrel(barrel_hor[3]),
       .done(done_4),
       .xpos(xpos_barrel_4),
@@ -516,7 +539,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_5),
+      .barrel_hit(barrel_hit_5),
       .barrel(barrel_hor[4]),
       .done(done_5),
       .xpos(xpos_barrel_5),
@@ -529,7 +552,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_6),
+      .barrel_hit(barrel_hit_6),
       .barrel(barrel_ver[0]),
       .done(done_ver_1),
       .xpos(xpos_barrel_1_v),
@@ -542,7 +565,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_7),
+      .barrel_hit(barrel_hit_7),
       .barrel(barrel_ver[1]),
       .done(done_ver_2),
       .xpos(xpos_barrel_2_v),
@@ -555,7 +578,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_8),
+      .barrel_hit(barrel_hit_8),
       .barrel(barrel_ver[2]),
       .done(done_ver_3),
       .xpos(xpos_barrel_3_v),
@@ -568,7 +591,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_9),
+      .barrel_hit(barrel_hit_9),
       .barrel(barrel_ver[3]),
       .done(done_ver_4),
       .xpos(xpos_barrel_4_v),
@@ -581,7 +604,7 @@ module top_game (
       .xpos_kong,
       .xpos_donkey,
       .ypos_donkey,
-      .hit(hit_10),
+      .barrel_hit(barrel_hit_10),
       .barrel(barrel_ver[4]),
       .done(done_ver_5),
       .xpos(xpos_barrel_5_v),
@@ -594,9 +617,9 @@ module top_game (
    ) u_barrel_ctl_hor (
       .clk(clk65MHz),
       .rst(rst),
-      .start_game,
+      .game_en,
       .animation,
-      .key(up_uart),
+      .key(up),
       .done({done_5, done_4, done_3, done_2, done_1}),
       .barrel(barrel_hor)
    );
@@ -607,9 +630,9 @@ module top_game (
    ) u_barrel_ctl_ver (
       .clk(clk65MHz),
       .rst(rst),
-      .start_game,
+      .game_en,
       .animation,
-      .key(down_uart),
+      .key(down),
       .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
       .barrel(barrel_ver)
    );
@@ -621,7 +644,7 @@ module top_game (
    kong_movement u_kong_movement (
       .clk(clk65MHz),
       .rst,
-      .start_game,
+      .game_en,
       .animation,
       .left(left_uart),
       .right(right_uart),
@@ -636,7 +659,7 @@ module top_game (
       .clk(clk65MHz),
       .rst,
       .rotate('0),
-      .start_game,
+      .game_en,
       .is_on_ladder('0),
       .rgb_pixel_back('0),
       .pixel_addr(pixel_addr_kong),
@@ -669,8 +692,8 @@ module top_game (
       .rst(rst),
       .xpos(xpos_donkey),
       .ypos(ypos_donkey),
-      .hit({hit_10, hit_9, hit_8, hit_7, hit_6, hit_5, hit_4, hit_3, hit_2, hit_1}),
-      .start_game,
+      .donkey_hit,
+      .game_en,
       .animation,
       .is_on_ladder(is_on_ladder_donkey),
       .left,
@@ -687,7 +710,7 @@ module top_game (
       .clk(clk65MHz),
       .rst,
       .rotate,
-      .start_game,
+      .game_en,
       .is_on_ladder(is_on_ladder_donkey),
       .pixel_addr(pixel_addr_donkey),
       .rgb_pixel(rgb_pixel_donkey),
@@ -735,9 +758,9 @@ module top_game (
    u_draw_health (
       .clk(clk65MHz),
       .rst(rst),
-      .start_game(start_game),
+      .game_en,
       .en(!animation),
-      .health_en('1),
+      .health_en(health_en),
       .rgb_pixel(rgb_pixel_health),
       .pixel_addr(pixel_addr_health),
       

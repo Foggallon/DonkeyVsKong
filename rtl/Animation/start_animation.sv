@@ -13,7 +13,7 @@
 module start_animation (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     output logic        animation, // The signal remains at 1 while the animation is in progress, 
                                    // and switches to 0 once the animation has completed.
     output logic [10:0] xpos,
@@ -112,8 +112,8 @@ module start_animation (
                 velocity_nxt = velocity;
                 jump_ctl_nxt = jump_ctl;
                 ctl_nxt = ctl;
-                is_on_ladder_nxt =  start_game ? '1 : '0;
-                if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && start_game) begin
+                is_on_ladder_nxt =  game_en ? '1 : '0;
+                if (mov_counter == MOVE_TAKI_NIE_MACQUEEN && game_en) begin
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
                     if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0) begin

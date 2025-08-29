@@ -13,7 +13,7 @@
 module animation_platform (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic [3:0]  ctl,        // This signal is responsible for disabling platforms. A bit set to 1 at a given position 
                                     // indicates that the corresponding platform is deactivated.
     input  logic [11:0] rgb_pixel,
@@ -85,7 +85,7 @@ module animation_platform (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game) begin
+            if (game_en) begin
                 // Draw always (during animation and game).
                 if ((vcount_buf >= PLATFORM_1_VSTART) && (vcount_buf <= PLATFORM_1_VSTART + PLATFORM_HEIGHT) && 
                     (hcount_buf >= PLATFORM_1_HSTART) && (hcount_buf < PLATFORM_1_HSTOP)) begin

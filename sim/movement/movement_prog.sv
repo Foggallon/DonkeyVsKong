@@ -8,7 +8,7 @@
  * Main test for movement module.
  */
 
-module movementProg (
+module movement_prog (
   input logic clk,
   input logic rst,
 

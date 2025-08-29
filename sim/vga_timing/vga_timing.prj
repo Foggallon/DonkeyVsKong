@@ -10,13 +10,6 @@
 
 
 sv work ../../rtl/Packages/vga_pkg.sv \
-        ../../rtl/VGA/vga_if.sv \
         ../../rtl/VGA/vga_timing.sv \
-        ../../rtl/Common/delay.sv \
-        ../common/tiff_writer.sv \
-        ../../rtl/ROM/image_rom.sv \
-        ../../rtl/MainMenu/draw_menu.sv \
-        ../../rtl/Text/draw_rect_char.sv \
-        ../../rtl/Text/char_rom.sv \
-        ../../rtl/Text/font_rom.sv \
-        drawMenu_tb.sv
+        ../../rtl/VGA/vga_if.sv \
+        vga_timing_tb.sv

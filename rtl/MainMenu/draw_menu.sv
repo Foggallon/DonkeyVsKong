@@ -11,7 +11,7 @@
 module draw_menu (
     input logic         clk,
     input logic         rst,
-    input logic         start_game,
+    input logic         game_en,
     input  logic [11:0] rgb_pixel,
     output logic [13:0] pixel_addr,
     
@@ -82,9 +82,9 @@ module draw_menu (
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
         end else begin
-            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !start_game)
+            if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS) && !game_en)
                 rgb_nxt = rgb_pixel;
-            else if (start_game)
+            else if (game_en)
                 rgb_nxt = GAME_BACKGROUND;
             else
                 rgb_nxt = rgb_buf;

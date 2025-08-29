@@ -11,7 +11,7 @@
 module draw_ladder (
     input  logic        clk,
     input  logic        rst,
-    input  logic        start_game,
+    input  logic        game_en,
     input  logic        animation,  // The signal remains at 1 while the animation is in progress, 
                                     // and switches to 0 once the animation has completed.
     input  logic [11:0] rgb_pixel,
@@ -81,7 +81,7 @@ module draw_ladder (
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
         end else begin
-            if (start_game) begin
+            if (game_en) begin
                 if ((vcount_buf >= LADDER_1_VSTART) && (vcount_buf <= LADDER_1_VSTOP) && 
                     (hcount_buf >= LADDER_1_HSTART) && (hcount_buf < LADDER_1_HSTART + LADDER_WIDTH) && !animation) begin
                     rgb_nxt = rgb_pixel;
