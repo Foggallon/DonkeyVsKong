@@ -64,6 +64,8 @@ set sv_files {
     ../rtl/UART/uart_tx_ctl.sv
     ../rtl/draw_health.sv
     ../rtl/game_fsm.sv
+    ../rtl/draw_shield.sv
+    ../rtl/health_shielding.sv
 }
 
 # Specify Verilog design files location

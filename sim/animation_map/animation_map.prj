@@ -21,4 +21,5 @@ sv work ../../rtl/Packages/vga_pkg.sv \
         ../../rtl/ROM/image_rom.sv \
         ../../rtl/Animation/animation_platform.sv \
         ../../rtl/Animation/animation_ladder.sv \
+        ../../rtl/draw_shield.sv \
         animation_map_tb.sv

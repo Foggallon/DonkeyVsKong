@@ -16,38 +16,46 @@
     (
         input  logic        clk,
         input  logic        rst,
-        input  logic        start_game,
-        input  logic [9:0]  hit,
+        input  logic        game_en,
+        input  logic        hit,
         input  logic [10:0] xpos_donkey,
         input  logic [10:0] ypos_donkey,
-        output logic        is_shielded
+        output logic        is_shielded,
+        output logic        was_shield_picked_up
  );
 
- logic is_shielded_nxt;
+ logic is_shielded_nxt, was_shield_picked_up_nxt;
 
  always_ff @(posedge clk) begin
     if (rst) begin
         is_shielded <= '0;
+        was_shield_picked_up <= '0;
     end else begin
         is_shielded <= is_shielded_nxt;
+        was_shield_picked_up <= was_shield_picked_up_nxt;
     end
  end
 
  always_comb begin : shield_comb_blk
     if (rst) begin
         is_shielded_nxt = '0;
+        was_shield_picked_up_nxt = '0;
     end else begin
-        if (start_game) begin
+        if (game_en) begin
             if(xpos_donkey >= XPOS_SHIELD && xpos_donkey < XPOS_SHIELD + OFFSET 
                 && ypos_donkey >= YPOS_SHIELD && ypos_donkey < YPOS_SHIELD + OFFSET) begin
                 is_shielded_nxt = '1;
+                was_shield_picked_up_nxt = '1;
             end else if (hit) begin
                 is_shielded_nxt = '0;
+                was_shield_picked_up_nxt = was_shield_picked_up;
             end else begin
                 is_shielded_nxt = is_shielded;
+                was_shield_picked_up_nxt = was_shield_picked_up;
             end
         end else begin
             is_shielded_nxt = is_shielded;
+            was_shield_picked_up_nxt = was_shield_picked_up;
         end
     end
  end

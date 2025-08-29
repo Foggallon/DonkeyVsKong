@@ -42,6 +42,7 @@ module top_game (
    vga_if draw_kong_if();
    vga_if draw_donkey_if();
    vga_if draw_health_if();
+   vga_if draw_shield_if();
 
    /**
     * Local variables and signals
@@ -121,6 +122,11 @@ module top_game (
 
    // Health
    logic [11:0] rgb_pixel_health, pixel_addr_health;
+
+   // Shield
+   logic [11:0] rgb_pixel_shield, pixel_addr_shield;
+   logic was_shield_picked_up;
+
 
    /**
     * Signals assignments
@@ -251,7 +257,7 @@ module top_game (
       .start_game(start_game),
       .start_game_uart(start_game), // change
       .touch_lady('0),              // change
-      .is_shielded('0),
+      .is_shielded(is_shielded),
       .barrel_hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
                    barrel_hit_5, barrel_hit_4, barrel_hit_3, barrel_hit_2, barrel_hit_1}),
       .donkey_hit(donkey_hit),
@@ -748,6 +754,52 @@ module top_game (
    );
    
    /**
+    * Shield
+    */
+
+    draw_shield #(
+      .XPOS(300),
+      .YPOS(468)
+    ) u_draw_shield (
+      .clk(clk65MHz),
+      .rst,
+      .start_game(start_game),
+      .was_shield_picked_up,
+      .en(!animation),
+      .pixel_addr(pixel_addr_shield),
+      .rgb_pixel(rgb_pixel_shield),
+
+      .in(draw_donkey_if),
+      .out(draw_shield_if)
+    );
+
+    image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+   
+    ) u_image_rom_shield (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_shield),
+      .rgb(rgb_pixel_shield)
+    );
+
+    health_shielding #(
+      .XPOS_SHIELD(300),
+      .YPOS_SHIELD(468)
+    ) u_health_shielding (
+      .clk(clk65MHz),
+      .rst,
+      .game_en,
+      .xpos_donkey,
+      .ypos_donkey,
+      .hit(donkey_hit),
+      .is_shielded,
+      .was_shield_picked_up
+    );
+
+   /**
     * Health
     */
 
@@ -764,7 +816,7 @@ module top_game (
       .rgb_pixel(rgb_pixel_health),
       .pixel_addr(pixel_addr_health),
       
-      .in(draw_donkey_if),
+      .in(draw_shield_if),
       .out(draw_health_if)
    );
 

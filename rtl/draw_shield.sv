@@ -17,7 +17,7 @@
     input  logic        rst,
     input  logic        start_game,
     input  logic        en,
-    input  logic        is_shielded,
+    input  logic        was_shield_picked_up,
     input  logic [11:0] rgb_pixel,
     output logic [11:0] pixel_addr,
 
@@ -91,7 +91,7 @@
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (en && start_game) begin
-                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + OFFSET) && is_shielded==0) begin
+                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + OFFSET) && was_shield_picked_up==0) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
                         pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (OFFSET))};
                     end else begin

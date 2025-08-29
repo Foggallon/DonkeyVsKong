@@ -27,12 +27,14 @@
     vga_if animation_platform_if();
     vga_if incline_platform_if();
     vga_if dut_if();
+    vga_if animation_ladder_if();
 
     logic clk, rst;
     logic [3:0] r, g, b;
-    logic [11:0] rgb_pixel, rgb_pixel_2, rgb_pixel_3;
+    logic [11:0] rgb_pixel, rgb_pixel_2, rgb_pixel_3, rgb_pixel_shield;
     logic [10:0] pixel_addr, pixel_addr_2;
     logic [9:0] pixel_addr_3;
+    logic [11:0] pixel_addr_shield;
     assign {r,g,b} = dut_if.rgb;
 
     /**
@@ -71,7 +73,7 @@
         .pixel_addr(pixel_addr_2),
         .rgb_pixel(rgb_pixel_2),
         .game_en('1),
-        .ctl(4'b0001),
+        .ctl('1),
         .in(vga_timing_if),
         .out(incline_platform_if)
     );
@@ -93,7 +95,7 @@
         .pixel_addr(pixel_addr),
         .rgb_pixel(rgb_pixel),
         .game_en('1),
-        .ctl(4'b0001),
+        .ctl('1),
         .in(incline_platform_if),
         .out(animation_platform_if)
     );
@@ -116,9 +118,9 @@
         .rgb_pixel(rgb_pixel_3),
         .game_en('1),
         .animation('1),
-        .counter('0),
+        .counter(16),
         .in(animation_platform_if),
-        .out(dut_if)
+        .out(animation_ladder_if)
     );
 
     image_rom  #(
@@ -132,6 +134,33 @@
       .rgb(rgb_pixel_3)
    );
 
+   draw_shield #(
+        .XPOS(300),
+        .YPOS(468),
+        .OFFSET(64)
+    ) u_draw_shield (
+        .clk,
+        .rst,
+        .start_game('1),
+        .is_shielded('0),
+        .en('1),
+        .pixel_addr(pixel_addr_shield),
+        .rgb_pixel(rgb_pixel_shield),
+
+        .in(animation_ladder_if),
+        .out(dut_if)   
+    );
+
+    image_rom  #(
+        .BITS(12),
+        .PIXELS(4096),
+        .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+   ) u_image_rom_shield (
+        .clk,
+        
+        .address(pixel_addr_shield),
+        .rgb(rgb_pixel_shield)
+   );
     tiff_writer #(
         .XDIM(16'd1344),
         .YDIM(16'd806),
