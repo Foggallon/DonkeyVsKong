@@ -73,6 +73,7 @@
             out.hblnk  <= '0;
             out.rgb    <= '0;
             pixel_addr <= '0;
+
         end else begin
             out.vcount <= vcount_buf;
             out.vsync  <= vsync_buf;
@@ -91,7 +92,7 @@
             pixel_addr_nxt = pixel_addr;
         end else begin
             if (en && start_game) begin
-                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + OFFSET) && was_shield_picked_up==0) begin
+                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + OFFSET) && !was_shield_picked_up) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
                         pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (OFFSET))};
                     end else begin

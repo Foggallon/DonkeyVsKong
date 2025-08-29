@@ -16,8 +16,11 @@
     input  logic        rst,
     input  logic        game_en,
     input  logic        en,
+    input logic         is_shielded,
     input  logic [11:0] rgb_pixel,
     input  logic [2:0]  health_en,
+    input  logic [11:0] rgb_pixel_shield,
+    output logic [11:0] pixel_addr_shield,
     output logic [11:0] pixel_addr,
 
     vga_if.in in,
@@ -42,7 +45,7 @@
     logic vblnk_buf;
     logic vsync_buf;
 
-    logic [11:0] pixel_addr_nxt;
+    logic [11:0] pixel_addr_nxt, pixel_addr_shield_nxt;
 
     reg [3:0] i; 
 
@@ -76,6 +79,7 @@
             out.hblnk  <= '0;
             out.rgb    <= '0;
             pixel_addr <= '0;
+            pixel_addr_shield <= '0;
         end else begin
             out.vcount <= vcount_buf;
             out.vsync  <= vsync_buf;
@@ -85,6 +89,7 @@
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
             pixel_addr <= pixel_addr_nxt;
+            pixel_addr_shield <= pixel_addr_shield_nxt;
         end
     end
 
@@ -96,8 +101,11 @@
             if (en && game_en) begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
-                for(i = 0; i < 3; i++) begin
-                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
+                for(i = 0; i < 4; i++) begin
+                    if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS - 64) && (hcount_buf < XPOS) && is_shielded) begin
+                        rgb_nxt = rgb_pixel_shield == BLACK ? rgb_buf : rgb_pixel_shield;    // remove background
+                        pixel_addr_shield_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (OFFSET) - 64)};
+                    end else if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
                         pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (i*OFFSET))};
                     end

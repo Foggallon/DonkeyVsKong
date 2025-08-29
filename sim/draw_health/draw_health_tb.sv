@@ -29,8 +29,8 @@ module draw_health_tb;
 
     logic clk, rst;
     logic [3:0] r, g, b;
-    logic [11:0] rgb_pixel_health;
-    logic [11:0] pixel_addr_health;
+    logic [11:0] rgb_pixel_health, rgb_pixel_shield;
+    logic [11:0] pixel_addr_health, pixel_addr_shield;
     assign {r,g,b} = dut_if.rgb;
 
 
@@ -76,7 +76,10 @@ module draw_health_tb;
       .en('1),
       .health_en('1),
       .rgb_pixel(rgb_pixel_health),
+      .is_shielded('1),
       .pixel_addr(pixel_addr_health),
+      .pixel_addr_shield(pixel_addr_shield),
+      .rgb_pixel_shield(rgb_pixel_shield),
       
       .in(vga_timing_if),
       .out(dut_if)
@@ -90,6 +93,15 @@ module draw_health_tb;
       .clk,
       .address(pixel_addr_health),
       .rgb(rgb_pixel_health)
+   );
+   image_rom  #(
+        .BITS(12),
+        .PIXELS(4096),
+        .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+   ) u_imageRomShield (
+      .clk,
+      .address(pixel_addr_shield),
+      .rgb(rgb_pixel_shield)
    );
 
     tiff_writer #(
