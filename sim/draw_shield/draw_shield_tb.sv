@@ -30,7 +30,7 @@ module draw_shield_tb;
     logic clk, rst;
     logic [3:0] r, g, b;
     logic [11:0] rgb_pixel_health;
-    logic [13:0] pixel_addr_health;
+    logic [11:0] pixel_addr_health;
     assign {r,g,b} = dut_if.rgb;
 
 
@@ -76,7 +76,7 @@ module draw_shield_tb;
       .en('1),
       .rgb_pixel(rgb_pixel_health),
       .pixel_addr(pixel_addr_health),
-      .is_shielded('0),
+      .was_shield_picked_up('0),
       
       .in(vga_timing_if),
       .out(dut_if)

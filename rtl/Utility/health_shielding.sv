@@ -43,7 +43,7 @@
     end else begin
         if (game_en) begin
             if(xpos_donkey >= XPOS_SHIELD && xpos_donkey < XPOS_SHIELD + OFFSET 
-                && ypos_donkey >= YPOS_SHIELD && ypos_donkey < YPOS_SHIELD + OFFSET) begin
+                && ypos_donkey >= YPOS_SHIELD && ypos_donkey < YPOS_SHIELD + OFFSET && !was_shield_picked_up) begin
                 is_shielded_nxt = '1;
                 was_shield_picked_up_nxt = '1;
             end else if (hit) begin

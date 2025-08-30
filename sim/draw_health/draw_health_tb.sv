@@ -74,7 +74,7 @@ module draw_health_tb;
       .rst,
       .game_en('1),
       .en('1),
-      .health_en('1),
+      .health_en(3'b110),
       .rgb_pixel(rgb_pixel_health),
       .is_shielded('1),
       .pixel_addr(pixel_addr_health),

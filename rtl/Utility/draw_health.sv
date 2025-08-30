@@ -97,22 +97,27 @@
         if (vblnk_buf || hblnk_buf) begin
             rgb_nxt = 12'h8_8_8;
             pixel_addr_nxt = pixel_addr;
+            pixel_addr_shield_nxt = pixel_addr_shield;
         end else begin
             if (en && game_en) begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
-                for(i = 0; i < 4; i++) begin
+                pixel_addr_shield_nxt = pixel_addr_shield;
+                for(i = 0; i < 3; i++) begin
                     if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS - 64) && (hcount_buf < XPOS) && is_shielded) begin
                         rgb_nxt = rgb_pixel_shield == BLACK ? rgb_buf : rgb_pixel_shield;    // remove background
                         pixel_addr_shield_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (OFFSET) - 64)};
+                        pixel_addr_nxt = pixel_addr;
                     end else if((vcount_buf >= YPOS) && (vcount_buf < YPOS + OFFSET) && (hcount_buf >= XPOS + (OFFSET*i)) && (hcount_buf < XPOS + (OFFSET*(i+1))) && health_en[i]==1) begin
                         rgb_nxt =  rgb_pixel == BLACK ? rgb_buf : rgb_pixel;    // remove background
                         pixel_addr_nxt = {6'(in.vcount - YPOS), 6'(in.hcount - XPOS + (i*OFFSET))};
+                        pixel_addr_shield_nxt = pixel_addr_shield;
                     end
                 end
             end else begin
                 rgb_nxt = rgb_buf;
                 pixel_addr_nxt = pixel_addr;
+                pixel_addr_shield_nxt = pixel_addr_shield;
             end
         end
     end

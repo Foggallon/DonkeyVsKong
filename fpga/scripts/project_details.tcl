@@ -57,15 +57,12 @@ set sv_files {
     ../rtl/Barrels/barrel_ctl.sv
     ../rtl/Barrels/ver_barrel.sv
     ../rtl/Movement/kong_movement.sv
-    ../rtl/Text/char_rom.sv
-    ../rtl/Text/font_rom.sv
-    ../rtl/Text/draw_rect_char.sv
     ../rtl/UART/uart_rx_ctl.sv
     ../rtl/UART/uart_tx_ctl.sv
-    ../rtl/draw_health.sv
+    ../rtl/Utility/draw_health.sv
     ../rtl/game_fsm.sv
-    ../rtl/draw_shield.sv
-    ../rtl/health_shielding.sv
+    ../rtl/Utility/draw_shield.sv
+    ../rtl/Utility/health_shielding.sv
 }
 
 # Specify Verilog design files location
