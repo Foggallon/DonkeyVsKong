@@ -142,7 +142,7 @@
         .clk,
         .rst,
         .start_game('1),
-        .is_shielded('0),
+        .was_shield_picked_up('0),
         .en('1),
         .pixel_addr(pixel_addr_shield),
         .rgb_pixel(rgb_pixel_shield),

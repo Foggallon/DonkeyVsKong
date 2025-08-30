@@ -63,7 +63,7 @@ module top_game (
    logic [31:0] ascii_code_uart;
 
    // Game FSM
-   logic donkey_hit, is_shielded, game_en;
+   logic donkey_hit, is_shielded, game_en, donkey_win, kong_win;
    logic [2:0] health_en;
 
    // Start game menu
@@ -261,6 +261,8 @@ module top_game (
       .barrel_hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
                    barrel_hit_5, barrel_hit_4, barrel_hit_3, barrel_hit_2, barrel_hit_1}),
       .donkey_hit(donkey_hit),
+      .donkey_win(donkey_win),
+      .kong_win(kong_win),
       .game_en(game_en),
       .health_en(health_en)
    );
@@ -284,6 +286,8 @@ module top_game (
       .clk(clk65MHz),
       .rst,
       .game_en,
+      .donkey_win,
+      .kong_win,
       .rgb_pixel(rgb_pixel_menu),
       .pixel_addr(pixel_addr_menu),
 
@@ -294,7 +298,7 @@ module top_game (
    image_rom  #(
       .BITS(14),
       .PIXELS(12292),
-      .ROM_FILE("../../rtl/ROM/Menu3.dat")
+      .ROM_FILE("../../rtl/ROM/Title_screen.dat")
    ) u_image_rom_menu (
       .clk(clk65MHz),
       .address(pixel_addr_menu),

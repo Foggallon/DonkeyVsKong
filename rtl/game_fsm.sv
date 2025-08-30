@@ -19,6 +19,8 @@ module game_fsm (
     input  logic [9:0] barrel_hit,
     output logic       game_en,
     output logic       donkey_hit,
+    output logic       donkey_win,
+    output logic       kong_win,
     output logic [2:0] health_en
 );
 
@@ -31,9 +33,8 @@ module game_fsm (
 
     STATE_T state, state_nxt;
 
-    logic game_en_nxt, donkey_hit_nxt;
-    logic [2:0] health_counter, health_counter_nxt;
-    logic [2:0] health_en_nxt;
+    logic game_en_nxt, donkey_hit_nxt, kong_win_nxt, donkey_win_nxt;
+    logic [2:0] health_counter, health_counter_nxt, health_en_nxt;
 
     always_ff @(posedge clk) begin : state_seg_blk
         if (rst) begin
@@ -49,11 +50,15 @@ module game_fsm (
             health_en <= '0;
             health_counter <= '0;
             donkey_hit <= '0;
+            donkey_win <= '0;
+            kong_win <= '0;
         end else begin
             game_en <= game_en_nxt;
             health_en <= health_en_nxt;
             health_counter <= health_counter_nxt;
             donkey_hit <= donkey_hit_nxt;
+            donkey_win <= donkey_hit_nxt;
+            kong_win <= kong_win_nxt;
         end
     end
 
@@ -95,10 +100,14 @@ module game_fsm (
                 health_en_nxt = (!animation) ? '1 : '0;
                 health_counter_nxt = '0;
                 donkey_hit_nxt = '0;
+                donkey_win_nxt = '0;
+                kong_win_nxt = '0;
             end
 
             ST_GAME: begin
                 game_en_nxt = game_en;
+                donkey_win_nxt = '0;
+                kong_win_nxt = '0;
                 if (barrel_hit) begin
                     health_counter_nxt = is_shielded ? health_counter : health_counter + 1;
                     health_en_nxt = is_shielded ? health_en : (health_en & ~(1'b1 << health_counter));
@@ -111,14 +120,18 @@ module game_fsm (
             end
 
             ST_DONKEY_WIN: begin
-                game_en_nxt = game_en;
+                donkey_win_nxt = '1;
+                kong_win_nxt = '0;
+                game_en_nxt = '0;
                 health_en_nxt = health_en;
                 health_counter_nxt = health_counter;
                 donkey_hit_nxt = '0;
             end
 
             ST_KONG_WIN: begin
-                game_en_nxt = game_en;
+                donkey_win_nxt = '0;
+                kong_win_nxt = '1;
+                game_en_nxt = '0;
                 health_en_nxt = health_en;
                 health_counter_nxt = health_counter;
                 donkey_hit_nxt = '0;
