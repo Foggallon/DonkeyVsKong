@@ -15,5 +15,5 @@ sv work ../../rtl/Packages/vga_pkg.sv \
         ../../rtl/Common/delay.sv \
         ../common/tiff_writer.sv \
         ../../rtl/ROM/image_rom.sv \
-        ../../rtl/draw_shield.sv \
+        ../../rtl/Utility/draw_shield.sv \
         draw_shield_tb.sv

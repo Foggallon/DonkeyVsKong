@@ -63,6 +63,7 @@ set sv_files {
     ../rtl/game_fsm.sv
     ../rtl/Utility/draw_shield.sv
     ../rtl/Utility/health_shielding.sv
+    ../rtl/Utility/touch_lady.sv
 }
 
 # Specify Verilog design files location
