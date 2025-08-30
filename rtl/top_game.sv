@@ -43,6 +43,7 @@ module top_game (
    vga_if draw_donkey_if();
    vga_if draw_health_if();
    vga_if draw_shield_if();
+   vga_if draw_lady_if();
 
    /**
     * Local variables and signals
@@ -127,6 +128,10 @@ module top_game (
    logic [11:0] rgb_pixel_shield, rgb_pixel_shield_2, pixel_addr_shield, pixel_addr_shield_2;
    logic was_shield_picked_up;
 
+   //Lady
+   logic touch_lady;
+   logic [11:0] rgb_pixel_lady, pixel_addr_lady;
+
 
    /**
     * Signals assignments
@@ -153,9 +158,9 @@ module top_game (
    assign xpos_barrel[9] = xpos_barrel_5_v;
    assign ypos_barrel[9] = ypos_barrel_5_v;
 
-   assign vs = draw_health_if.vsync;
-   assign hs = draw_health_if.hsync;
-   assign {r,g,b} = draw_health_if.rgb;
+   assign vs = draw_lady_if.vsync;
+   assign hs = draw_lady_if.hsync;
+   assign {r,g,b} = draw_lady_if.rgb;
    
    /**
     * Keyboard
@@ -256,7 +261,7 @@ module top_game (
       .animation,
       .start_game(start_game),
       .start_game_uart(start_game), // change
-      .touch_lady('0),              // change
+      .touch_lady,
       .is_shielded(is_shielded),
       .barrel_hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
                    barrel_hit_5, barrel_hit_4, barrel_hit_3, barrel_hit_2, barrel_hit_1}),
@@ -846,6 +851,53 @@ module top_game (
       
       .address(pixel_addr_shield_2),
       .rgb(rgb_pixel_shield_2)
+   );
+
+   /**
+    * Lady
+    */
+
+   touch_lady #(
+      .XPOS_LADY(380),
+      .YPOS_LADY(64)
+   ) u_touch_lady (
+      .clk(clk65MHz),
+      .rst,
+      .game_en,
+      .xpos_donkey,
+      .ypos_donkey,
+      .touch_lady
+   );
+
+   draw_character #(
+      .CHARACTER_HEIGHT(64),
+      .CHARACTER_WIDTH(64)
+   ) u_draw_character_lady (
+      .clk(clk65MHz),
+      .rst,
+      .rotate('0),
+      .game_en,
+      .is_on_ladder('0),
+      .rgb_pixel_back('0),
+      .pixel_addr(pixel_addr_lady),
+      .rgb_pixel(rgb_pixel_lady),
+      .xpos(380),
+      .ypos(64),
+      .en(!animation),
+
+      .in(draw_health_if),
+      .out(draw_lady_if)
+   );
+
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Panienka.dat")
+   
+   ) u_image_rom_lady (
+      .clk(clk65MHz),
+      .address(pixel_addr_lady),
+      .rgb(rgb_pixel_lady)
    );
 
 endmodule

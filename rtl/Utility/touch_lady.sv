@@ -9,8 +9,8 @@
  */
 
  module touch_lady #(parameter
-    XPOS_LADY = 300,
-    YPOS_LADY = 200,
+    XPOS_LADY = 380,
+    YPOS_LADY = 64,
     OFFSET= 64
     ) 
     (

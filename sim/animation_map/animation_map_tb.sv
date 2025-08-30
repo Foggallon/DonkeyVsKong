@@ -118,7 +118,7 @@
         .rgb_pixel(rgb_pixel_3),
         .game_en('1),
         .animation('1),
-        .counter(16),
+        .counter(4'b1010),
         .in(animation_platform_if),
         .out(animation_ladder_if)
     );
@@ -135,26 +135,26 @@
    );
 
    draw_shield #(
-        .XPOS(300),
-        .YPOS(468),
+        .XPOS(380),
+        .YPOS(64),
         .OFFSET(64)
     ) u_draw_shield (
         .clk,
         .rst,
         .start_game('1),
-        .is_shielded('0),
         .en('1),
-        .pixel_addr(pixel_addr_shield),
         .rgb_pixel(rgb_pixel_shield),
-
+        .pixel_addr(pixel_addr_shield),
+        .was_shield_picked_up('0),
+        
         .in(animation_ladder_if),
-        .out(dut_if)   
-    );
+        .out(dut_if)
+     );
 
     image_rom  #(
         .BITS(12),
         .PIXELS(4096),
-        .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+        .ROM_FILE("../../rtl/ROM/Panienka.dat")
    ) u_image_rom_shield (
         .clk,
         

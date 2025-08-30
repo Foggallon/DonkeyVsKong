@@ -85,7 +85,7 @@ module draw_shield_tb;
    image_rom  #(
         .BITS(12),
         .PIXELS(4096),
-        .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+        .ROM_FILE("../../rtl/ROM/Panienka.dat")
    ) u_imageRom (
       .clk,
       .address(pixel_addr_health),
