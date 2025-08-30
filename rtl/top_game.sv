@@ -294,7 +294,7 @@ module top_game (
    image_rom  #(
       .BITS(14),
       .PIXELS(12292),
-      .ROM_FILE("../../rtl/ROM/Menu2.dat")
+      .ROM_FILE("../../rtl/ROM/Menu3.dat")
    ) u_image_rom_menu (
       .clk(clk65MHz),
       .address(pixel_addr_menu),
