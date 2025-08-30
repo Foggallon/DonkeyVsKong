@@ -124,7 +124,7 @@ module top_game (
    logic [11:0] rgb_pixel_health, pixel_addr_health;
 
    // Shield
-   logic [11:0] rgb_pixel_shield, pixel_addr_shield;
+   logic [11:0] rgb_pixel_shield, rgb_pixel_shield_2, pixel_addr_shield, pixel_addr_shield_2;
    logic was_shield_picked_up;
 
 
@@ -294,7 +294,7 @@ module top_game (
    image_rom  #(
       .BITS(14),
       .PIXELS(12292),
-      .ROM_FILE("../../rtl/ROM/DonkeyVsKong_small.dat")
+      .ROM_FILE("../../rtl/ROM/Menu2.dat")
    ) u_image_rom_menu (
       .clk(clk65MHz),
       .address(pixel_addr_menu),
@@ -813,9 +813,12 @@ module top_game (
       .rst(rst),
       .game_en,
       .en(!animation),
+      .is_shielded,
       .health_en(health_en),
       .rgb_pixel(rgb_pixel_health),
       .pixel_addr(pixel_addr_health),
+      .rgb_pixel_shield(rgb_pixel_shield_2),
+      .pixel_addr_shield(pixel_addr_shield_2),
       
       .in(draw_shield_if),
       .out(draw_health_if)
@@ -831,6 +834,18 @@ module top_game (
       
       .address(pixel_addr_health),
       .rgb(rgb_pixel_health)
+   );
+
+   image_rom  #(
+      .BITS(12),
+      .PIXELS(4096),
+      .ROM_FILE("../../rtl/ROM/Umbrella.dat")
+   
+   ) u_image_rom_shield_2 (
+      .clk(clk65MHz),
+      
+      .address(pixel_addr_shield_2),
+      .rgb(rgb_pixel_shield_2)
    );
 
 endmodule
