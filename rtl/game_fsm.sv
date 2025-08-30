@@ -57,7 +57,7 @@ module game_fsm (
             health_en <= health_en_nxt;
             health_counter <= health_counter_nxt;
             donkey_hit <= donkey_hit_nxt;
-            donkey_win <= donkey_hit_nxt;
+            donkey_win <= donkey_win_nxt;
             kong_win <= kong_win_nxt;
         end
     end
@@ -142,6 +142,8 @@ module game_fsm (
                 health_en_nxt = health_en;
                 health_counter_nxt = health_counter;
                 donkey_hit_nxt = '0;
+                donkey_win_nxt = '0;
+                kong_win_nxt = '0;
             end
 
         endcase

@@ -885,8 +885,8 @@ module top_game (
       .rgb_pixel_back('0),
       .pixel_addr(pixel_addr_lady),
       .rgb_pixel(rgb_pixel_lady),
-      .xpos(380),
-      .ypos(64),
+      .xpos(11'd380),
+      .ypos(11'd64),
       .en(!animation),
 
       .in(draw_health_if),
