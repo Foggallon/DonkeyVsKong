@@ -96,7 +96,7 @@ module map_control #(parameter
         if ((ypos >= VER_PIXELS - 2 * PLATFORM_WIDTH - (CHARACTER_HEIGHT - PLATFORM_OFFSET - 2)) && (ypos <= VER_PIXELS - (CHARACTER_HEIGHT + PLATFORM_HEIGHT)) &&
             (xpos >= HOR_PIXELS/2 - PLATFORM_WIDTH) && (xpos <= HOR_PIXELS)) begin
             platform_nxt = 2'b01;
-        end else if ((ypos >= 450 - 156 - (CHARACTER_HEIGHT - PLATFORM_OFFSET - 2)) && (ypos <= 450 - (CHARACTER_HEIGHT + PLATFORM_HEIGHT)) && 
+        end else if ((ypos >= 294 - (CHARACTER_HEIGHT - PLATFORM_OFFSET - 2)) && (ypos <= 450 - (CHARACTER_HEIGHT + PLATFORM_HEIGHT)) && 
                      (xpos >= 2 * PLATFORM_WIDTH) && (xpos <= HOR_PIXELS)) begin
             platform_nxt = 2'b01;
         end else if ((ypos >= 475 - (CHARACTER_HEIGHT - PLATFORM_OFFSET - 2)) && (ypos <= 623 - CHARACTER_HEIGHT) && 

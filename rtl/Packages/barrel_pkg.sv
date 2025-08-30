@@ -12,5 +12,6 @@
 
     localparam BARREL_WIDTH = 32;
     localparam BARREL_HEIGHT = 32;
-
+    localparam HOR_BARREL_INITIAL_YPOS = 208;
+    localparam HIT_OFFSET = 4;
 endpackage

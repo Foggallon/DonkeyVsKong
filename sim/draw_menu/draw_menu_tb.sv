@@ -64,7 +64,7 @@ module draw_menu_tb;
     image_rom  #(
         .BITS(14),
         .PIXELS(12292),
-        .ROM_FILE("../../rtl/ROM/DonkeyVsKong_small.dat")
+        .ROM_FILE("../../rtl/ROM/MenuTest.dat")
    ) u_imageRom (
       .clk,
       

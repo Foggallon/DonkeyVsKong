@@ -21,6 +21,9 @@ module ver_barrel(
 );
 
 import kong_pkg::*;
+import barrel_pkg::*;
+import platform_pkg::*;
+import vga_pkg::*;
 
 typedef enum logic [0:0] {
     ST_IDLE,
@@ -28,6 +31,8 @@ typedef enum logic [0:0] {
 } STATE_T;
 
 STATE_T state, state_nxt;
+
+localparam DONKEY_WIDTH = 48;
 
 logic done_nxt, barrel_hit_nxt;
 logic [10:0] xpos_nxt, ypos_nxt;
@@ -65,7 +70,7 @@ always_comb begin : state_comb_blk
         end
 
         ST_FALL_DOWN: begin
-            if(ypos == 736 || barrel_hit) begin
+            if(ypos == (VER_PIXELS - PLATFORM_HEIGHT) || barrel_hit) begin
                 state_nxt = ST_IDLE;
             end else begin
                 state_nxt = ST_FALL_DOWN;
@@ -85,25 +90,26 @@ always_comb begin : out_comb_blk
             done_nxt = '0;
             barrel_hit_nxt = '0;
             xpos_nxt = xpos_kong + 12;
-            ypos_nxt = KONG_PLATFORM_YPOS + 64;
+            ypos_nxt = KONG_PLATFORM_YPOS + CHARACTER_HEIGHT;
             mov_counter_nxt = '0;
             velocity_nxt = '0;
         end
 
         ST_FALL_DOWN: begin
             xpos_nxt = xpos;
-            if ((xpos + 28 >= xpos_donkey) && (xpos <= xpos_donkey + 44) && (ypos + 32 >= ypos_donkey) && (ypos <= ypos_donkey + 32) && (!barrel_hit)) begin
+            if ((xpos + (BARREL_WIDTH - HIT_OFFSET) >= xpos_donkey) && (xpos <= xpos_donkey + (DONKEY_WIDTH - HIT_OFFSET)) && 
+                (ypos + BARREL_HEIGHT >= ypos_donkey) && (ypos <= ypos_donkey + BARREL_HEIGHT) && (!barrel_hit)) begin
                 done_nxt = '1;
                 barrel_hit_nxt = '1;
             end else begin
-                done_nxt = (ypos + velocity >= 736) ? '1 : '0 ;
+                done_nxt = (ypos + velocity >= VER_PIXELS - PLATFORM_HEIGHT) ? '1 : '0 ;
                 barrel_hit_nxt = '0;
             end
             if (mov_counter == JUMP_TAKI_W_MIARE) begin
                 mov_counter_nxt = '0;
                 velocity_nxt = velocity + 1;
-                if (ypos + velocity >= 736) begin
-                    ypos_nxt = 736;
+                if (ypos + velocity >= VER_PIXELS - PLATFORM_HEIGHT) begin
+                    ypos_nxt = VER_PIXELS - PLATFORM_HEIGHT;
                 end else begin
                     ypos_nxt = ypos + velocity;
                 end

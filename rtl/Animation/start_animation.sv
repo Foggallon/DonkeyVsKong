@@ -43,6 +43,7 @@ module start_animation (
 
     localparam JUMPS = 4;
     localparam LADDER_ANIMATION_START = 576;
+    localparam COUNTER_LIMIT = 16;
 
     /**
      * Internal logic
@@ -117,7 +118,7 @@ module start_animation (
                     mov_counter_nxt = '0;
                     ypos_nxt = ((ypos <= KONG_PLATFORM_YPOS) ? ypos : ypos - 1);
                     if (ypos <= LADDER_ANIMATION_START && ypos % LADDER_HEIGHT == 0) begin
-                        counter_nxt = counter < 16 ? counter + 1 : counter;     // increment every 32 pixels (ladder height)
+                        counter_nxt = counter < COUNTER_LIMIT ? counter + 1 : counter;     // increment every 32 pixels (ladder height)
                     end else begin
                         counter_nxt = counter;
                     end

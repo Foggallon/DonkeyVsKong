@@ -26,6 +26,10 @@ module hor_barrel (
 
     import donkey_pkg::*;
     import platform_pkg::*;
+    import barrel_pkg::*;
+
+    localparam FALL_COUNT = 3;
+    localparam DONKEY_KONG_PLATFORM = 175;
 
     logic done_nxt, end_of_platform, barrel_hit_nxt;
     logic [1:0] platform, fall_ctl, fall_ctl_nxt, platform_donkey;
@@ -53,7 +57,7 @@ module hor_barrel (
         .landing_ypos(landing_ypos)
     );
 
-    map_control #(.CHARACTER_HEIGHT(32), .CHARACTER_WIDTH(32)) u_map_control_donkey (
+    map_control #(.CHARACTER_HEIGHT(64), .CHARACTER_WIDTH(32)) u_map_control_donkey (
         .clk,
         .rst,
         .xpos,
@@ -78,7 +82,7 @@ module hor_barrel (
         if (rst) begin
             done <= '0;
             xpos <= xpos_kong;
-            ypos <= 208;
+            ypos <= HOR_BARREL_INITIAL_YPOS;
             fall_ctl <= '0;
             velocity <= '0;
             mov_counter <= '0;
@@ -115,9 +119,9 @@ module hor_barrel (
             ST_FALL_DOWN: begin
                 if (barrel_hit) begin
                     state_nxt = ST_IDLE;
-                end else if (ypos >= landing_ypos && fall_ctl != 3) begin
+                end else if (ypos >= landing_ypos && fall_ctl != FALL_COUNT) begin
                     state_nxt = ST_GO_HOR;
-                end else if (fall_ctl == 3) begin
+                end else if (fall_ctl == FALL_COUNT) begin
                     state_nxt = ST_IDLE;
                 end else begin
                     state_nxt = ST_FALL_DOWN;
@@ -136,7 +140,7 @@ module hor_barrel (
                 done_nxt = '0;
                 barrel_hit_nxt = '0;
                 xpos_nxt = xpos_kong;
-                ypos_nxt = 208;
+                ypos_nxt = HOR_BARREL_INITIAL_YPOS;
                 fall_ctl_nxt = '0;
                 velocity_nxt = '0;
                 mov_counter_nxt = '0;
@@ -145,13 +149,16 @@ module hor_barrel (
             ST_GO_HOR: begin
                 velocity_nxt = '0;
                 fall_ctl_nxt = fall_ctl;
-                if ((platform_donkey == 2'b01) && (xpos <= xpos_donkey + 48) && (xpos + 32 >= xpos_donkey) && (ypos_donkey + 60 >= ypos) && (ypos_donkey <= ypos + 32) && (!barrel_hit)) begin
+                if ((platform_donkey == 2'b01) && (xpos <= xpos_donkey + CHARACTER_WIDTH) && (xpos + BARREL_WIDTH >= xpos_donkey) && 
+                    (ypos_donkey + (CHARACTER_HEIGHT - PLATFORM_OFFSET) >= ypos) && (ypos_donkey <= ypos + BARREL_HEIGHT) && (!barrel_hit)) begin
                     done_nxt = '1;
                     barrel_hit_nxt = '1;
-                end else if ((platform_donkey == 2'b10) && (xpos_donkey <= xpos + 32) && (xpos_donkey + 48 >= xpos) && (ypos_donkey + 60 >= ypos) && (ypos_donkey <= ypos + 32) && (!barrel_hit)) begin
+                end else if ((platform_donkey == 2'b10) && (xpos_donkey <= xpos + BARREL_WIDTH) && (xpos_donkey + CHARACTER_WIDTH >= xpos) && 
+                             (ypos_donkey + (CHARACTER_HEIGHT - PLATFORM_OFFSET) >= ypos) && (ypos_donkey <= ypos + BARREL_HEIGHT) && (!barrel_hit)) begin
                     done_nxt = '1;
                     barrel_hit_nxt = '1;
-                end else if ((xpos_donkey <= xpos + 32) && (xpos_donkey + 48 >= xpos) && (ypos_donkey + 60 >= ypos) && (ypos == 208) && (ypos_donkey <= 175) && (!barrel_hit)) begin
+                end else if ((xpos_donkey <= xpos + BARREL_WIDTH) && (xpos_donkey + CHARACTER_WIDTH >= xpos) && 
+                             (ypos_donkey + (CHARACTER_HEIGHT - HIT_OFFSET) >= ypos) && (ypos == HOR_BARREL_INITIAL_YPOS) && (ypos_donkey <= DONKEY_KONG_PLATFORM) && (!barrel_hit)) begin
                     done_nxt = '1;
                     barrel_hit_nxt = '1;
                 end else begin
@@ -161,7 +168,7 @@ module hor_barrel (
                 if (mov_counter == MOVE_TAKI_NIE_MACQUEEN) begin
                     mov_counter_nxt = '0;
                     xpos_nxt = (platform == 2'b01 || (ypos <= 450 - 32 && ypos >= 324)) ? xpos - 1 : xpos + 1;
-                    if ((platform == 2'b01) & ((xpos - 32) % PLATFORM_WIDTH == 0)) begin    // when on incline platform
+                    if ((platform == 2'b01) & ((xpos - BARREL_WIDTH) % PLATFORM_WIDTH == 0)) begin    // when on incline platform
                         ypos_nxt = ypos + PLATFORM_OFFSET;
                     end else if ((platform == 2'b10) & (xpos % PLATFORM_WIDTH == 0)) begin
                         ypos_nxt = ypos + PLATFORM_OFFSET;
@@ -177,11 +184,12 @@ module hor_barrel (
 
             ST_FALL_DOWN: begin
                 xpos_nxt = xpos;
-                if ((xpos + 28 >= xpos_donkey) && (xpos <= xpos_donkey + 44) && (ypos + 32 >= ypos_donkey) && (ypos <= ypos_donkey + 32) && (!barrel_hit)) begin
+                if ((xpos + (BARREL_WIDTH - HIT_OFFSET) >= xpos_donkey) && (xpos <= xpos_donkey + (CHARACTER_WIDTH - HIT_OFFSET)) && 
+                    (ypos + BARREL_HEIGHT >= ypos_donkey) && (ypos <= ypos_donkey + BARREL_HEIGHT) && (!barrel_hit)) begin
                     done_nxt = '1;
                     barrel_hit_nxt = '1;
                 end else begin
-                    done_nxt = (fall_ctl == 3) ? '1 : done;
+                    done_nxt = (fall_ctl == FALL_COUNT) ? '1 : done;
                     barrel_hit_nxt = '0;
                 end
                 if (mov_counter == JUMP_TAKI_W_MIARE) begin
