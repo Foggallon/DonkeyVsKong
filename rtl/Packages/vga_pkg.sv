@@ -5,7 +5,7 @@
  * Author: Dawid Bodzek
  *
  * Description:
- * Parameters for VGA Display 1024 x 768 @ 60fps using a 65 MHz clock;
+ * Parameters for VGA Display 1024 x 768 @ 60Hz using a 65 MHz clock;
  */
 
 package vga_pkg;
