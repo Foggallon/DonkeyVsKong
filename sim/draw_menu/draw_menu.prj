@@ -16,4 +16,5 @@ sv work ../../rtl/Packages/vga_pkg.sv \
         ../common/tiff_writer.sv \
         ../../rtl/ROM/image_rom.sv \
         ../../rtl/MainMenu/draw_menu.sv \
+        ../../rtl/MainMenu/draw_ready.sv \
         draw_menu_tb.sv

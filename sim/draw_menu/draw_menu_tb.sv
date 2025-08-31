@@ -24,12 +24,13 @@ module draw_menu_tb;
      */
 
     vga_if vga_timing_if();
+    vga_if draw_menu_if();
     vga_if dut_if();
 
     logic clk, rst;
     logic [3:0] r, g, b;
-    logic [11:0] rgb_pixel;
-    logic [13:0] pixel_addr;
+    logic [11:0] rgb_pixel, rgb_pixel_ready;
+    logic [13:0] pixel_addr, pixel_addr_ready;
     assign {r,g,b} = dut_if.rgb;
     /**
      * Clock generation
@@ -81,7 +82,34 @@ module draw_menu_tb;
         .game_en('0),
 
         .in(vga_timing_if),
+        .out(draw_menu_if)
+    );
+
+    draw_ready #(
+        .XPOS(120),
+        .YPOS(400)
+    ) u_draw_ready (
+        .clk,
+        .rst,
+        .game_en('0),
+        .start(1'b1),
+        .rgb_pixel(rgb_pixel_ready),
+        .pixel_addr(pixel_addr_ready),
+
+        .in(draw_menu_if),
         .out(dut_if)
+    );
+
+    image_rom  #(
+        .BITS(14),
+        .PIXELS(12292),
+        .ROM_FILE("../../rtl/ROM/Ready.dat")
+    ) u_imageRom2 (
+        .clk,
+        
+        .address(pixel_addr_ready),
+        .rgb(rgb_pixel_ready)
+
     );
 
     tiff_writer #(
