@@ -753,7 +753,7 @@ module top_game (
    image_rom  #(
       .BITS(12),
       .PIXELS(4096),
-      .ROM_FILE("../../rtl/ROM/Barrel.dat")
+      .ROM_FILE("../../rtl/ROM/Donkey_Back.dat")
    
    ) u_image_rom_donkey_back (
       .clk(clk65MHz),
