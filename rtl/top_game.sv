@@ -44,6 +44,8 @@ module top_game (
    vga_if draw_health_if();
    vga_if draw_shield_if();
    vga_if draw_lady_if();
+   vga_if draw_ready_donkey_if();
+   vga_if draw_ready_kong_if();
 
    /**
     * Local variables and signals
@@ -59,7 +61,7 @@ module top_game (
    logic [7:0] r_data, w_data;
 
    // Keyboard - UART
-   logic right_uart, left_uart, down_uart, up_uart;
+   logic right_uart, left_uart, down_uart, up_uart, start_game_uart;
    logic [15:0] keycode_uart;
    logic [31:0] ascii_code_uart;
 
@@ -68,8 +70,8 @@ module top_game (
    logic [2:0] health_en;
 
    // Start game menu
-   logic [11:0] rgb_pixel_menu;
-   logic [13:0] pixel_addr_menu;
+   logic [11:0] rgb_pixel_menu, rgb_pixel_ready_donkey, rgb_pixel_ready_kong, rgb_pixel_menu_donkey_win, rgb_pixel_menu_kong_win;
+   logic [13:0] pixel_addr_menu, pixel_addr_ready_donkey, pixel_addr_ready_kong;
 
    // Ladders
    logic [9:0] pixel_addr_ladder;
@@ -244,7 +246,7 @@ module top_game (
       .left(left_uart),
       .right(right_uart),
       .jump(),
-      .start_game(),
+      .start_game(start_game_uart),
       .up(up_uart),
       .down(down_uart),
       .keyCode(ascii_code_uart),
@@ -260,7 +262,7 @@ module top_game (
       .rst,
       .animation,
       .start_game(start_game),
-      .start_game_uart(start_game), // change
+      .start_game_uart(start_game_uart),
       .touch_lady,
       .is_shielded(is_shielded),
       .barrel_hit({barrel_hit_10, barrel_hit_9, barrel_hit_8, barrel_hit_7, barrel_hit_6,
@@ -295,6 +297,8 @@ module top_game (
       .kong_win,
       .rgb_pixel(rgb_pixel_menu),
       .pixel_addr(pixel_addr_menu),
+      .rgb_pixel_donkey(rgb_pixel_menu_donkey_win),
+      .rgb_pixel_kong(rgb_pixel_menu_kong_win),
 
       .in(vga_timing_if),
       .out(draw_menu_if)
@@ -310,6 +314,80 @@ module top_game (
       .rgb(rgb_pixel_menu)
    );
 
+   image_rom  #(
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/Donkey_Win.dat")
+   ) u_image_rom_donkey_win (
+      .clk(clk65MHz),
+      .address(pixel_addr_menu),
+      .rgb(rgb_pixel_menu_donkey_win)
+   );
+
+   image_rom  #(
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/Kong_Win.dat")
+   ) u_image_rom_kong_win (
+      .clk(clk65MHz),
+      .address(pixel_addr_menu),
+      .rgb(rgb_pixel_menu_kong_win)
+   );
+
+   draw_ready #(
+      .XPOS(200),
+      .YPOS(260)
+   ) u_draw_ready_donkey (
+      .clk(clk65MHz),
+      .rst,
+      .game_en(game_en),
+      .win_kong(kong_win),
+      .win_donkey(donkey_win),
+      .start(start_game),
+      .rgb_pixel(rgb_pixel_ready_donkey),
+      .pixel_addr(pixel_addr_ready_donkey),
+
+      .in(draw_menu_if),
+      .out(draw_ready_donkey_if)
+   );
+   
+   image_rom  #(
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/Ready.dat")
+   ) u_image_rom_ready(
+      .clk(clk65MHz),
+      .address(pixel_addr_ready_donkey),
+      .rgb(rgb_pixel_ready_donkey)
+   );
+
+   draw_ready #(
+      .XPOS(670),
+      .YPOS(260)
+   ) u_draw_ready_kong (
+      .clk(clk65MHz),
+      .rst,
+      .game_en(game_en),
+      .win_kong(kong_win),
+      .win_donkey(donkey_win),
+      .start(start_game_uart),
+      .rgb_pixel(rgb_pixel_ready_kong),
+      .pixel_addr(pixel_addr_ready_kong),
+
+      .in(draw_ready_donkey_if),
+      .out(draw_ready_kong_if)
+   );
+
+   image_rom  #(
+      .BITS(14),
+      .PIXELS(12292),
+      .ROM_FILE("../../rtl/ROM/Ready.dat")
+   ) u_image_rom_ready_kong(
+      .clk(clk65MHz),
+      .address(pixel_addr_ready_kong),
+      .rgb(rgb_pixel_ready_kong)
+   );
+
    /**
     * Ladders 
     */
@@ -322,7 +400,7 @@ module top_game (
       .pixel_addr(pixel_addr_ladder),
       .rgb_pixel(rgb_pixel_ladder),
 
-      .in(draw_menu_if),
+      .in(draw_ready_kong_if),
       .out(draw_ladder_if)
    );
 
@@ -634,20 +712,20 @@ module top_game (
       .rst(rst),
       .game_en,
       .animation,
-      .key(up),
+      .key(up_uart),
       .done({done_5, done_4, done_3, done_2, done_1}),
       .barrel(barrel_hor)
    );
    
    barrel_ctl #(
       .BARRELS(5), 
-      .DELAY_TIME(20_500_000)
+      .DELAY_TIME(100_000_000)
    ) u_barrel_ctl_ver (
       .clk(clk65MHz),
       .rst(rst),
       .game_en,
       .animation,
-      .key(down),
+      .key(down_uart),
       .done({done_ver_5, done_ver_4, done_ver_3, done_ver_2, done_ver_1}),
       .barrel(barrel_ver)
    );
@@ -772,7 +850,7 @@ module top_game (
     ) u_draw_shield (
       .clk(clk65MHz),
       .rst,
-      .start_game(start_game),
+      .start_game(game_en),
       .was_shield_picked_up,
       .en(!animation),
       .pixel_addr(pixel_addr_shield),

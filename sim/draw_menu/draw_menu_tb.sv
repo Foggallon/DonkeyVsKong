@@ -78,6 +78,8 @@ module draw_menu_tb;
         .clk,
         .rst,
         .rgb_pixel,
+        .donkey_win('0),
+        .kong_win('0),
         .pixel_addr,
         .game_en('0),
 
@@ -86,8 +88,8 @@ module draw_menu_tb;
     );
 
     draw_ready #(
-        .XPOS(120),
-        .YPOS(400)
+        .XPOS(660),
+        .YPOS(260)
     ) u_draw_ready (
         .clk,
         .rst,

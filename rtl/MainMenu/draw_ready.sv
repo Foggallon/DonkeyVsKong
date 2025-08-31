@@ -16,6 +16,8 @@
     input  logic        rst,
     input  logic        game_en,
     input  logic        start,
+    input  logic        win_donkey,
+    input  logic        win_kong,
     input  logic [11:0] rgb_pixel,
     output logic [13:0] pixel_addr,
     
@@ -78,7 +80,7 @@
             out.hsync  <= hsync_buf;
             out.hblnk  <= hblnk_buf;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= {5'(in.vcount - YPOS), 5'(in.hcount - XPOS)};
+            pixel_addr <= {7'(in.vcount - YPOS), 7'(in.hcount - XPOS)};
         end
     end
 
@@ -87,10 +89,10 @@
             rgb_nxt = 12'h8_8_8;
         end else begin
             if((vcount_buf >= YPOS) && (vcount_buf < YPOS + 96) && (hcount_buf >= XPOS) && (hcount_buf < XPOS + 128) && start) begin
-                if (game_en) begin
-                    rgb_nxt = rgb_buf;
+                if (!game_en) begin
+                    rgb_nxt = ((rgb_pixel == BACKGROUND) || win_kong || win_donkey) ? rgb_buf : rgb_pixel;
                 end else begin
-                    rgb_nxt = BACKGROUND ? rgb_buf : rgb_pixel;
+                    rgb_nxt = rgb_buf;
                 end
             end else begin
                 rgb_nxt = rgb_buf;

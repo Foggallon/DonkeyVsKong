@@ -15,6 +15,8 @@
     input  logic        donkey_win,
     input  logic        kong_win,
     input  logic [11:0] rgb_pixel,
+    input  logic [11:0] rgb_pixel_donkey,
+    input  logic [11:0] rgb_pixel_kong,
     output logic [13:0] pixel_addr,
     
     vga_if.in in,
@@ -86,9 +88,9 @@
         end else begin
             if((vcount_buf >= 0) && (vcount_buf < VER_PIXELS) && (hcount_buf >= 0) && (hcount_buf < HOR_PIXELS)) begin
                 if (donkey_win) begin
-                    rgb_nxt = 12'hf_f_f;
+                    rgb_nxt = rgb_pixel_donkey;
                 end else if (kong_win) begin
-                    rgb_nxt = 12'hF_0_A;
+                    rgb_nxt = rgb_pixel_kong;
                 end else if (game_en) begin
                     rgb_nxt = GAME_BACKGROUND;
                 end else begin
